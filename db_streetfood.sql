@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2026 at 08:38 AM
+-- Generation Time: May 20, 2026 at 02:01 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,12 +53,12 @@ CREATE TABLE `bayar` (
 --
 
 INSERT INTO `bayar` (`id_metode`, `metode_pembayaran`, `logo`) VALUES
-(7, 'Cash', '1778732115-Cash free icons designed by Flat Icons.jpg'),
-(8, 'Dana', '1778732131-Dana Indonesia Digital Wallet Logo Vector - iconLogoVector.jpg'),
-(9, 'Ovo', '1778732149-download (19).jpg'),
-(10, 'ShopeePay', '1778732161-sad.jpg'),
-(11, 'Seabank', '1778732180-download (18).jpg'),
-(12, 'gopay', '1778732195-download (20).jpg');
+(1, 'GoPay', '1778989744-c74065540ccade0683a869b622cdc4a6.jpg'),
+(2, 'OVO', '1778989778-61c98a1dffc2e04424d592564cef941f.jpg'),
+(3, 'DANA', '1778989819-cbaa0388892e0a154353c2a1cb8b3fee.jpg'),
+(4, 'ShopeePay', '1778989866-a6cbe6a3c5e9b03ef09ebfc0969323d2.jpg'),
+(5, 'Uang Tunai', '1778990035-8f34360bb7a1a91b4b0ba9452f11ae08.jpg'),
+(6, 'Qris', '1779272475-988827ba70ba45ec5fb9c36423d8d09e.jpg');
 
 -- --------------------------------------------------------
 
@@ -76,10 +76,10 @@ CREATE TABLE `kategori` (
 --
 
 INSERT INTO `kategori` (`id_kategori`, `kategori_makanan`) VALUES
-(1, 'makanan berat'),
-(2, 'camilan'),
-(3, 'minuman'),
-(4, 'dessert');
+(1, 'Makanan berat'),
+(2, 'Cemilan'),
+(3, 'Minuman'),
+(4, 'Dessert');
 
 -- --------------------------------------------------------
 
@@ -98,6 +98,13 @@ CREATE TABLE `menu` (
   `id_toko` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `menu`
+--
+
+INSERT INTO `menu` (`id_menu`, `nama_menu`, `foto_menu`, `deskripsi`, `harga`, `rasa`, `id_kategori`, `id_toko`) VALUES
+(1, 'contoh', '1779278418_gofood.png', '                dsnkjncjkdscbsd                ', 15000, 'pedas', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -108,6 +115,15 @@ CREATE TABLE `metode_toko` (
   `id_toko` int(11) NOT NULL,
   `id_metode` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `metode_toko`
+--
+
+INSERT INTO `metode_toko` (`id_toko`, `id_metode`) VALUES
+(1, 1),
+(1, 5),
+(1, 6);
 
 -- --------------------------------------------------------
 
@@ -126,9 +142,9 @@ CREATE TABLE `mitra` (
 --
 
 INSERT INTO `mitra` (`id_mitra`, `nama_mitra`, `logo`) VALUES
-(6, 'GoFood', '1778730036-gofood_logo.png'),
-(7, 'GrabFood', '1778731353-grabfood_logo.jpg'),
-(8, 'ShopeeFood', '1778731362-shopeefood_logo.jpg');
+(1, 'GoFood', '1778989503-02e93f409c073b09f20262ed135fccca.png'),
+(2, 'GrabFood', '1778989583-bfde3f38cf9202d49795528ad2045211.jpg'),
+(3, 'ShopeeFood', '1778989601-6148d61d91688acaa7208499af9a378c.jpg');
 
 -- --------------------------------------------------------
 
@@ -183,7 +199,7 @@ CREATE TABLE `role` (
 CREATE TABLE `toko` (
   `id_toko` int(11) NOT NULL,
   `nama_toko` varchar(255) NOT NULL,
-  `foto_outlet` text DEFAULT NULL,
+  `foto_outlet` text NOT NULL,
   `lokasi` text DEFAULT NULL,
   `jam_buka` time DEFAULT NULL,
   `jam_tutup` time DEFAULT NULL,
@@ -191,6 +207,13 @@ CREATE TABLE `toko` (
   `no_telepon` varchar(14) DEFAULT NULL,
   `rating` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `toko`
+--
+
+INSERT INTO `toko` (`id_toko`, `nama_toko`, `foto_outlet`, `lokasi`, `jam_buka`, `jam_tutup`, `status_halal`, `no_telepon`, `rating`) VALUES
+(1, 'contoh', 'gofood.png', 'hdhasjhjsabdjhcbsbd', '07:00:00', '22:00:00', 'belum tersertifikasi', '089999999999', NULL);
 
 -- --------------------------------------------------------
 
@@ -202,6 +225,15 @@ CREATE TABLE `toko_mitra` (
   `id_toko` int(11) NOT NULL,
   `id_mitra` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `toko_mitra`
+--
+
+INSERT INTO `toko_mitra` (`id_toko`, `id_mitra`) VALUES
+(1, 1),
+(1, 2),
+(1, 3);
 
 -- --------------------------------------------------------
 
@@ -294,13 +326,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bayar`
 --
 ALTER TABLE `bayar`
-  MODIFY `id_metode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_metode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `kategori`
 --
 ALTER TABLE `kategori`
-  MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `menu`
@@ -312,7 +344,7 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT for table `mitra`
 --
 ALTER TABLE `mitra`
-  MODIFY `id_mitra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_mitra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `review`
@@ -330,7 +362,7 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `toko`
 --
 ALTER TABLE `toko`
-  MODIFY `id_toko` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_toko` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
