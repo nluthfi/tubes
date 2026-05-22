@@ -90,6 +90,7 @@ $query2 = mysqli_query($koneksi, "
     SELECT 
         m.id_menu,
         m.nama_menu,
+        m.foto_menu,
         m.deskripsi,
         m.harga,
         m.rasa,
