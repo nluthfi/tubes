@@ -19,7 +19,7 @@ $kategori = mysqli_query($koneksi, "SELECT * FROM kategori");
             <!-- NAMA MENU -->
             <div class="mb-3">
                 <label class="form-label">Nama Menu</label>
-                <input type="text" name="nama_menu" class="form-control" required>
+                <input type="url" name="foto_menu" placeholder="https://contoh.com/makanan.jpg">
             </div>
 
             <!-- FOTO -->
