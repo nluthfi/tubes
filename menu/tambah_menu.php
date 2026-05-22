@@ -25,7 +25,7 @@ $kategori = mysqli_query($koneksi, "SELECT * FROM kategori");
             <!-- FOTO -->
             <div class="mb-3">
                 <label class="form-label">Foto Menu</label>
-                <input type="url" name="foto_menu" placeholder="https://contoh.com/makanan.jpg" required>
+                <input type="file" name="foto_menu" class="form-control" required>
             </div>
 
             <!-- DESKRIPSI -->

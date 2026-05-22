@@ -90,7 +90,7 @@ $query2 = mysqli_query($koneksi, "
     SELECT 
         m.id_menu,
         m.nama_menu,
-        m.foto_menu,
+	m.foto_menu,
         m.deskripsi,
         m.harga,
         m.rasa,
@@ -131,7 +131,7 @@ while($row = mysqli_fetch_assoc($query2)){
                         object-fit:cover;
                     "
                 >
-            </div>                
+            </div> 
 
                 <div class="detail-item">
                     <span class="detail-label">Deskripsi</span>
