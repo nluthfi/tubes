@@ -119,6 +119,19 @@ while($row = mysqli_fetch_assoc($query2)){
                     <span class="detail-value"><?= $row['nama_menu']; ?></span>
                 </div>
 
+            <div class="text-center mb-3">
+                <img 
+                    src="<?= $row['foto_menu']; ?>"
+                    alt="<?= $row['nama_menu']; ?>"
+                    style="
+                        width:100%;
+                        max-width:300px;
+                        border-radius:12px;
+                        object-fit:cover;
+                    "
+                >
+            </div>                
+
                 <div class="detail-item">
                     <span class="detail-label">Deskripsi</span>
                     <span class="detail-value"><?= $row['deskripsi']; ?></span>
