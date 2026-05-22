@@ -1,5 +1,24 @@
-<?php include 'layout/header.php'; ?>
-<?php include 'layout/sidebar.php'; ?>
+<?php 
+include 'layout/header.php'; 
+include 'layout/sidebar.php';
+include 'koneksi.php';
+
+$total_mitra = mysqli_fetch_assoc(mysqli_query($koneksi, "
+    SELECT COUNT(*) as total FROM mitra
+"));
+
+$total_toko = mysqli_fetch_assoc(mysqli_query($koneksi, "
+    SELECT COUNT(*) as total FROM toko
+"));
+
+$total_menu = mysqli_fetch_assoc(mysqli_query($koneksi, "
+    SELECT COUNT(*) as total FROM menu
+"));
+
+$total_pembayaran = mysqli_fetch_assoc(mysqli_query($koneksi, "
+    SELECT COUNT(*) as total FROM bayar
+"));
+?>
 
 <!-- Main Content -->
 <main class="main-content">
@@ -12,7 +31,7 @@
             Selamat datang di dashboard admin Street Food.
         </p>
     </div>
-
+ 
     <!-- Statistik -->
     <div class="row g-4">
 
@@ -22,7 +41,7 @@
 
                 <div>
                     <h6>Total Mitra</h6>
-                    <h3>25</h3>
+                    <h3><?= $total_mitra['total']; ?></h3>
                 </div>
 
                 <div class="card-icon bg-primary">
@@ -38,7 +57,7 @@
 
                 <div>
                     <h6>Total Toko</h6>
-                    <h3>40</h3>
+                    <h3><?= $total_toko['total']; ?></h3>
                 </div>
 
                 <div class="card-icon bg-success">
@@ -54,7 +73,7 @@
 
                 <div>
                     <h6>Total Menu</h6>
-                    <h3>120</h3>
+                    <h3><?= $total_menu['total']; ?></h3>
                 </div>
 
                 <div class="card-icon bg-warning">
@@ -70,7 +89,7 @@
 
                 <div>
                     <h6>Pembayaran</h6>
-                    <h3>5</h3>
+                    <h3><?= $total_pembayaran['total']; ?></h3>
                 </div>
 
                 <div class="card-icon bg-danger">
