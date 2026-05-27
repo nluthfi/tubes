@@ -12,17 +12,31 @@ $jam_buka = $_POST['jam_buka'];
 $jam_tutup = $_POST['jam_tutup'];
 $status = $_POST['status_halal'];
 
+$foto = $_FILES['foto_outlet']['name'];
+
+$queryFoto = "";
+
+if($foto != ''){
+
+    $tmp = $_FILES['foto_outlet']['tmp_name'];
+
+    move_uploaded_file($tmp, "../img/pict/".$foto);
+
+    $queryFoto = ", foto_outlet='$foto'";
+}
+
 $mitra = $_POST['mitra'] ?? [];
 $metode = $_POST['metode'] ?? [];
 
 mysqli_query($koneksi, "
     UPDATE toko SET
         nama_toko='$nama',
-        no_telepon = '$no_telp',
+        no_telepon='$no_telp',
         lokasi='$lokasi',
         jam_buka='$jam_buka',
         jam_tutup='$jam_tutup',
         status_halal='$status'
+        $queryFoto
     WHERE id_toko='$id'
 ");
 

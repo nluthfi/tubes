@@ -66,9 +66,8 @@ $i = 1;
 
                             <!-- DETAIL -->
                             <td>
-                                <button class="btn btn-detail"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#detail<?= $row['id_toko']; ?>">
+                                <button class="btn btn-detail" data-bs-toggle="modal"
+                                    data-bs-target="#detail<?= $row['id_toko']; ?>">
                                     <i class="fa-solid fa-circle-info"></i> Detail
                                 </button>
                             </td>
@@ -81,7 +80,8 @@ $i = 1;
                                     </button>
                                 </a>
 
-                                <a href="hapus_toko.php?id=<?= $row['id_toko']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                <a href="hapus_toko.php?id=<?= $row['id_toko']; ?>"
+                                    onclick="return confirm('Yakin ingin menghapus data ini?')">
                                     <button class="btn-action delete">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
@@ -134,6 +134,18 @@ $metodeQuery = mysqli_query($koneksi, "
                     <span class="detail-value"><?= $row['nama_toko']; ?></span>
                 </div>
 
+                <div class="detail-item text-center mb-3">
+
+                    <img src="../img/pict/<?= $row['foto_outlet']; ?>" alt="<?= $row['nama_toko']; ?>" style="
+                        width:100%;
+                        max-height:220px;
+                        object-fit:cover;
+                        border-radius:16px;
+                    ">
+
+                </div>
+
+
                 <div class="detail-item">
                     <span class="detail-label">Lokasi</span>
                     <span class="detail-value"><?= $row['lokasi']; ?></span>
@@ -148,9 +160,9 @@ $metodeQuery = mysqli_query($koneksi, "
                     <span class="detail-label">Mitra</span>
                     <div class="d-flex gap-2 flex-wrap">
                         <?php while($m = mysqli_fetch_assoc($mitraQuery)) { ?>
-                            <span class="custom-badge">
-                                <?= $m['nama_mitra']; ?>
-                            </span>
+                        <span class="custom-badge">
+                            <?= $m['nama_mitra']; ?>
+                        </span>
                         <?php } ?>
                     </div>
                 </div>
@@ -160,9 +172,9 @@ $metodeQuery = mysqli_query($koneksi, "
                     <div class="d-flex gap-2 flex-wrap">
 
                         <?php while($mp = mysqli_fetch_assoc($metodeQuery)) { ?>
-                            <span class="custom-badge">
-                                <?= $mp['metode_pembayaran']; ?>
-                            </span>
+                        <span class="custom-badge">
+                            <?= $mp['metode_pembayaran']; ?>
+                        </span>
                         <?php } ?>
 
                     </div>
@@ -172,13 +184,13 @@ $metodeQuery = mysqli_query($koneksi, "
                     <span class="detail-label">Status Halal</span>
 
                     <?php if($row['status_halal'] == 'tersertifikasi') { ?>
-                        <span class="badge bg-success">Tersertifikasi</span>
+                    <span class="badge bg-success">Tersertifikasi</span>
 
                     <?php } else if($row['status_halal'] == 'belum tersertifikasi') { ?>
-                        <span class="badge bg-warning">Belum Tersertifikasi</span>
+                    <span class="badge bg-warning">Belum Tersertifikasi</span>
 
                     <?php } else { ?>
-                        <span class="badge bg-danger">Non Halal</span>
+                    <span class="badge bg-danger">Non Halal</span>
                     <?php } ?>
                 </div>
             </div>
