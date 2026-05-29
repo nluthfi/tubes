@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 21, 2026 at 03:14 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Waktu pembuatan: 29 Bulan Mei 2026 pada 06.34
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,28 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_streetfood(1)`
+-- Database: `db_streetfood`
 --
-
-DELIMITER $$
---
--- Procedures
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `tambah_review` (IN `p_id_toko` INT, IN `p_nama` VARCHAR(100), IN `p_rating` INT, IN `p_komentar` TEXT)   BEGIN
-
-    INSERT INTO review
-    (id_toko, nama_pengulas, rating, komentar)
-    VALUES
-    (p_id_toko, p_nama, p_rating, p_komentar);
-
-END$$
-
-DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bayar`
+-- Struktur dari tabel `bayar`
 --
 
 CREATE TABLE `bayar` (
@@ -49,7 +34,7 @@ CREATE TABLE `bayar` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `bayar`
+-- Dumping data untuk tabel `bayar`
 --
 
 INSERT INTO `bayar` (`id_metode`, `metode_pembayaran`, `logo`) VALUES
@@ -63,7 +48,7 @@ INSERT INTO `bayar` (`id_metode`, `metode_pembayaran`, `logo`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kategori`
+-- Struktur dari tabel `kategori`
 --
 
 CREATE TABLE `kategori` (
@@ -72,7 +57,7 @@ CREATE TABLE `kategori` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `kategori`
+-- Dumping data untuk tabel `kategori`
 --
 
 INSERT INTO `kategori` (`id_kategori`, `kategori_makanan`) VALUES
@@ -84,7 +69,7 @@ INSERT INTO `kategori` (`id_kategori`, `kategori_makanan`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `menu`
+-- Struktur dari tabel `menu`
 --
 
 CREATE TABLE `menu` (
@@ -93,38 +78,924 @@ CREATE TABLE `menu` (
   `foto_menu` text NOT NULL,
   `deskripsi` text DEFAULT NULL,
   `harga` int(11) DEFAULT NULL,
-  `rasa` varchar(255) DEFAULT NULL,
+  `rasa` enum('pedas','asin','manis','berkuah','asam') DEFAULT NULL,
   `id_kategori` int(11) DEFAULT NULL,
   `id_toko` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `menu`
+-- Dumping data untuk tabel `menu`
 --
 
 INSERT INTO `menu` (`id_menu`, `nama_menu`, `foto_menu`, `deskripsi`, `harga`, `rasa`, `id_kategori`, `id_toko`) VALUES
-(1, 'contoh', '1779278418_gofood.png', '                dsnkjncjkdscbsd                ', 15000, 'pedas', 1, 1),
-(2, 'Mie Yamin Manis Komplit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b12016f4-f22e-47f1-81cf-28f1aec94c21_3dfc5855-c25a-4c7d-bf6c-1442337590d5_Go-Biz_20200411_191453.jpeg?auto=format', 'Yamin Manis + BASO + PANGSIT KUAH + CEKER', 25000, NULL, NULL, NULL),
-(3, 'Mie Yamin Asin Komplit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8df8ba2a-2606-4115-9588-9c9f43a731ce_0f9af109-cef9-426c-ba52-a6a638f04179_Go-Biz_20200411_191433.jpeg?auto=format', 'Mie Yamin + BASO + PANGSIT KUAH + CEKER', 25000, NULL, NULL, NULL),
-(4, 'Yahun Manis Komplit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/058dadc5-7eaa-4526-a5ea-cc675027301a_e109e954-6650-4e11-99de-f0ef9d5d4f30_Go-Biz_20200411_191346.jpeg?auto=format', 'Yahun (Yamin Bihun) Manis + BASO + PANGSIT KUAH + CEKER', 25000, NULL, NULL, NULL),
-(5, 'Yahun Asin Komplit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4fc05983-9ceb-478c-8ce8-678273cfb952_2ff66768-3a93-46b2-b47a-b238727321d9_Go-Biz_20200411_191409.jpeg?auto=format', 'Yahun (Yamin Bihun) Asin + BASO + PANGSIT KUAH + CEKER', 25000, NULL, NULL, NULL),
-(6, 'Mie Yamin Manis Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b7b6bbce-1d00-4175-8bfd-e42718bcba32_1a10f09e-e8fc-4cab-ace5-277b94b839e0_Go-Biz_20200411_190957.jpeg?auto=format', 'Mie Yamin manis polos + Ditaburi Ayam Cingcang', 15000, NULL, NULL, NULL),
-(7, 'Mie Yamin Asin Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/13b5e046-f080-43f9-a5f8-977da1eef41b_51d92be2-56bc-4a63-8823-dbf7fbc0fe66_Go-Biz_20200411_191027.jpeg?auto=format', 'Mie Yamin asin polos + Ditaburi Ayam Cingcang', 15000, NULL, NULL, NULL),
-(8, 'Yamin Bihun Manis Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e35ab707-403e-4f2b-b3b2-13c457282ebb_17567604-1aee-434e-be82-44976e399571_Go-Biz_20200411_191050.jpeg?auto=format', 'Yamin BIHUN + Ditaburi Ayam Cingcang', 15000, NULL, NULL, NULL),
-(9, 'Yamin Bihun Asin Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/812262ac-2534-403e-b2c1-5210db9e47b7_6072eead-3f41-4a0a-a910-bdbe21df8ff4_Go-Biz_20200411_191116.jpeg?auto=format', 'Yamin BIHUN + Ditaburi Ayam Cingcang', 15000, NULL, NULL, NULL),
-(10, 'Baso + Pangsit Kuah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c9ea8a7d-06ac-45ab-aec5-c460b936957f_Go-Biz_20221218_105247.jpeg?auto=format', '6 baso sapi asli + 4 pangsit kuah isi ayam', 22000, NULL, NULL, NULL),
-(11, 'Baso Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/13c7667d-f798-4fa7-8f4d-0fc121ea4a46_Go-Biz_20221218_105200.jpeg?auto=format', '10pcs baso sapi asli + kuah dan sayur', 20000, NULL, NULL, NULL),
-(12, 'Pangsit Kuah Isi Ayam', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/327765fa-6332-47f1-9ccb-cef75bdfbf3e_7b0a516a-0b49-4bad-a279-6fb7356d1622_Go-Biz_20200411_191231.jpeg?auto=format', '10pcs pangsit kuah isi ayam', 20000, NULL, NULL, NULL),
-(13, 'Baso Kecil', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/667c63f1-a592-42e1-9948-c8a9800839c4_dbfd1b45-c75c-477d-8959-917f281171c6_Go-Biz_20200411_190757.jpeg?auto=format', '1 buah baso sapi murni', 2000, NULL, NULL, NULL),
-(14, 'Pangsit Basah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3605f23d-8ce1-4450-a539-f5967de9885b_c1030f59-246b-4586-b186-9fced2d831e5_Go-Biz_20200411_190742.jpeg?auto=format', '1 buah pangsit kuah isi ayam special', 2000, NULL, NULL, NULL),
-(15, 'Ceker Ayam Lunak', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/664e0f70-e77d-4d86-9e0a-17d09121816c_b9ff1c91-5255-4beb-b4b5-dbdb039d52f3_Go-Biz_20200411_190705.jpeg?auto=format', '1-2 buah ceker ayam lunak', 2000, NULL, NULL, NULL),
-(16, 'Mie Jebew Komplit', '', 'Mie dengan sambal chili oil, isi pangsit 1 baso 2', 25000, NULL, NULL, NULL),
-(17, 'Mie Jebew Polos', '', 'Mie dengan sambal chili oil', 18000, NULL, NULL, NULL);
+(2, 'Mie Yamin Manis Komplit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b12016f4-f22e-47f1-81cf-28f1aec94c21_3dfc5855-c25a-4c7d-bf6c-1442337590d5_Go-Biz_20200411_191453.jpeg?auto=format', '                                                                Yamin Manis + BASO + PANGSIT KUAH + CEKER                                                                ', 25000, '', 1, 2),
+(3, 'Mie Yamin Asin Komplit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8df8ba2a-2606-4115-9588-9c9f43a731ce_0f9af109-cef9-426c-ba52-a6a638f04179_Go-Biz_20200411_191433.jpeg?auto=format', '                                Mie Yamin + BASO + PANGSIT KUAH + CEKER                                ', 25000, '', 1, 2),
+(4, 'Yahun Manis Komplit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/058dadc5-7eaa-4526-a5ea-cc675027301a_e109e954-6650-4e11-99de-f0ef9d5d4f30_Go-Biz_20200411_191346.jpeg?auto=format', '                Yahun (Yamin Bihun) Manis + BASO + PANGSIT KUAH + CEKER                ', 25000, '', 1, 2),
+(5, 'Yahun Asin Komplit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4fc05983-9ceb-478c-8ce8-678273cfb952_2ff66768-3a93-46b2-b47a-b238727321d9_Go-Biz_20200411_191409.jpeg?auto=format', '                Yahun (Yamin Bihun) Asin + BASO + PANGSIT KUAH + CEKER                ', 25000, '', 1, 2),
+(6, 'Mie Yamin Manis Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b7b6bbce-1d00-4175-8bfd-e42718bcba32_1a10f09e-e8fc-4cab-ace5-277b94b839e0_Go-Biz_20200411_190957.jpeg?auto=format', '                Mie Yamin manis polos + Ditaburi Ayam Cingcang                ', 15000, 'manis', 1, 2),
+(7, 'Mie Yamin Asin Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/13b5e046-f080-43f9-a5f8-977da1eef41b_51d92be2-56bc-4a63-8823-dbf7fbc0fe66_Go-Biz_20200411_191027.jpeg?auto=format', '                Mie Yamin asin polos + Ditaburi Ayam Cingcang                ', 15000, 'asin', 1, 2),
+(8, 'Yamin Bihun Manis Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e35ab707-403e-4f2b-b3b2-13c457282ebb_17567604-1aee-434e-be82-44976e399571_Go-Biz_20200411_191050.jpeg?auto=format', '                Yamin BIHUN + Ditaburi Ayam Cingcang                ', 15000, '', 1, 2),
+(9, 'Yamin Bihun Asin Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/812262ac-2534-403e-b2c1-5210db9e47b7_6072eead-3f41-4a0a-a910-bdbe21df8ff4_Go-Biz_20200411_191116.jpeg?auto=format', '                Yamin BIHUN + Ditaburi Ayam Cingcang                ', 15000, '', 1, 2),
+(10, 'Baso + Pangsit Kuah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c9ea8a7d-06ac-45ab-aec5-c460b936957f_Go-Biz_20221218_105247.jpeg?auto=format', '                6 baso sapi asli + 4 pangsit kuah isi ayam                ', 22000, '', 1, 2),
+(11, 'Baso Polos', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/13c7667d-f798-4fa7-8f4d-0fc121ea4a46_Go-Biz_20221218_105200.jpeg?auto=format', '                10pcs baso sapi asli + kuah dan sayur                ', 20000, '', 1, 2),
+(12, 'Pangsit Kuah Isi Ayam', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/327765fa-6332-47f1-9ccb-cef75bdfbf3e_7b0a516a-0b49-4bad-a279-6fb7356d1622_Go-Biz_20200411_191231.jpeg?auto=format', '                10pcs pangsit kuah isi ayam                ', 20000, '', 1, 2),
+(13, 'Baso Kecil', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/667c63f1-a592-42e1-9948-c8a9800839c4_dbfd1b45-c75c-477d-8959-917f281171c6_Go-Biz_20200411_190757.jpeg?auto=format', '                1 buah baso sapi murni                ', 2000, '', 1, 2),
+(14, 'Pangsit Basah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3605f23d-8ce1-4450-a539-f5967de9885b_c1030f59-246b-4586-b186-9fced2d831e5_Go-Biz_20200411_190742.jpeg?auto=format', '                1 buah pangsit kuah isi ayam special                ', 2000, '', 1, 2),
+(15, 'Ceker Ayam Lunak', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/664e0f70-e77d-4d86-9e0a-17d09121816c_b9ff1c91-5255-4beb-b4b5-dbdb039d52f3_Go-Biz_20200411_190705.jpeg?auto=format', '                1-2 buah ceker ayam lunak                ', 2000, '', 1, 2),
+(16, 'Mie Jebew Komplit', '', '                Mie dengan sambal chili oil, isi pangsit 1 baso 2                ', 25000, '', 1, 2),
+(17, 'Mie Jebew Polos', '', '                Mie dengan sambal chili oil                ', 18000, 'pedas', 1, 2),
+(18, 'Es Teler Sultan', '1779971643_23faf392-f8a4-4f05-abd2-2b7bbbc08c4e_Go-Biz_20260309_002944.webp', 'Es Teler Creamy, alpukat + nangka + Jelly Blueberry - cincau + Jelly kelapa + Agar2 Strawberry + kuah Creamy Authentic AI Drinks', 23, 'manis', 3, 31),
+(19, 'Mie Ayam Chili Oil', '1779972613_03f9d087-f73b-40b7-a805-63b62ede69bb_Go-Biz_20250708_042412.webp', 'Mie Dengan Topping Ayam Chili Oil', 27, '', 1, 3),
+(20, 'Mie Ayam Original', '1779972684_e23a2384-02f1-48b7-992a-22fd8485ea85_Go-Biz_20250708_042500.webp', 'Mie Ayam Original. Manis Gurih', 24, '', 1, 3),
+(21, 'Mie Ayam Cabe Ijo', '1779972735_e9522867-28b5-479c-909c-ed2a84e16236_Go-Biz_20250708_042434.webp', 'Mie Dengan Topping Cabe Ijo. Pedas Segar', 27, '', 1, 3),
+(22, 'Mie Ayam Lada Hitam', '1779972847_ff2c2e00-960a-48ec-a09e-0c704b8e0945_Go-Biz_20250708_042517.webp', 'Mie Ayam Bumbu Lada Hitam', 27, '', 1, 3),
+(23, 'Paket Komplit Sendiri', '1779972884_090ad546-339b-4929-8a3c-5afd7abbbff1_Go-Biz_20240630_141539.webp', 'Mie ayam pedas bakso pangsit (pilih satu) + es teh manis', 39, '', 1, 3),
+(24, 'Paket KOMPLIT berdua', '1779972927_1fd76071-2f15-46a7-b2c1-067f5072d184_Go-Biz_20240630_152134.webp', '2 Mie Ayam bakso Pangsit + Es Teh', 75, '', 1, 3),
+(25, 'Wonton Kuah', '1779982777_1e516259-8589-4595-acdc-b378e5d7168a_Go-Biz_20240323_145718.webp', '                Pangsit Ayam, Dihidangkan Dengan Kuah Kaldu. Isi 4                ', 17, '', 2, 3),
+(26, 'Wonton Chili Oil', '1779982821_86050286-3f1b-415c-a8d2-6cadde3613fd_Go-Biz_20240323_145755.webp', 'Pangsit ayam dengan bumbu chili oil. isi 4', 17, '', 2, 3),
+(27, 'Es Teh Tawar', '1779982879_365eb9bd-8e11-4ea6-9922-ab68efe340e7_Go-Biz_20230821_232648.webp', 'Es teh tawar', 5, '', 3, 3),
+(28, 'Es Teh Manis', '1779982916_365eb9bd-8e11-4ea6-9922-ab68efe340e7_Go-Biz_20230821_232648.webp', 'Es Teh Manis', 7, '', 3, 3),
+(29, 'Es Nutrisari', '1779982955_2b30c92b-8c25-4c59-b2a0-85f3e72447bd_Go-Biz_20231122_112638.webp', 'Nutrisari Jeruk Peras/Nipis', 8, '', 3, 3),
+(30, 'Ayam Goreng JUBER', '1779983017_8dc9bcb0-c92d-4a72-8c9a-efe1a07e5b78_menu-item-image_1768793636778.webp', '                                Rempah kuning khas JUBER di dalam ayam yang bikin mood makan mu naik beserta sambal andalan + lalap nya                                ', 23, '', 1, 4),
+(31, 'Ayam Kremes Selimut Juber', '1779983870_0769e22d-4963-4ab6-a9a0-927a4206b5cf_menu-item-image_1768793729819.webp', 'Kremesan spesial gurih khas JUBER selimut ayam yang bikin mood makan mu naik beserta sambal andalan + lalap nya', 27, '', 1, 4),
+(32, 'Ayam Bakar Madu Juber', '1780024752_24e3c3ab-ec71-4c0c-bbdd-8aa3e772f980_menu-item-image_1768793804027.webp', 'Bakaran madu bawang khas JUBER dengan cara bakar si ayam yang bikin mood makan mu naik beserta sambal andalan + lalap nya', 27, '', 1, 4),
+(33, 'Ayam Lengkus Juber', '1780024854_0d2e907c-aef6-4a3f-93f9-553341d59cb8_Go-Biz_20260120_094934.webp', 'Rempah lengkuas khas JUBER di tabur di atas ayam yang bikin mood makan mu naik beserta sambal andalan + lalap nya', 27, '', 1, 4),
+(34, 'Ayam Bumbu Hitam Juber', '1780024913_d00afc1b-41e0-4e62-8ad0-3ef2956b2423_Go-Biz_20260120_095034.webp', 'Rempah bumbu hitam racikan khas juber di atas ayam yang bikin mood makan mu naik beserta sambal andalan + lalap nya', 27, '', 1, 4),
+(35, 'Bebek Goreng Juber', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6a6c21dc-5254-4ccf-aefe-c1b551a198b7_menu-item-image_1768794071792.jpg?auto=format', 'Rempah kuning khas JUBER di dalam bebek yang empuk dan lezat yang bikin mood makan mu naik beserta sambal andalan + lalap nya', 43000, '', 1, 4),
+(36, 'Bebek Kremes Juber', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3a692ee9-064a-4742-a9e0-09ae1d2d84fd_menu-item-image_1768794132563.jpg?auto=format', 'Kremesan selimut gurih khas JUBER di dalam bebek yang kriuk dan lezat yang bikin mood makan mu naik beserta sambal andalan + lalap nya', 48000, '', 1, 4),
+(37, 'Bebek Lengkuas Juber', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b3714275-a8cf-41dc-b201-bab932aed925_Go-Biz_20260120_095018.jpeg?auto=format', 'Rempah lengkuas khas JUBER di dalam bebek yang empuk dan lezat yang bikin mood makan mu naik beserta sambal andalan + lalap nya', 48000, '', 1, 4),
+(38, 'Lele Goreng Juber', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4b3d01e2-9dcc-46f9-aa74-13963ae1cef1_menu-item-image_1768794486545.jpg?auto=format', 'Rempah kuning khas JUBER di dalam Lele yang empuk dan lezat yang bikin mood makan mu naik beserta sambal andalan + lalap nya', 20000, '', 1, 4),
+(39, 'Lele Kremes Juber', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0303b91a-2b98-435b-a3ab-a20c84981294_menu-item-image_1768794588995.jpg?auto=format', 'Kremesan selimut gurih khas JUBER di dalam Lele yang empuk dan lezat yang bikin mood makan mu naik beserta sambal andalan + lalap nya', 24500, '', 1, 4),
+(40, 'Paket Juber 1', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b5925502-c3da-47bb-b94a-dc9270973fbe_menu-item-image_1768796664210.jpg?auto=format', 'Nasi + Ayam Goreng + Tahu/Tempe + Ice Tea', 36500, '', 1, 4),
+(41, 'Paket Juber 2', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/12631f86-2578-43da-bd6f-7be3e8245257_menu-item-image_1768796715638.jpg?auto=format', 'Nasi + Ayam Kremes Selimut + Tahu/Tempe + Ice Tea', 41000, '', 1, 4),
+(42, 'Paket Juber 3', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/29311a64-44dd-429a-b43a-cfc2ccd3656c_menu-item-image_1768796757758.jpg?auto=format', 'Nasi + Ayam Goreng Lengkuas + Tahu/Tempe + Ice Tea', 42500, '', 1, 4),
+(43, 'Paket Juber 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/35f66099-ebad-42ad-84f4-b9371529dbe5_menu-item-image_1768796804382.jpg?auto=format', 'Nasi + Ayam Bakar Madu + Tahu/Tempe + Ice Tea', 44000, '', 1, 4),
+(44, 'Paket Juber 6', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bf8bdaa3-4285-40e8-a12a-a91bd6907739_Go-Biz_20260120_095121.jpeg?auto=format', 'Nasi + bebek goreng + tahu/tempe + ice tea', 56500, '', 1, 4),
+(45, 'Paket Juber 7', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c1692dc0-ab4c-4ebb-bc1d-156e3433200f_menu-item-image_1768796944672.jpg?auto=format', 'Nasi + Bebek Kremes + Tahu/Tempe + Ice Tea', 59500, '', 1, 4),
+(46, 'Paket Juber 8', '', 'Nasi + Bebek Goreng Rempah Lengkuas + Tahu/Tempe + Ice Tea', 59500, '', 1, 4),
+(47, 'Paket Juber 11', '', 'Nasi + Lele Goreng + Tahu/Tempe + Ice Tea', 33500, '', 1, 4),
+(48, 'Paket Juber 12', '', 'Nasi + Lele kremes + Tahu/Tempe + Ice Tea', 38000, '', 1, 4),
+(49, 'Nasi Telur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ad8e9ede-9689-434b-a279-9637a3348213_menu-item-image_1740467772583.jpg?auto=format', 'Nasi dengan telur dadar + topping kumplit dan sambal khas Warkop Sukarasa', 14000, '', 1, 5),
+(50, 'Nasi Telor Sosis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/25ea35ce-16d4-4660-8221-d40389dfd309_menu-item-image_1740467713924.jpg?auto=format', 'Nasi Telur Dadar +Sosis + Topping + Sambal Khas Warkop Sukarasa', 16000, '', 1, 5),
+(51, 'Nasi Telur Sarden', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5d54af4d-ad20-4868-8c41-c1c082da65f7_Go-Biz_20250121_143219.jpeg?auto=format', 'Nasi Telur Dadar + Sarden + Topping + Sambal Khas Warkop Sukarasa', 21000, 'pedas', 1, 5),
+(52, 'Nasi Telur Kornet', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/22234a10-9334-4b4d-819c-454b8e8b109e_Go-Biz_20250121_143205.jpeg?auto=format', 'Nasi Telur Dadar + Kornet + Topping + Sambal Khas Warkop Sukarasa', 21000, '', 1, 5),
+(53, 'Nasi Omlet', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e6415e21-5789-4e61-ba0f-edb636ddc592_Go-Biz_20250121_143426.jpeg?auto=format', 'Nasi Omlet + Topping + Sambal Khas Warkop Sukarasa', 16000, '', 1, 5),
+(54, 'Nasi Omlet Sosis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7028a023-cadf-4e33-8be8-d0cb0163f6ec_Go-Biz_20250121_143501.jpeg?auto=format', 'Nasi Omlet + Sosis + Topping + Sambal Khas Warkop Sukarasa', 17000, '', 1, 5),
+(55, 'Nasi Omlet Sarden', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/97967c1a-2dea-4222-9fb1-864fed86f9d9_Go-Biz_20250121_143521.jpeg?auto=format', 'Nasi Omlet + Ikan Sarden + Topping + Sambal Khas Warkop Sukarasa', 21000, 'pedas', 1, 5),
+(56, 'Nasi Omlet Kornet', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/722d98a3-f06e-4563-9607-79045b29aa7b_Go-Biz_20250121_143444.jpeg?auto=format', 'Nasi Omlet + Kornet + Topping + Sambal Khas Warkop Sukarasa', 22000, '', 1, 5),
+(57, 'Nasi Orak Arik', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e513fb4a-ab15-45f0-bb80-99784483eef6_Go-Biz_20250121_143238.jpeg?auto=format', 'Nasi Orak Arik + Topping + Sambal Khas Warkop Sukarasa', 14000, '', 1, 5),
+(58, 'Nasi Orak Arik Sosis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6340d3fd-62cc-4a15-91d5-d5ca803a3bde_Go-Biz_20250121_143319.jpeg?auto=format', 'Nasi Orak Arik + Sosis + Topping + Sambal Khas Warkop Sukarasa', 16000, '', 1, 5),
+(59, 'Nasi Orak Arik Sarden', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/41c72bcf-c2cd-4b2f-9a6f-bb06c280d18d_Go-Biz_20250121_143300.jpeg?auto=format', 'Nasi Orak Arik + Ikan Sarden + Topping + Sambal Khas Warkop Sukarasa', 21000, 'pedas', 1, 5),
+(60, 'Nasi Orak Arik Kornet', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3bb9dafd-62f7-4a0f-abac-56252512fcc1_Go-Biz_20250121_143410.jpeg?auto=format', 'Nasi Orak Arik + Kornet + Topping + Sambal Khas Warkop Sukarasa', 21000, '', 1, 5),
+(61, 'Nasi Orak Arik Omlet', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2221a0c1-0b0a-4290-ac59-b485fc4f397b_Go-Biz_20250121_143354.jpeg?auto=format', 'Nasi Orak Arik + Omlet + Topping + Sambal Khas Warkop Sukarasa', 21000, '', 1, 5),
+(62, 'Nasi Sarden', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/31d4ae7a-1a9f-4cad-a4b5-fc9276db8296_Go-Biz_20250121_143631.jpeg?auto=format', 'Nasi Sarden + Topping + Sambal Khas Warkop Sukarasa', 16000, 'pedas', 1, 5),
+(63, 'Nasi Sarden Sosis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/257091e6-9635-4343-b903-f7a6e89732e0_Go-Biz_20250121_143708.jpeg?auto=format', 'Nasi Sarden + Sosis + Topping + Sambal Khas Warkop Sukarasa', 17000, 'pedas', 1, 5),
+(64, 'Nasi Sarden Kornet', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6f000f55-ee4f-4391-bc4e-3bb77d0dc707_Go-Biz_20250121_143644.jpeg?auto=format', 'Nasi Sarden + Kornet + Topping + Sambal Khas Warkop Sukarasa', 22000, 'pedas', 1, 5),
+(65, 'Nasi Kornet', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1430f3b7-85a4-4670-9f5e-22f1f25fa8d2_Go-Biz_20250121_143534.jpeg?auto=format', 'Nasi Kornet + Topping + Sambal Khas Warkop Sukarasa', 16000, '', 1, 5),
+(66, 'Nasi Kornet Sosis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5f9e7f69-4384-4be4-ab15-727a0ccbd9a7_Go-Biz_20250121_143608.jpeg?auto=format', 'Nasi Kornet + Sosis + Topping + Sambal Khas Warkop Sukarasa', 17000, '', 1, 5),
+(67, 'Nasi Goreng Mawud / Magelangan', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ffadfe64-6c23-43f8-b0aa-d811a7df9a19_Go-Biz_20250121_143746.jpeg?auto=format', 'Nasi goreng dengan tambahan mie khas Warkop Sukarasa', 21000, '', 1, 5),
+(68, 'Nasi Gila', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/28127c07-ddda-4267-ab2c-b8aac5b53d73_Go-Food-Merchant_20250503_182835.jpeg?auto=format', 'Nasi Dengan Racikan Bumbu Dilengkapi Dengan Irisan Baso Sosis + Topping + Sambal Khas Warkop Sukarasa', 20000, 'pedas', 1, 5),
+(69, 'Nasi Telur Kornet + Nugget', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/15517a89-50ef-4002-a5f0-3aff6a40ce52_Go-Food-Merchant_20250503_183223.jpeg?auto=format', 'Nasi Telur + Kornet + Nugget + Topping + Sambal Khas Warkop Sukarasa', 22000, '', 1, 5),
+(70, 'Nasi Telur Kornet + Sosis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cb9a1f73-6da4-4ec0-9426-11ea2c46fcc6_Go-Food-Merchant_20250503_183344.jpeg?auto=format', 'Nasi Telur + Kornet + Sosis + Topping + Sambal Khas Warkop Sukarasa', 22000, '', 1, 5),
+(71, 'Nasi Omlet Kornet + Sosis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0e66146f-75a5-416d-ac4d-724c98922951_Go-Food-Merchant_20250503_183501.jpeg?auto=format', 'Nasi Omlet + Kornet + Sosis + Topping + Sambal Khas Warkop Sukarasa', 24000, '', 1, 5),
+(72, 'Nasi Omlet Kornet + Nugget', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1f85d295-a0f0-4b53-b604-6b2706bc3763_Go-Food-Merchant_20250503_183607.jpeg?auto=format', 'Nasi Omlet + Kornet + Nugget + Topping + Sambal Khas Warkop Sukaras', 24000, '', 1, 5),
+(73, 'Paket Ayam Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/19353396-e55c-4c52-b1a9-e98d1803414f_Go-Biz_20220107_235450.jpeg?auto=format', 'Nasi, Ayam, Tahu, Tempe, Sambal, Lalap', 26000, '', 1, 6),
+(74, 'Cumi Sambel Korek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/565f5537-a795-47b7-8762-195eb32cc190_Go-Biz_20221226_191550.jpeg?auto=format', 'Cumi Sambel Korek', 15000, 'pedas', 1, 6),
+(75, 'Cumi Sambal Ijo', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2b8816f2-709f-464e-9be7-a5cccf3c99d6_Go-Biz_20221226_191749.jpeg?auto=format', 'Cumi Sambal Ijo', 15000, 'pedas', 1, 6),
+(76, 'Cumi Sambalado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1923db6c-4b28-478f-b86e-b3c2d8ad4eb3_Go-Biz_20221226_191846.jpeg?auto=format', 'Cumi Sambalado', 15000, 'pedas', 1, 6),
+(77, 'Cumi Sambal Daun Jeruk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2a6921c2-7e34-4079-8d16-2891babfb4c4_Go-Biz_20221226_191949.jpeg?auto=format', 'Cumi Sambal Daun Jeruk', 15000, '', 1, 6),
+(78, 'Ayam Goreng Dada', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ced02be3-ad42-4f3b-891b-17c586cfae4c_Go-Biz_20220107_235916.jpeg?auto=format', 'Ayam + Sambel', 18000, '', 1, 6),
+(79, 'Paket Ayam Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d35dd9e6-ff23-4991-8bd4-2878924f81f0_Go-Biz_20220108_000139.jpeg?auto=format', 'Nasi, Ayam, Sambel, Tahu, Tempe, Lalapan', 28000, 'manis', 1, 6),
+(80, 'Nasi Daun Jeruk + Ayam Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3e2fe525-6e76-4123-a769-fb90a49c3222_Go-Biz_20220228_045657.jpeg?auto=format', 'Nasi Daun Jeruk + Ayam Bakar', 26500, 'manis', 1, 6),
+(81, 'Ayam Goreng Paha', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/01b91c28-79da-467f-9a64-56c0c0bf91c6_Go-Biz_20220107_235748.jpeg?auto=format', 'Ayam + Sambel', 16000, '', 1, 6),
+(82, 'Ayam Bakar Paha', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c212ee0e-f143-4210-ba52-56fe47e1b58b_Go-Biz_20220108_000610.jpeg?auto=format', 'Ayam + Sambel', 16000, 'manis', 1, 6),
+(83, 'Ayam Bakar Dada', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5f0f7a01-7620-4054-8223-b1aa21ad59c6_Go-Biz_20220108_001428.jpeg?auto=format', 'Ayam + Sambel', 18000, 'manis', 1, 6),
+(84, 'Nasi Daun Jeruk + Ayam Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/39e7f0f1-8f10-4aee-8b7e-cf1832a3fcff_Go-Biz_20220228_045918.jpeg?auto=format', 'Nasi Daun Jeruk + Ayam Goreng', 25500, '', 1, 6),
+(85, 'Nasi Cikur + Ayam Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b2bbf578-4597-45ae-9dbb-cc2943a3e466_Go-Biz_20220228_051013.jpeg?auto=format', 'Nasi Cikur + Ayam Goreng', 25500, '', 1, 6),
+(86, 'Nasi Cikur + Ayam Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/47ce0707-3cc7-4dae-b3ef-1c6779b70af8_Go-Biz_20220228_051118.jpeg?auto=format', 'Nasi Cikur + Ayam Bakar', 26500, 'manis', 1, 6),
+(87, 'Nasi Putih', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/80d3d850-1ee9-4d5c-8a6c-14118bddd3d9_Go-Biz_20220108_003017.jpeg?auto=format', 'Nasi Putih', 5000, '', 1, 6),
+(88, 'Nasi Daun Jeruk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/04e23451-bfa1-4356-b2b3-c2dc483dd6bb_Go-Biz_20220108_003304.jpeg?auto=format', 'Nasi Daun Jeruk', 7000, '', 1, 6),
+(89, 'Nasi Cikur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/960a52d9-f5a6-4ebf-ac65-678042879811_Go-Biz_20220228_050206.jpeg?auto=format', 'Nasi Cikur', 7000, '', 1, 6),
+(90, 'Air Mineral', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ed6f0991-d912-4c31-b4a3-7e50f2222b3c_Go-Biz_20220108_002052.jpeg?auto=format', 'Air Mineral', 6000, '', 3, 6),
+(91, 'Teh Kotak', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2ed6ef28-ee69-455f-beea-148c62468a8c_Go-Biz_20220108_002152.jpeg?auto=format', 'Teh Manis', 8000, 'manis', 3, 6),
+(92, 'Thai Legend Milk Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f2c3d156-1f97-4c26-b028-31ae38a0b71b_09461c12-f5db-46d4-859b-bc784509c987_file20190920-15956-1np4z9.jpeg?auto=format', 'Thai Legend Milk Tea', 12500, 'manis', 3, 7),
+(93, 'Thai Green Milk Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ae6ada2c-679a-48ec-9579-f5f4c0de2130_f9a7d160-1847-4029-96d5-61b5a903c21e_file20190920-15956-1ceykg7.jpeg?auto=format', 'Thai Green Milk Tea', 12500, 'manis', 3, 7),
+(94, 'Es Bandung', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e2139998-21f3-4ebb-9934-3f4f03525017_c2d30bca-c525-4c63-a441-3745fc546bd2_file20190920-15956-oyeld1.jpeg?auto=format', 'Es Bandung', 12500, 'manis', 3, 7),
+(95, 'Hayang Bubble Gum', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/71c3da4d-b908-469c-9ee1-875b8dbcaa1a_Go-Biz_20240930_141518.jpeg?auto=format', 'Hayang Bubble Gum', 12500, 'manis', 3, 7),
+(96, 'Hayang Red Velvet', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/fd6386a0-ac24-4463-8bab-28dd041aeb27_Go-Biz_20240930_141624.jpeg?auto=format', 'Hayang Red Velvet', 12500, 'manis', 3, 7),
+(97, 'Hayang Taro', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bcc34190-ec1f-4a3b-8cce-46b8d7b1424e_Go-Biz_20240930_141650.jpeg?auto=format', 'Hayang Taro', 12500, 'manis', 3, 7),
+(98, 'Hayang Blackcurrant', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b1c960e0-4c52-4d86-9607-79045b29aa7b_Go-Biz_20240930_141605.jpeg?auto=format', 'Hayang Blackcurrant', 12500, 'asam', 3, 7),
+(99, 'Coffee Milk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2a5476b4-8c69-4310-9a62-ce0b8a12c928_a5d61135-c6d6-4332-a226-7c3379652eb1_master-menu-item-image_1578884247954.jpg?auto=format', 'Coffee Milk', 12500, 'manis', 3, 7),
+(100, 'Chocolate Milk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f1556a6f-7b55-4d52-8b6d-4f1b5354cf2c_67c8edcc-7241-417f-bc1e-8d10f601f257_master-menu-item-image_1578884270535.jpg?auto=format', 'Chocolate Milk', 15000, 'manis', 3, 7),
+(101, 'Hot Thai Legend Milk Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/16990697-c7fa-49cf-a19d-2bb652cd6da1_765239b1-6212-4ee7-bde5-aa80d35689dc_file20190809-24777-ydzuzi.jpeg?auto=format', 'Hot Thai Legend Milk Tea', 12500, 'manis', 3, 7),
+(102, 'Hot Thai Green Milk Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/24694726-c023-456f-b155-a33282134446_79bcc8da-2d0a-4d46-9ef5-37436fe6d5fa_file20190809-24777-18rs6fj.jpeg?auto=format', 'Hot Thai Green Milk Tea', 12500, 'manis', 3, 7),
+(103, 'Hot Es Bandung', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3115a032-8758-465a-8478-3ce264f3588d_9f3f5064-ea77-4438-9fdb-21a0fde66a89_file20190809-30495-1gsfzyk.jpeg?auto=format', 'Hot Es Bandung', 12500, 'manis', 3, 7),
+(104, 'Hot Coffee Milk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8bb10598-5e42-4651-b716-fdcdaf15cee5_f115bbc3-e818-4fb3-b449-3e9918c82319_file20190920-18014-1t7y7lq.jpeg?auto=format', 'Hot Coffee Milk', 12500, 'manis', 3, 7),
+(105, 'Hot Chocolate Milk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ecf4321e-237e-49e7-8075-56e8d8b7967a_962bd3e7-239f-4938-add1-28980559c3c3_file20190920-15956-1bo7rhu.jpeg?auto=format', 'Hot Chocolate Milk', 15000, 'manis', 3, 7),
+(106, 'Hot Lemon Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/13b6645d-68d3-4c7b-8d8f-9a212eb15f6d_084e60d8-8e44-4c87-84d0-429fecee080f_file20190920-18014-grye6g.jpeg?auto=format', 'Hot Lemon Tea', 12500, 'asam', 3, 7),
+(107, 'Hot Lemon Green Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0507fa3d-ed8d-46e1-906b-f92a754cf354_33a03548-3b99-4933-9181-d542e38c214c_file20190920-15956-eud7kr.jpeg?auto=format', 'Hot Lemon Green Tea', 12500, 'asam', 3, 7),
+(108, 'Hot Honey Lemon', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6e151b7e-77c2-4847-92de-cfc968b5ba9e_3001800a-185a-4afe-8327-1e84865cee07_file20190809-30495-u52twj.jpeg?auto=format', 'Hot Honey Lemon', 16500, 'asam', 3, 7),
+(109, 'Lemon Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/284b32bf-1138-48ed-bb81-225920e80262_261f4b44-3095-4189-bc53-fb439e6c2db1_master-menu-item-image_1578884368298.jpg?auto=format', 'Lemon Tea', 12500, 'asam', 3, 7),
+(110, 'Lemon Green Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/951cf5f1-3841-4e34-827b-730fd72a80ec_24af3b50-e6de-4888-9003-c16190c681c0_master-menu-item-image_1578884344501.jpg?auto=format', 'Lemon Green Tea', 12500, 'asam', 3, 7),
+(111, 'Honey Lemon', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/30fe1205-1cd1-45c3-97e3-5e600d9deb38_c65ba0d4-0ad0-45d6-80b1-c1399bf5bad4_master-menu-item-image_1578884356242.jpg?auto=format', 'Honey Lemon', 16500, 'asam', 3, 7),
+(112, 'Hayang Thai Yakult Lemon', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f830c8ab-45c9-4197-a4b1-1d9b69c83cb5_fca3f8b9-d2f1-412a-8077-a2d6dfed67dd_master-menu-item-image_1576640619850.jpg?auto=format', 'Hayang Thai Yakult Lemon', 15000, 'asam', 3, 7),
+(113, 'Hayang Thai Green Tea Yakult Lemon', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9e3a0bdd-8231-4e8b-9961-a2d2d48ae091_53c98d16-1d8a-48b7-b012-927f38288bac_master-menu-item-image_1576640608378.jpg?auto=format', 'Hayang Thai Green Tea Yakult Lemon', 15000, 'asam', 3, 7),
+(114, 'Kebab Frozen Isi 3', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/af72ce96-3f33-4aed-ba83-805868701986_Go-Biz_20220412_103649.jpeg?auto=format', '                Kebab Frozen Isi 3                ', 45000, '', 2, 9),
+(115, 'Kebab Frozen Isi 6', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9c57cd0e-1bae-4eb2-b73f-6000e92f96db_Go-Biz_20220412_103701.jpeg?auto=format', '                Kebab Frozen Isi 6                ', 75000, '', 2, 9),
+(116, 'Original Kabab Small', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/90d8c510-3e70-4071-9c06-5518a9d5e935_Go-Biz_20220418_115549.jpeg?auto=format', 'Original Kabab Small', 18000, '', 2, 9),
+(117, 'Original Kabab Medium', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a84b0abf-1bf7-4f31-ba34-b23ebaa58cec_Go-Biz_20220418_115558.jpeg?auto=format', 'Original Kabab Medium', 24000, '', 2, 9),
+(118, 'Original Kabab Large', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/931c70ad-27bc-4ee5-a424-ef8999e37acc_Go-Biz_20230425_105916.jpeg?auto=format', 'Original Kabab Large', 27000, '', 2, 9),
+(119, 'Full Beef Kabab Medium', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ebf00d18-02af-4af9-ba83-6a376dfd8800_Go-Biz_20220418_115623.jpeg?auto=format', 'Kebab full daging tanpa sayur. apabila mau tambah sayur silahkan klik toping tambahan ekstra sayur.', 24000, '', 2, 9),
+(120, 'Full Beef Kabab Large', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/058af866-1318-4348-9798-3ef60d569224_Go-Biz_20230425_105946.jpeg?auto=format', 'Kebab full daging tanpa sayur. apabila mau tambah sayur silahkan klik toping tambahan ekstra sayur.', 27000, '', 2, 9),
+(121, 'Cheese Mayo Kabab Small', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a85bd772-38f8-4187-afa6-ac1d00562715_Go-Biz_20220414_132352.jpeg?auto=format', 'Cheese Mayo Kabab Small', 18000, '', 2, 9),
+(122, 'Cheese Mayo Kabab Medium', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d4da0b8b-45ed-4af6-b53e-eae22296297f_Go-Biz_20220414_132401.jpeg?auto=format', 'Cheese Mayo Kabab Medium', 24000, '', 2, 9),
+(123, 'Cheese Mayo Kabab Large', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8926b95b-3556-4d75-9057-b8ae5b583720_menu-item-image_1750660104118.jpg?auto=format', 'Cheese Mayo Kabab Large', 27000, '', 2, 9),
+(124, 'Barbeque Kabab Small', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e58a6360-ebc2-412e-a7db-5efa78c638f6_Go-Biz_20220418_115722.jpeg?auto=format', 'Barbeque Kabab Small', 18000, '', 2, 9),
+(125, 'Barbeque Kabab Medium', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e58a6360-ebc2-412e-a7db-5efa78c638f6_Go-Biz_20220418_115722.jpeg?auto=format', 'Barbeque Kabab Medium', 24000, '', 2, 9),
+(126, 'Barbeque Kabab Large', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e58a6360-ebc2-412e-a7db-5efa78c638f6_Go-Biz_20220418_115722.jpeg?auto=format', 'Barbeque Kabab Large', 27000, '', 2, 9),
+(127, 'Minder 1 Large', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b34cdfaf-4e55-4334-85cc-6dd9e2a0a585_Go-Biz_20250519_183750.jpeg?auto=format', 'Paket Komplit Porsi Besar Dengan Potongan Ayam Boneless, Mac n Cheese Dan Kentang', 57000, '', 1, 10),
+(128, 'Minder 1 Small', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b34cdfaf-4e55-4334-85cc-6dd9e2a0a585_Go-Biz_20250519_183750.jpeg?auto=format', 'Paket komplit porsi kecil dengan potongan ayam boneless, mac n cheese dan kentang', 43000, '', 1, 10),
+(129, 'Minder 2 Large', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bdef7922-5497-454e-bd51-c881e54d7902_Go-Biz_20250519_183853.jpeg?auto=format', 'Paket Combo Porsi Besar Dengan Potongan Ayam Boneless Dan Kentang', 41000, '', 1, 10),
+(130, 'Minder 2 Small', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bdef7922-5497-454e-bd51-c881e54d7902_Go-Biz_20250519_183853.jpeg?auto=format', 'Paket Combo Porsi Kecil Dengan Potongan Ayam Boneless Dan Kentang', 36000, '', 1, 10),
+(131, 'Minder 3 Large', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a6048c20-5d17-4a47-b163-4afb5bc7c096_Go-Biz_20250519_183907.jpeg?auto=formatt', 'Paket Combo Porsi Besar Dengan Potongan Ayam Boneless Dan Mac N Cheese', 46000, '', 1, 10),
+(132, 'Minder 3 Small', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a6048c20-5d17-4a47-b163-4afb5bc7c096_Go-Biz_20250519_183907.jpeg?auto=formatt', 'Paket Combo Porsi Kecil Dengan Potongan Ayam Boneless Dan Mac N Cheese', 37500, '', 1, 10),
+(133, 'Minder 4 Large', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3ab4bbb8-8346-453e-bbeb-ae934bc337b4_Go-Biz_20250519_183937.jpeg?auto=format', 'Paket Combo Porsi Besar Dengan Potongan Ayam Boneless Dan Nasi', 35500, '', 1, 10),
+(134, 'Ayam', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/aeda517d-ca80-4fcf-8634-10b1aa8f121f_Go-Biz_20240625_222352.jpeg?auto=format', 'Ayam Goreng Tepung Dengan Potongan Boneless', 20000, '', 1, 10),
+(135, 'Kentang 200gr', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/70010def-492f-4cae-a677-71aac07af538_Go-Biz_20240625_222553.jpeg?auto=format', 'Alacarte Kentang Dengan Pilihan Bumbu', 20000, 'asin', 2, 10),
+(136, 'Mac N Cheese', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/69067729-4501-429a-8c9a-b44bc398f53c_Go-Biz_20240625_222749.jpeg?auto=format', 'Mac N Cheese Khas Mindear', 26000, '', 2, 10),
+(137, 'Burger PEDE', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/84ee39ea-38b7-44ae-9205-29878ad3fce2_Go-Food-Merchant_20250519_183957.jpeg?auto=format', 'burger Extra Besar Dan Ayam Boneless Disajikan Dengan Sayur Segar Dan Saus Pilihan Dearest', 45500, 'pedas', 1, 10),
+(138, 'Wings PEDE', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/367ac610-a5b9-4766-b06a-9b3c3b6b9aa4_Go-Food-Merchant_20250519_184332.jpeg?auto=format', 'Wings Yang Juicy Yang Cocok Dengan Saus Pilihan Dari Dearest.', 20800, 'pedas', 1, 10),
+(139, 'Fresh Lemonade', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6d97f334-68ac-487e-ac14-471a4a60ad78_Go-Biz_20240625_220719.jpeg?auto=format', 'Minuman Lemon Bersoda', 15000, '', 3, 10),
+(140, 'Sakura Punch', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a1400e79-23f9-4a61-a3f0-3f88256c150c_Go-Biz_20240625_222202.jpeg?auto=format', 'Minuman bersoda dengan rasa sakura', 15000, '', 3, 10),
+(141, 'Klepon', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/83864db6-2418-4236-9050-de5b71eed0ae_Go-Biz_20240625_222108.jpeg?auto=format', '                Minuman Dengan Rasa Klepon Segar                ', 15000, 'manis', 3, 10),
+(142, 'Ayam Bakar Taliwang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3004d9d5-ea31-473f-b18d-3302cba581a4_Go-Biz_20200825_114526.jpeg?auto=format', 'Ayam Bakar Taliwang', 14000, 'pedas', 1, 12),
+(143, 'Ayam Bakar Kecap', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3601da5f-4e1a-44fb-9041-7471731dde7e_Go-Biz_20200825_114701.jpeg?auto=format', 'Ayam Bakar Kecap', 14000, 'manis', 1, 12),
+(144, 'Ayam Bakar Pedes Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/414c1c4d-ab99-44c6-94eb-18794a5ec8dd_Go-Biz_20200825_114852.jpeg?auto=format', 'Ayam Bakar Pedes Manis', 14000, 'pedas', 1, 12),
+(145, 'Ayam Bakar Cobek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4c8fe918-f6e6-488f-a7a7-c89c46c28555_50af9cec-437e-4728-a1c8-7a8be1b95a08_Go-Biz_20191030_175945.jpeg?auto=format', 'Ayam Bakar Cobek', 14000, 'pedas', 1, 12),
+(146, 'Ayam Bakar Asam Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2eee69f6-a4bc-4509-838a-b8b93635d70d_Go-Biz_20200825_115024.jpeg?auto=format', 'Ayam Bakar Asam Manis', 14000, 'asam', 1, 12),
+(147, 'Ayam Bakar Asam Pedes Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d0b9b2b2-f422-4294-a7af-bc04b3402b6e_Go-Biz_20200825_115204.jpeg?auto=format', 'Ayam Bakar Asam Pedes Manis', 14000, 'asam', 1, 12),
+(148, 'Bawal Bakar Taliwang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a275f45d-a70d-4228-a1d1-a3c98541b0f3_8510ff84-d3fc-4598-b84c-dc4f271b94ef_Go-Biz_20191102_221042.jpeg?auto=format', 'Bawal Bakar Taliwang', 12000, 'pedas', 1, 12),
+(149, 'Bawal Bakar Kecap', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/11c19982-c679-4864-923b-d6e2ac399beb_fe6d5b35-e3b0-4a8f-9450-54802db4ea6a_Go-Biz_20191030_175149.jpeg?auto=format', 'Bawal Bakar Kecap', 12000, 'manis', 1, 12),
+(150, 'Bawal Bakar Asam Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9339d076-cc2c-442b-a938-769d08e9de75_dda8d21c-87cc-4891-a54f-abf59ab59c8c_Go-Biz_20191030_175223.jpeg?auto=format', 'Bawal Bakar Asam Manis', 12000, 'asam', 1, 12),
+(151, 'Bawal Bakar Asam Pedes Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9299b235-0871-4074-a85e-db7f9d3e92fb_2a62dbe0-f22b-4335-ad81-cebc2b0814d3_Go-Biz_20191104_201340.jpeg?auto=format', 'Bawal Bakar Asam Pedes Manis', 12000, 'asam', 1, 12),
+(152, 'Ikan Bakar Cobek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9833c7dc-4c6a-48ca-83ed-7a3e054c79e9_7a5d8db1-a7e8-4d01-a68d-21d21ca51426_Go-Biz_20191030_175736.jpeg?auto=format', 'Ikan Bakar Cobek', 12000, 'pedas', 1, 12),
+(153, 'Bawal Bakar Pedes Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/75bc0667-cfbb-4885-a4f8-9192203bf447_0f8c8c34-6a52-49f5-abe4-accc6862334f_Go-Biz_20191104_201055.jpeg?auto=format', 'Bawal Bakar Pedes Manis', 12000, 'pedas', 1, 12),
+(154, 'Nila Bakar Taliwang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3b5d23d1-f496-40b6-b3df-9c180988a1d9_549d011c-298f-408d-9879-81ab11fbc508_Go-Biz_20191104_140618.jpeg?auto=format', 'Nila Bakar Taliwang', 12000, 'pedas', 1, 12),
+(155, 'Paket Ayam Bakar Taliwang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5859a1d0-7823-48a7-b4ed-5404d5e443a0_3239ebff-0494-43a3-931a-ffcf65e14460_Go-Biz_20191102_222012.jpeg?auto=format', 'nasi+ayam bakar taliwang + lalap + sambel taliwang', 19000, 'pedas', 1, 12),
+(156, 'Paket Ayam Bakar Pedes Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/eab8b475-7020-4d38-9563-054df41aae57_128c118a-1df9-47ae-b360-bb51ff56f49e_Go-Biz_20191102_222110.jpeg?auto=format', 'Nasi + ayam bakar pedes manis + lalap + sambel', 19000, 'pedas', 1, 12),
+(157, 'Ayam Bakar Kecap (Paket)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6b756e16-84ea-4a83-bc7b-19b383659c17_5debaa74-74a7-4e7c-b4a5-75c7dcf79a37_Go-Biz_20191104_134911.jpeg?auto=format', 'Nasi + ayama bakar kecap + lalap + sambel', 19000, 'manis', 1, 12),
+(158, 'Ayam Bakar Asam Pedes Manis (Paket)', 'Ayam Bakar Asam Pedes Manis (Paket)', 'Ayam Bakar Asam Pedes Manis', 19000, 'asam', 1, 12),
+(159, 'Ayam Asam Manis (Paket)', 'Ayam Asam Manis (Paket)', 'Nasi + ayam bakar asam manis + lalap + sambel', 19000, 'asam', 1, 12),
+(160, 'Ayam Goreng Original (Paket)', 'Ayam Goreng Original (Paket)', 'Nasi + ayam goreng original + lalap + sambel', 19000, '', 1, 12),
+(161, 'Ayam Goreng Cobek (Paket)', 'Ayam Goreng Cobek (Paket)', 'Nasi + ayam goreng cobek + lalap + sambel', 19000, 'pedas', 1, 12),
+(162, 'Bawal Bakar Kecap (Paket)', 'Bawal Bakar Kecap (Paket)', 'Nasi + bawal bakar kecap + lalap + sambel', 17000, 'manis', 1, 12),
+(163, 'Bawal Bakar Asam Manis (Paket)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f7cd6fc0-6d61-44da-a981-6d8d45f293e2_086c5958-b8fe-4439-831f-fae6ee2c39a5_Go-Biz_20191104_143208.jpeg?auto=format', 'nasi + bawal bakar asam manis + lalap + sambel', 17000, 'asam', 1, 12),
+(164, 'Bawal Bakar Asam Pedes Manis (Paket)', 'Bawal Bakar Asam Pedes Manis (Paket)', 'Nasi + bawal bakar asam pedes manis + lalap + sambe', 17000, 'asam', 1, 12),
+(165, 'Bawal Goreng Original (Paket)', 'Bawal Goreng Original (Paket)', 'Nasi + bawal goreng origina + lalap + sambel', 17000, '', 1, 12),
+(166, 'Bawal Goreng Cobek (Paket)', 'Bawal Goreng Cobek (Paket)', 'nasi + bawal goreng cobek + lalap + sabel', 17000, 'pedas', 1, 12),
+(167, 'Nila Bakar Taliwang (Paket)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7f79a12b-1b01-41b2-a696-eebcb907eeb6_459d98be-47cb-46e8-9e55-a4e1ed953422_Go-Biz_20191104_141606.jpeg?auto=format', 'Nasi + nila bakar taliwang + lalap + sambel', 17000, 'pedas', 1, 12),
+(168, 'Nila Bakar Kecap (Paket)', 'Nila Bakar Kecap (Paket)', 'Nasi + nila bakar kecap + lalap + sambel', 17000, 'manis', 1, 12),
+(169, 'Nila Bakar Pedes Manis (Paket)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f3db2f0f-2239-44e2-96c1-176968d2667a_abba2290-01d0-486d-9312-c9b178d5b005_Go-Biz_20191104_142021.jpeg?auto=format', 'Nasi + nila bakar pedes manis + lalap + sambel', 17000, 'pedas', 1, 12),
+(170, 'Nila Bakar Asam Manis (Paket)', 'Nila Bakar Asam Manis (Paket)', 'Nasi + nila asam manis + lalap + sambel', 17000, 'asam', 1, 12),
+(171, 'Nila Bakar Asam Pedes Manis (Paket)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a57d72c3-0585-45c3-b8ef-74dfaf3a4e56_c33a5308-1a37-4cf9-8ee7-997dbbb714ce_Go-Biz_20191104_142340.jpeg?auto=format', 'nasi + nila bakar asam pedes manis + lalap + sambel', 17000, 'asam', 1, 12),
+(172, 'Nila Goreng Original (Paket)', 'Nila Goreng Original (Paket)', 'Nasi + nila goreng original + lalap + sambel', 17000, '', 1, 12),
+(173, 'Nila Goreng Cobek (Paket)', 'Nila Goreng Cobek (Paket)', 'Nasi + nila goreng cobek + lalap + sambel', 17000, 'pedas', 1, 12),
+(174, 'Bawal Bakar Taliwang (Paket)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/67025ad1-a5c6-4b87-90ed-09b8564f0c32_3e7c8e4e-87ff-443b-82dc-d7e08a83d336_Go-Biz_20191104_142522.jpeg?auto=format', 'Nasi + bawal bakar taliwang + lalap + sambel', 17000, 'pedas', 1, 12),
+(175, 'Bawal Bakar Pedes Manis (Paket)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/28d6754c-0e95-4b81-8370-b7fecc2fe5ab_0cbb7c63-c52a-4e59-8d86-4980a38d6fff_Go-Biz_20191104_142912.jpeg?auto=format', 'Nasi + bawal bakar pedes manis + lalap + sambel', 17000, 'pedas', 1, 12),
+(176, 'Vacuum Frozen Ayam Tulang Lunak Kremes Sambal Korek Pedas', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5d71e955-cb39-424d-80f6-d881ce45a0e8_Go-Biz_20200825_182842.jpeg?auto=format', '(Vacuum Frozen Food) Ayam Tulang Lunak + Sambal Korek Pedas + Kremesan', 18000, 'pedas', 2, 13),
+(177, 'Ayam Tulang Lunak Original Kremes', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f751a5cf-b292-47d5-8b7e-56819eb50b21_Go-Biz_20200825_165711.jpeg?auto=format', 'Nasi + Ayam Tulang Lunak + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 21000, '', 1, 13),
+(178, 'Ayam Tulang Lunak Kremes Sambal Korek Pedas', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/35744ce9-671c-4af8-9de0-1739144e57ef_Go-Biz_20200825_165904.jpeg?auto=format', 'Nasi + Ayam Tulang Lunak + Kremesan + Sambal Korek + Lalapan Sayur', 21000, 'pedas', 1, 13),
+(179, 'Ayam Tulang Lunak Mercon Kremes', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f89f34cc-145e-4524-b590-cfc4beeb4d60_Go-Biz_20200825_165354.jpeg?auto=format', 'Nasi + Ayam Tulang Lunak + Kremesan + Sambal Mercon + Lalapan Sayur', 21000, 'pedas', 1, 13),
+(180, 'Ayam Tulang Lunak Rica Rawit Kremes', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c5f80169-6031-4540-9b75-a48b54fa68dc_Go-Biz_20200825_164959.jpeg?auto=format', 'Nasi + Ayam Tulang Lunak + Kremesan + Sambal Rica Rawit + Lalapan Sayur', 21000, 'pedas', 1, 13),
+(181, 'Ayam Tulang Lunak Keju Kremes', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/930bb1b6-99c8-4cfc-b7eb-9de5fecae786_Go-Biz_20200825_164417.jpeg?auto=format', 'Nasi + Ayam Tulang Lunak + Keju + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 23000, '', 1, 13),
+(182, 'Ayam Goreng Kalasan Kremes', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ddf5b7a7-c403-4d16-b3c6-2064cc5fc953_Go-Biz_20200825_170055.jpeg?auto=format', 'Nasi + Ayam Kalasan + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 21000, 'manis', 1, 13),
+(183, 'Nasi Tongkol Suir Mercon Tahu Tabur Garam', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/269407bf-62df-4fba-a35c-6b0ac55f9a4f_Go-Biz_20200825_170553.jpeg?auto=format', 'Nasi + Ikan Tongkol Suir + Kremesan + Sambal Korek Pedas + Lalapan Sayur', 14500, 'pedas', 1, 13),
+(184, 'Nasi Telur Omlet Kremes Sambal', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/23620f3e-8178-4dbb-afcf-e8b5e7b8b975_Go-Biz_20200825_171243.jpeg?auto=format', 'Nasi + Telur Omlet + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 13500, '', 1, 13),
+(185, 'Nasi Ayam Ingkung Kremes Sambal', 'Nasi Ayam Ingkung Kremes Sambal', 'Nasi + Ayam Ingkung + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 21000, '', 1, 13),
+(186, 'Nasi Bestik Ayam Kremes Sambal', 'Nasi Bestik Ayam Kremes Sambal', 'Nasi + Besti Ayam + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 21000, 'manis', 1, 13),
+(187, 'Ayam Tulang Lunak Original Kremes Sambal (Ala Carte)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f809a094-0751-4c9d-94e7-12a203d2c71b_Go-Biz_20200825_172518.jpeg?auto=format', 'Ayam Tulang Lunak + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 16000, '', 1, 13),
+(188, 'Ayam Tulang Lunak Kremes Sambal Korek Pedas (Ala Carte)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b1a23cc4-7a73-4273-97ee-3827386ae890_Go-Biz_20200825_172453.jpeg?auto=format', 'Ayam Tulang Lunak + Kremesan + Sambal Korek + Lalapan Sayur', 16000, 'pedas', 1, 13),
+(189, 'Ayam Tulang Lunak Mercon Kremes (Ala Carte)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/091d85a3-8aa1-474b-bccf-0ac1d55b5f51_Go-Biz_20200825_172645.jpeg?auto=format', 'Ayam Tulang Lunak + Kremesan + Sambal Mercon + Lalapan Sayur', 16000, 'pedas', 1, 13),
+(190, 'Ayam Tulang Lunak Rica Rawit Kremes (Ala Carte)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3a324e97-a648-4b8b-9988-9048e786932a_Go-Biz_20200825_172912.jpeg?auto=format', 'Ayam Tulang Lunak + Kremesan + Sambal Rica Rawit + Lalapan Sayur', 16000, 'pedas', 1, 13),
+(191, 'Ayam Tulang Lunak Keju Kremes (Ala Carte)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/53e48fb5-701a-4c5b-b859-14ca4bcd62ce_Go-Biz_20200825_173053.jpeg?auto=format', 'Ayam Tulang Lunak + Keju + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 16000, '', 1, 13),
+(192, 'Ayam Goreng Kalasan Kremes (Ala Carte)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9552ed9c-03be-4ff2-becc-c0fe358b3ed1_Go-Biz_20200825_173228.jpeg?auto=format', 'Ayam Goreng Kalasan + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 16000, 'manis', 1, 13),
+(193, 'Telur Omlet Kremes Sambal (Ala Carte)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/97d199aa-2753-46e3-a19e-469ddc66fa88_Go-Biz_20200825_173641.jpeg?auto=format', 'Telur Omlet + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 8500, '', 1, 13),
+(194, 'Ayam Ingkung Kremes Sambel (Ala Carte)', 'Ayam Ingkung Kremes Sambel (Ala Carte)', 'Ayam Ingkung + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 16000, '', 1, 13),
+(195, 'Bestik Ayam Kremes Sambel (Ala Carte)', 'Bestik Ayam Kremes Sambel (Ala Carte)', 'Bestik Ayam + Kremesan + (Sambal Korek/Terasi/Uleg/Marah/Mercon/RicaRawit/Hijau) + Lalapan Sayur', 16000, 'manis', 1, 13),
+(196, 'Udang Goreng Tepung Krispy', 'Udang Goreng Tepung Krispy', 'Udang Goreng Tepung Krispy Sajian Renyah', 16000, '', 1, 13),
+(197, 'Cumi Goreng Tepung Krispy', 'Cumi Goreng Tepung Krispy', 'Cumi Goreng Tepung Krispy Sajian Renyah', 16000, '', 1, 13),
+(198, 'Pisang Goreng Tanduk Beku (Mini) 250 gram', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5d190135-4e00-4731-a04b-ab6d14d4c270_Go-Biz_20240218_210232.jpeg?auto=format', 'Pisang Telah Digoreng Setengah Matang Disimpan Di Freezer Dan Siap Goreng', 28900, '', 2, 14),
+(199, 'Pisang Goreng Beku (Besar) Isi 6', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/957a9e70-1ae4-4581-bafc-c35c66f74659_Go-Biz_20240303_102328.jpeg?auto=format', 'Pisang Digoreng Setengah Matang Disimpan Di Freezer (Siap Goreng)', 28900, '', 2, 14),
+(200, 'Pisang Goreng Tanduk Isi 10', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6a7ac0d5-c96f-48ec-860d-7f78952c5689_Go-Biz_20230324_130946.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crispy', 34900, 'manis', 2, 14),
+(201, 'Pisang Goreng Tanduk Isi 3', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/378e03ad-b12a-43de-85eb-577ae04309e5_Go-Biz_20230324_131025.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crispy', 11600, 'manis', 2, 14),
+(202, 'Pisang Goreng Tanduk Isi 6', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4ec859d9-ff8a-41bb-bc4f-44dc5e9baae1_Go-Biz_20230324_131051.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crispy', 21900, 'manis', 2, 14),
+(203, 'Pisang Goreng Tanduk Satuan', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/fb7d4cfc-338f-4bb2-9a82-4ebeacd487e2_Go-Biz_20240216_215425.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crisp', 3900, 'manis', 2, 14),
+(204, 'Pisang Goreng Tanduk Isi 3 + Palm Suiker', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d3ba4948-913a-406e-9748-47705b631e4a_Go-Biz_20230324_121037.jpeg?auto=format', 'Pisang Digoreng Dengan Balutan Tepung Crispy', 13500, 'manis', 2, 14),
+(205, 'Pisang Goreng Tanduk Isi 6 + Palm Suiker', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/119dd327-0236-4168-8da1-2ad406dc043c_Go-Biz_20240216_220328.jpeg?auto=format', 'Pisang Digoreng Dengan Balutan Tepung Crispy', 23900, 'manis', 2, 14),
+(206, 'Pisang Goreng Tanduk Isi 10 + Palm Suiker', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c4057cba-edde-468d-8537-2a1502a9db74_Go-Biz_20240216_220345.jpeg?auto=format', 'Pisang Digoreng Dengan Balutan Tepung Crispy', 36900, 'manis', 2, 14);
+INSERT INTO `menu` (`id_menu`, `nama_menu`, `foto_menu`, `deskripsi`, `harga`, `rasa`, `id_kategori`, `id_toko`) VALUES
+(207, 'Pisang Goreng Tanduk Satuan + Palm Suiker', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/21cccc22-a453-426e-948a-8656194a999b_Go-Biz_20240216_220432.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy', 4100, 'manis', 2, 14),
+(208, 'Porsi Kecil - Pisang Goreng Mini', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7473669c-5ff3-4a94-952a-fc48bc4e3846_Go-Biz_20240217_182108.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy', 14750, 'manis', 2, 14),
+(209, 'Porsi Kecil - Pisang Goreng Mini Palm Suiker', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8ccd282b-54ae-4406-850f-ea06b14bec75_Go-Biz_20240216_213049.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Palm Suiker', 14750, 'manis', 2, 14),
+(210, 'Porsi Kecil - Pisang Keju Susu', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d6dc4beb-1a9d-4f3a-8827-149c1fa9f382_Go-Biz_20240216_212752.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Susu + Palm Suiker + Keju', 14750, 'manis', 2, 14),
+(211, 'Porsi Kecil - Pisang Keju Susu Meses', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c7585e84-d75d-4b43-be0c-217ddf5b8322_Go-Biz_20240216_212242.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Susu + Palm Suiker + Keju + Meises', 17250, 'manis', 2, 14),
+(212, 'Porsi Kecil - Pisang Keju Susu Coklat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3ba82e25-8f0b-4737-9c36-aa2027e0f93f_Go-Biz_20240216_212334.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crispy + Susu + Palm Suiker + Keju + Coklat Glaze', 18500, 'manis', 2, 14),
+(213, 'Porsi Kecil - Pisang Keju Susu Green Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/660f797a-c285-413d-81c6-8645fbf10de8_Go-Biz_20240216_212156.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crispy + Susu + Palm Suiker + Keju + Green Tea Glaze + Meises', 18500, 'manis', 2, 14),
+(214, 'Porsi Kecil - Pisang Keju Susu Tiramisu', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5ae3a68e-b77b-45c8-8e92-e07a2c4f8e84_Go-Biz_20240216_212108.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crispy + Susu + Palm Suiker + Keju + Tiramisu Glaze + Meises', 18500, 'manis', 2, 14),
+(215, 'Porsi Kecil - Pisang Keju Susu Taro', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5a6321d2-c38b-4972-8912-8638389c6647_Go-Biz_20240218_204834.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crispy + Susu + Palm Suiker + Keju + Taro Glaze + Meises', 18500, 'manis', 2, 14),
+(216, 'Porsi Kecil - Pisang Keju Susu Strawberry', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0686ef12-db67-4dfe-86b2-b3c09507f2dd_Go-Biz_20240216_212024.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crispy + Susu + Palm Suiker + Keju + Strawberry Glaze + Meises', 18500, 'manis', 2, 14),
+(217, 'Porsi Kecil - Pisang Keju Susu Blueberry', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c081d090-9908-4db5-ba71-54bf5f30339e_Go-Biz_20240216_212136.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Yang Crispy + Susu + Palm Suiker + Keju + Blueberry Glaze + Meises', 18500, 'manis', 2, 14),
+(218, 'Porsi Besar - Pisang Goreng Mini', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/acef2850-58f8-4238-a125-3e0ea701364b_Go-Biz_20240222_164310.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy', 24900, 'manis', 2, 14),
+(219, 'Porsi Besar - Pisang Goreng Mini Palm Suiker', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6a1df7b4-5ef0-4e6d-a171-550781b74aee_Go-Biz_20240216_213914.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Palm Suiker', 24900, 'manis', 2, 14),
+(220, 'Porsi Besar - Pisang Keju Susu', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1349601f-4505-42e7-9bb3-ed1ebbdc4de5_Go-Biz_20240216_213630.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Susu + Palm Suiker + Keju', 24900, 'manis', 2, 14),
+(221, 'Porsi Besar - Pisang Keju Susu Meses', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/edc74475-bf7d-4a6b-b910-249420efab6f_Go-Biz_20240216_213456.jpeg?auto=format', 'Pisang Digoreng Dengan Balutan Tepung Crispy + Susu + Palm Suiker + Keju + Meses', 27900, 'manis', 2, 14),
+(222, 'Porsi Besar - Pisang Keju Susu Coklat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ab92d7e5-2135-4907-bf44-82b14244b2bc_Go-Biz_20240216_214059.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Susu + Palm Suiker + Keju + Coklat Cair + Meses', 30900, 'manis', 2, 14),
+(223, 'Porsi Besar - Pisang Keju Susu Greentea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4365befb-7484-4bed-a924-d5eee817a8f0_Go-Biz_20240216_214316.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Susu + Palm Suiker + Keju + Greentea + Meises', 30900, 'manis', 2, 14),
+(224, 'Porsi Besar - Pisang Keju Susu Tiramisu', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/98bb96b3-7de0-4dff-8136-332c0e833b3e_Go-Biz_20240216_214411.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Susu + Palm Suiker + Keju + Tiramisu + Meises', 30900, 'manis', 2, 14),
+(225, 'Porsi Besar - Pisang Keju Susu Taro', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/51a4d182-c17f-4ed0-b2e2-4a260a62c1fd_Go-Biz_20240216_214623.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Susu + Palm Suiker + Keju + Taro + Meises', 30900, 'manis', 2, 14),
+(226, 'Porsi Besar - Pisang Keju Susu Strawbery', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c6984c75-2e75-4b14-90aa-b1f3293c0db2_Go-Biz_20240216_214702.jpeg?auto=format', 'Pisang tanduk digoreng dengan balutan tepung crispy + susu + palm suiker + keju + strawbery + meises', 30900, 'manis', 2, 14),
+(227, 'Porsi Besar - Pisang Keju Susu Bluebery', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c581ecbc-66a4-469c-9555-6a9a9a9fe96b_Go-Biz_20240216_214757.jpeg?auto=format', 'Pisang Tanduk Digoreng Dengan Balutan Tepung Crispy + Susu + Palm Suiker + Keju + Bluebery + Meises', 30900, 'manis', 2, 14),
+(228, 'Es Buah With Guava Juicy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7d92009a-8edd-4f46-bf93-a4f46fa8248b_c883767a-2e18-461b-9be2-7f01994193ac.jpg?auto=format', 'Potongan buah buahan (melon, semangka, mangga, apel, pear, kiwi, naga, lecy) dengan topping grass jelly, selasih, jus jambu dan susu kental manis dikemas dlm mangkuk plastik yg menarik diberi es batu terpisah', 23000, 'manis', 3, 15),
+(229, 'Es Buah With Strawberry Juice', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2cb9aff9-d69f-4129-9861-09058e49940f_0b04ef4c-4717-46c0-82a8-409d9d9483f2_Go-Biz_20190916_130303.jpeg?auto=format', 'Slice buah segar diberi topping jely plaint, selasih dgn Susu Kental Dan juice strawbery Dengan Es Terpisah', 25000, 'asam', 3, 15),
+(230, 'Es Pisang Hijau Rasa Vanila / Original', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cb9b70e8-b199-4c53-b36b-8075fd39cf33_ebe16c8c-6881-423a-b894-60bc8a5c05e2_Go-Biz_20190912_095925.jpeg?auto=format', 'Pisang yang dibalut tepung dadar hijau, diberi topping bubur sumsum original, air gula, jelly plaint, kacang tanah tumbuk, coklat mises, susu kental, dan es dipisah', 15000, 'manis', 2, 15),
+(231, 'Es Pisang Hijau Rasa Fla Coklat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4cbb3ce4-9d46-470b-bc86-c128b4797bb2_e2995be0-fe49-483b-82f1-bf79713000b8_Go-Biz_20191225_125216.jpeg?auto=format', 'Pisang Ambon yang dibalut dengan dadar tepung hijau dgn topping kacang tanah tumbuk, coklat Mises sputniq, Susu kental Manis & Es batu', 15000, 'manis', 2, 15),
+(232, 'Es Pisang Hijau Toping 2mix Or 3mix Fla', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/494e939c-c63c-4b8a-b050-93481a877a19_46b7db95-6cbf-4f37-b99c-3754c77dd1ab_Go-Biz_20190912_095654.jpeg?auto=format', 'Es pisang hijau dgn topping 2 atau 3 varian (pilihan vanila with coklat / strawberry)', 23000, 'manis', 2, 15),
+(233, 'Es Pisang Hijau Special Bowl Cup', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5178080b-dcdd-414c-90cf-68943772ab29_Go-Biz_20221027_122808.jpeg?auto=format', 'Es Pisang Hijau Special Bowl Cup Penyajian Praktis', 15000, 'manis', 2, 15),
+(234, 'Es Pisang Hijau Ori Bowl', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/fc378408-e3d2-4bfa-8039-2f3adaa96ed7_Go-Biz_20221027_123715.jpeg?auto=format', 'Es Pisang Hijau Original Disajikan Dalam Mangkuk', 17000, 'manis', 2, 15),
+(235, 'Salad With Youghurt N Juicy Strawberry', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/eaa59799-5e02-4900-9548-76af94e5089a_e0d3d6a6-9a4d-43b7-9d9f-e126f2c08474_Go-Biz_20191002_105918.jpeg?auto=format', 'Variant buah2an melon, mangga, semangka, kiwi, pear, apel, lecy topping selasih, jely es terpisah, dengan sauce youghurt n straw juice', 25000, 'asam', 2, 15),
+(236, 'Salad Buah With Chesee', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4c0c6cf3-f57f-4876-9c4d-951a651403a0_Go-Biz_20201026_065158.jpeg?auto=format', 'Salad Aneka Buah(melon,Semangka,Apel,Pear,Mangga,Kiwi,Lecy,Naga) Dgn Topping Jely,Selasih,Saus Youghurt Dan Jus Strawbery Diberi Parutan Keju', 25000, 'manis', 2, 15),
+(237, 'Strawberry Juicy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0fc7c7f2-debb-4d38-b38a-25af3ea704b2_Go-Biz_20201027_141743.jpeg?auto=format', 'Strawbery Blend Dgn Gula Cair Dan Es', 20000, 'asam', 3, 15),
+(238, 'Guava Juicy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a5d4e0ff-4f35-4ebd-887a-4d7e7215842e_Go-Biz_20201214_121141.jpeg?auto=format', 'Jus jambu yang kental dan segar dengan 100% aneka Buah Segar + Gulaku Cair + Es (tanpa Susu Kental Manis)', 18000, 'manis', 3, 15),
+(239, 'Es Jeruk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/308ed39b-1162-4b9c-8e87-4a6980156ac8_0dbd1afa-de60-4c75-9795-3446da76c7a7_Go-Biz_20190910_155836.jpeg?auto=format', 'Perasan jeruk murni disajikan dingin', 20000, 'asam', 3, 15),
+(240, 'Apple Juicy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/19d91f67-15e2-4968-92d1-a9a713c03f66_Go-Biz_20201214_121224.jpeg?auto=format', 'Jus buah apple segar dengan gulaku cair ditambah es batu', 20000, 'manis', 3, 15),
+(241, 'Avocado Juicy With Vanila Milk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/25111c5d-51a6-45f7-bf7b-48b5c9a0e8d4_Go-Biz_20201214_121304.jpeg?auto=format', 'jus alpukat dengan buah segar yg kental dgn tambahan Gulaku cair dan es batu', 20000, 'manis', 3, 15),
+(242, 'Avocado Juicy With Brown Sugar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1e208ebf-b0b2-4a6f-a26b-efccf937e259_23af766d-6de2-4dd6-907f-8559520de19a_Go-Biz_20200216_182006.jpeg?auto=format', 'Buah alpukat diblend dengan gula aren cair dan es batu', 20000, 'manis', 3, 15),
+(243, 'Jus Semangka', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f6b81808-33fb-4762-b7eb-dee3e04ca027_Go-Biz_20210316_113601.jpeg?auto=format', 'Buah semangka segar diblend halus', 18000, 'manis', 3, 15),
+(244, 'Tomato Juicy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cdbdf0cf-7d90-47ad-af5f-a306b7827f29_e388b28b-6e46-478d-a495-bbfecf4cb4b7_Go-Biz_20190912_093338.jpeg?auto=format', 'Tomat segar blend kaya nutrisi', 18000, 'asam', 3, 15),
+(245, 'Dragon Fruit Juicy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/16974e96-24c0-467a-b0e6-d3ff33388ff0_dbb9ab30-6be0-420f-ae81-add220cf1d10_Go-Biz_20200216_181048.jpeg?auto=format', 'Buah naga di blend dgn gulaku cair dan es batu', 20000, 'manis', 3, 15),
+(246, 'Lecy Juicy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8d2a8c72-ff43-43c0-a35a-0d1323a4e226_Go-Biz_20201023_151522.jpeg?auto=format', 'Buah Lecy Kaleng Di Blend Dgn Gula Cair Dan Es', 20000, 'manis', 3, 15),
+(247, 'Jus Melon', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5af1ded8-d570-4d1e-9c18-bdba879bc257_b3ef970e-a204-431b-9fdd-cffa997781a9_Go-Biz_20190910_160545.jpeg?auto=format', 'Buah melon diblend dgn gulaku cair dan es batu', 18000, 'manis', 3, 15),
+(248, 'Pear Juicy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/45dac4cf-2b3f-441e-b125-fc6677dcc719_Go-Biz_20210607_180204.jpeg?auto=format', 'Blend Buah Pear Dgn Gula Cair Dan Es', 18000, 'manis', 3, 15),
+(249, 'Jus Sirsak', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7cc0878f-61fe-45c6-9720-9508c52d64f2_788bf628-3d3d-40b2-8330-318ab9ce4640_Go-Biz_20200228_125817.jpeg?auto=format', 'Buah sirsak diblend dgn gula dan es batu', 20000, 'asam', 3, 15),
+(250, 'Lemon Juicy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/82dca3fb-d930-43b1-88c7-435d8e56ecc3_8b442710-153d-46c6-8cc2-2c277acac838_Go-Biz_20200228_130116.jpeg?auto=format', 'Jus lemon dgn gula dan es batu diblend', 20000, 'asam', 3, 15),
+(251, '3 Mix Strawberry, Naga, Kiwi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/408b050d-5733-4ab2-ab8e-78406ee36e70_b0755e88-1e8d-47d6-8e02-94eb99882624_Go-Biz_20200217_071054.jpeg?auto=format', 'Buah Strawbery, Naga dan Kiwi di blend dengan Gulaku cair + Es batu (tanpa Susu Kental Manis)', 25000, 'asam', 3, 15),
+(252, '3Mix Strawberry, naga, tomat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/00dcd2ed-ea87-42e6-9486-de4ecf8c72bf_91285260-b843-4430-b1dd-e059f30ff98e_Go-Biz_20190912_100435.jpeg?auto=format', 'Jus Rasa Campur yg Kental & Segar dengan 100% 3 Macam Rasa Buah Segar + Gulaku cair + Es (tanpa Susu Kental Manis)', 25000, 'asam', 3, 15),
+(253, '3Mix Strawberry, Apple N Kiwi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f9d817f1-20a1-49db-9594-baec68bd3188_9f8ab5e4-df41-4462-ba5c-e4d241068ed9_Go-Biz_20200217_070934.jpeg?auto=format', 'Buah Kiwi, Strawberry dan APel di blend + Gulaku cair + Es (tanpa Susu Kental Manis)', 23000, 'asam', 3, 15),
+(254, '3 Mix Strawbery, Avocado, Kiwi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8e898dc7-051b-4c22-aa45-57391c25b27b_db371ad0-c777-48d4-9622-65745eb28076_Go-Biz_20191002_102748.jpeg?auto=format', '3 variant buah avocado, kiwi dan strawbery di mix blend dgn Gulaku cair + es batu', 25000, 'manis', 3, 15),
+(255, '3 Mix Strawbery, Blackberry N Kiwi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/98e6ebb7-a8b8-4182-a624-26c192f2bdcf_3460b951-2c62-4afc-ab03-eb8ddd3ea405_Go-Biz_20200217_070724.jpeg?auto=format', 'Buah Strawberry, Blackberry N Kiwi + Gulaku cair + Es batu (tanpa Susu Kental Manis)', 25000, 'asam', 3, 15),
+(256, '3 Mix Strawberry, Mangga Dan Kiwi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4a947b01-f531-4be8-afd7-5a8d1d8a1f12_ec85da06-300a-4ba9-aa06-a5f8ceefb49b_Go-Biz_20200217_071239.jpeg?auto=format', 'Strawbery Mangga dan kiwi di blend dengan Gulaku cair + Es batu (tanpa Susu Kental Manis)', 23000, 'asam', 3, 15),
+(257, '3 Mix Juicy Straw, Black, Kiwi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/57079290-d46e-4e61-888b-368d9f397068_adad4d7d-0165-4a98-8c01-e6dc01fee443_Go-Biz_20200216_182525.jpeg?auto=format', 'Mix 3 mcm buah strawbery, blackbery Kiwi di blend dgn susu cair dan es batu', 23000, 'asam', 3, 15),
+(258, 'Avocado Slice With Vanila Milk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9b0927b2-939e-45ea-8102-de5d1f8e9f89_Go-Biz_20201119_111157.jpeg?auto=format', 'Jus Alpukat di beri topping jelly Plaint, Susu Dan Es dan potongan alpukat Dlm Cup Large', 25000, 'manis', 3, 15),
+(259, 'Avocado Slice With Susu Coklat Milo', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6e4eb1b4-7e01-44e2-ae8e-90330580aeac_57aae54d-c5a3-4e43-99a7-1c6d880bea4e_Go-Biz_20190819_111027.jpeg?auto=format', 'Jus alpukat yg kental diberi topping jelly tanpa rasa, selasih, dan potongan buah alpukat lalu di beri susukental manis dan ditaburi susu milo powder dan disajikan dlm mangkuk plastik dan diberi es batu terpisah', 25000, 'manis', 3, 15),
+(260, 'Smooties Fruit Punch', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4a186ca5-1cce-4890-9d6a-38efde1f2342_Go-Biz_20220809_080015.jpeg?auto=format', 'Youghurt + Mix Jus + Potongan Buah Apel,Pear Kiwi ,Straw', 25000, 'asam', 3, 15),
+(261, 'Naga, Tomat, Jeruk', 'Naga, Tomat, Jeruk', 'Jus Rasa Campur yg Kental & Segar dengan 100% 3 Macam Rasa Buah Segar + Gulaku cair + Es (tanpa Susu Kental Manis)', 20000, 'asam', 3, 15),
+(262, 'Naga, Strawberry, Kiwi', 'Naga, Strawberry, Kiwi', 'Jus Rasa Campur yg Kental & Segar dengan 100% 3 Macam Rasa Buah Segar + Gulaku cair + Es (tanpa Susu Kental Manis)', 20000, 'asam', 3, 15),
+(263, 'Naga, Strawberry, Blackberry', 'Naga, Strawberry, Blackberry', 'Jus Rasa Campur yg Kental & Segar dengan 100% 3 Macam Rasa Buah Segar + Gulaku cair + Es (tanpa Susu Kental Manis)', 20000, 'asam', 3, 15),
+(264, 'Strawberry Smooties', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/719f2e29-d372-4497-9aed-3b3b89a07ded_Go-Biz_20201130_172724.jpeg?auto=format', 'Youghurt plaint mix with strawbery juicy', 25000, 'asam', 3, 15),
+(265, 'Orange Smooties', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a4d255c1-7b98-4a34-af6c-d3cebae3b1c7_b231a61b-aae9-4c17-8557-8641f81996f9_Go-Biz_20191002_102244.jpeg?auto=format', 'Youghurt plaint with jely mix jeruk peras', 23000, 'asam', 3, 15),
+(266, 'Avocado Smooties', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/87551682-c55c-40c0-a5d6-1f59462ac2e9_Go-Biz_20201023_152046.jpeg?auto=format', 'Jus alpukat dengan youghurt', 25000, 'manis', 3, 15),
+(267, 'Dragon Smooties', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/615cba06-4225-4760-bb3b-ea6ca53c2ddc_Go-Biz_20201130_172524.jpeg?auto=format', 'Jua Buah Naga,Dgn Topping Youghurt,jeli,Naga Slice Dgn Es Batu', 23000, 'manis', 3, 15),
+(268, 'Smooties Fruit Punch (Large Cup)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4add720b-b0d9-46d7-ba7d-45d841b0f26d_Go-Biz_20201026_072210.jpeg?auto=format', 'jus Strawbery Dgn Youghurt Diberi Topping Slice Buah(apel,Pear,Mangga,Kiwi,Lecy,Straw) Dlm Cup Large', 25000, 'asam', 3, 15),
+(269, 'Dragon Smooties (Jelly Mix)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9a253d46-379a-4460-af9d-df61b41d5d7f_Go-Biz_20220407_121908.jpeg?auto=format', 'Jus Buah Naga,Jely Dan Youghurt', 23000, 'manis', 3, 15),
+(270, 'Es Pisang Ijo Porsi GeDe (5 Porsi)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c6aaf3af-ee98-489d-8d7f-20606c102435_Go-Biz_20230301_092739.jpeg?auto=format', '5porsi Es Pisang Ijo Tuk Rame2 Disajikan Dgn Toping fla Sesua Variant (Van,Coklat,Straw) Jely,Mises,Kacang,Gula Cair,Susukental,es Crs Terpisah Dlm Kotak GeDe', 65000, 'manis', 2, 15),
+(271, 'Es / Sop Buah Porsi GeDe (5 Porsi)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5f210fa5-3c01-4d09-8760-b8a7d41e24ec_Go-Biz_20230301_093609.jpeg?auto=format', '5 Porsi Es Buah Porsi Gede Tuk Rame2 Dgn Variant Buah (Semangka,Melon,Apel,Pear,Kiwi,Mangga,Naga,Lecy) Dgn Topping Jely,Selasih Saus Jus Jambu Dan Susu Dan Es Terpisah Dlm Cup Korak 1500 ML', 65000, 'manis', 3, 15),
+(272, 'Strawberry Juicy 1 Liter', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/425f5ec6-d898-4887-afc7-7c4a04d3881c_Go-Biz_20210213_112519.jpeg?auto=format', 'blend Buah Strawbery Dgn Gula Cair Dan Es Yg Kental Porsi 1ltr', 60000, 'asam', 3, 15),
+(273, 'Guava Juicy 1 Liter', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c01ea72b-738f-4ad9-a41c-bf8584142c59_Go-Biz_20210213_112549.jpeg?auto=format', 'Blend Buah Jambu dgn Gula Cair Dan Es Dlm porsi GeDe 1ltr', 40000, 'manis', 3, 15),
+(274, 'Avocado Juicy 1 Liter', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/282ee0c3-70dd-4511-9ce2-a4845c23557e_Go-Biz_20210105_101153.jpeg?auto=format', 'Jus Alpukat Dgn Susu Kental Manis Vanila Sangat Kental Dan Creamy', 60000, 'manis', 3, 15),
+(275, 'Salad Buah Porsi GeDe (5 Porsi)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5cfeb28c-b23f-446c-9b9d-864ab832646e_Go-Biz_20220302_182046.jpeg?auto=format', '5porsi Aneka Buah Potong (Semangka,Melon,Apel,Pear,Naga,Mangga,Strawbery,Kiwi,Leci)', 65000, 'manis', 2, 15),
+(276, 'Squezeed Orange 1 Liter', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/893daaea-01df-4d95-9924-0085a4d5cefe_Go-Biz_20210213_112604.jpeg?auto=format', 'Buah jeruk Lokal Di Pres Dgn Bulir Yg Asli Segar Dgn Gula Cair Dan Es Dlm Porsi 1ltr Btl GeDe', 50000, 'asam', 3, 15),
+(277, 'Jelly Lecy Coctail', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7169a393-1e0b-415a-93e0-4e9df3fce64c_Go-Biz_20201130_171504.jpeg?auto=format', 'Coctail leccy With Topping Selasih Dan Jelly Grass', 23000, 'manis', 3, 15),
+(278, 'Jelly Manggo', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/95f91c4b-0635-4ec9-93a8-8cb99313e840_Go-Biz_20201130_171817.jpeg?auto=format', 'Jelly Manggo Coctail With Selasih', 25000, 'manis', 3, 15),
+(279, 'Jelly Lecy With Strawbery', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7f4879cb-0acd-4d07-adec-7af29cd09aa4_Go-Biz_20201130_171940.jpeg?auto=format', 'Leccy Dan Strawbery Coctail Dgn Topping Jelly Grass Dan Selasih', 23000, 'asam', 3, 15),
+(280, 'Juicy In Bottle 250 Ml', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8e590023-9a30-4ee0-8d87-e36c6a000f4d_Go-Biz_20250417_123134.jpeg?auto=format', 'Jus Buah Diberi Gula Diberi Es Dalam Botol 250ml', 10000, 'manis', 3, 15),
+(281, 'Jus In Bottle Pear 250ml', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/406b10e5-49d2-45e3-9b2e-2899ad1f2e42_Go-Biz_20250417_123401.jpeg?auto=format', 'Jus Buah Diberi Gula Dan Es Dlm Botol Pear 250 Ml', 15000, 'manis', 3, 15),
+(282, 'Jus Dlm Botol 500 Ml', 'Jus Dlm Botol 500 Ml', 'Jus buah diberi gula dan es dalam botol ukuran sedang', 35000, 'manis', 3, 15),
+(283, 'Jus Dalam Botol 1 Ltr', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cb42a8f1-fda8-48e4-a01e-efced8b169a9_Go-Biz_20250417_124638.jpeg?auto=format', 'Jus Buah Diberi Gula Dan Es Dlm Botol 1 Ltr', 65000, 'manis', 3, 15),
+(284, 'Pempek Komplit (4 pcs)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/05065dd6-da26-4b9b-a443-7703e4e9be67_f215a525-e7b8-4582-a18d-961b50bd080a_Go-Biz_20191110_153901.jpeg?auto=format', '4pcs pempek digoreng terdiri dr pempek 1kulit, 1lenjer, 1adaan dan 2telor kecil diberi kuah khas palembang cuko yg pedas asem dan manis', 20000, '', 2, 15),
+(285, 'Pempek Lenggang Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/429f4cbc-a91b-42d6-801e-3448262cc5ba_b2675692-8cea-47f6-91c5-5d9c5078aa32_Go-Biz_20191208_120451.jpeg?auto=format', 'Untuk / porsi pempek lenggang, yakni telor dadar diberi potongan pempek lenjer lalu digoreng dan disajikan dlm keadaan panas diberi kuah cuko rasa asam, manis pedas, khas palembang', 20000, '', 2, 15),
+(286, 'Pempek Lenjer (5 pcs)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0270ff03-f600-436a-b3bb-1a931896c0a0_28358c83-0b1e-4d93-98aa-8037a1681de1_Go-Biz_20190912_105550.jpeg?auto=format', '5pcs pempek lenjer digoreng diberi kuah cuko khas palembang yg manis, asem dan pedas', 20000, '', 2, 15),
+(287, 'Pempek Adaan (4 pcs)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2ea0da6c-0ce6-4e28-9ca8-557cce5490ae_62e44393-e730-44af-9cfe-c6d1ccfd7854_Go-Biz_20190910_161635.jpeg?auto=format', '4 pcs pempek bulet / adaan digoreng panas2 disajikan dgn kuah cuko khas palembang yg manis pedas dan asam', 20000, '', 2, 15),
+(288, 'Wortel, Jeruk, Belimbing', 'Wortel, Jeruk, Belimbing', 'Jus Rasa Campur yg Kental & Segar dengan 100% 2 Macam Rasa Buah Segar + Gulaku cair + Es (tanpa Susu Kental Manis)', 20000, 'asam', 3, 15),
+(289, '2Mix Juicy Guava Carrot', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9127cb66-6298-4abf-a1f8-8c765cc7f194_Go-Biz_20201023_151719.jpeg?auto=format', '2Mix Juicy Jambu Dan Wortel Diblend Dgn Gula Cair Dan Es Batu Disajikan Di Cup Glas Large', 18000, 'manis', 3, 15),
+(290, 'Strawberry Float Custom Fruit Mix', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/de32319a-cf4f-4ec1-9072-d4c615ba21f0_64e89c95-890b-4622-8dd1-5ab81ac99305.jpg?auto=format', 'Jus dengan berbagai rasa buah yg segar + Gulaku cair + Es diberi Ice cream & susu kental manis', 17000, 'asam', 3, 15),
+(291, 'Paket PISANG', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7a7ab651-bf09-42b4-883b-e6be054b7400_Go-Biz_20220702_062629.jpeg?auto=format', '1 Boxs 35 Butir Isi Buah Pisang', 26500, 'manis', 2, 16),
+(292, 'Paket COKLAT', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4b1a26d1-e696-4676-80d2-7d3ac3b43846_Go-Biz_20220702_062650.jpeg?auto=format', '1 boxs 35 Butir Isi Selai Coklat', 26500, 'manis', 2, 16),
+(293, 'Paket NANAS', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/99f9e841-2cee-48fb-8764-52486cc6af4d_Go-Biz_20220702_062707.jpeg?auto=format', '1 Boxs 35 Butir Isi Buah Nanas', 26500, 'manis', 2, 16),
+(294, 'Paket KACANG IJO', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b055874d-88da-4115-819c-c5dad6782fcf_Go-Biz_20220702_062749.jpeg?auto=format', '1 Boxs 35 Butir Isi Kacang Ijo', 26500, 'manis', 2, 16),
+(295, 'Paket KETAN HITAM', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a55ab123-cb45-410a-a3e5-bdb33b8fbd0b_Go-Biz_20220702_062809.jpeg?auto=format', '1 Boxs 35 Butir Isi Ketan Hitam', 26500, 'manis', 2, 16),
+(296, 'Paket BLUEBERRY', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/441cd637-f67f-47cd-ba4f-1f4ed5564754_Go-Biz_20220702_062845.jpeg?auto=format', '1 Boxs 35 Butir Isi Selei Blueberry', 26500, 'manis', 2, 16),
+(297, 'Paket STRAWBERRY', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e06edc59-1947-4f16-925a-5eafa4e3a5f5_Go-Biz_20220702_062901.jpeg?auto=format', '1 Boxs 35 Butir Isi Selei Strawberry', 26500, 'manis', 2, 16),
+(298, 'Paket SEMUA RASA', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e06edc59-1947-4f16-925a-5eafa4e3a5f5_Go-Biz_20220702_062901.jpeg?auto=format', '1 Boxs Campur 35 Butir Isi Pisang, coklat, nanas, kacang ijo, ketan hitam, durian, blueberry, strawberry', 26500, 'manis', 2, 16),
+(299, 'Daifuku Strawberry Cheesecake', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d71251fa-92fc-4ff5-a706-163e6d93fd67_Go-Biz_20230306_213521.jpeg?auto=format', 'MochiMochi Dengan Kulit Yg Lembut Dan Kenyal Dengan Isian Cream Cheese Dan Buah Strawberry Segar', 13000, 'manis', 2, 17),
+(300, 'Daifuku Ichigo Mochi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ffd777e2-43c0-4059-a465-c4e97bdeca8d_Go-Biz_20230306_214725.jpeg?auto=format', 'MochiMochi Khas Jepang Dengan Kulit Mochi Yang Lembut Dan Kenyal Dengan Isian Kacang Merah Jepang (Adzuki) Dan Buah Strawberry Segar', 12500, 'manis', 2, 17),
+(301, 'Choco Matcha Daifuku', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6d49acf5-e012-4da4-90cb-8cf52fedf3be_Go-Biz_20230526_191355.jpeg?auto=format', 'Mochi Khas Jepang Dengan Isian Buah Strawberi Segar Dibalut Dengan Coklat Green Tea Premium Dan Dilapisi Dengan Kulit Mochi Yang Lembut Dan Kenyal', 12500, 'manis', 2, 17),
+(302, 'Manggo Cheese Cake', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/18bb9ee3-a86d-4e25-a8e5-bdeb639e3e4c_Go-Biz_20230703_023757.jpeg?auto=format', 'Mochi Khas Jepang Dengan Isian Buah Mangga Segar Yang Dibalut Dengan Cream Cheese Premium', 13000, 'manis', 2, 17),
+(303, 'Blueberry Cheese Cake', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7ac8085e-b3c1-459d-912d-674ee1fd6b20_Go-Biz_20230809_002806.jpeg?auto=format', 'Mochi Dengan Isian Buah Blueberry Import Yang Dibalut Dengan Cream Cheese Premium Dan Dilapisi Dengan Kulit Mochi Yang Lembut Dan Kenyal', 13000, 'manis', 2, 17),
+(304, 'Tiramisu Biscoff', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/64ccf2b8-7492-497e-a078-552a20d4735c_Go-Biz_20230809_080652.jpeg?auto=format', 'Mochi Dengan Isian Biskuit Biscoff Yang Dibalut Dengan Cream Cheese Premium Dan Dilapisi Dengan Kulit Mochi Yang Lembut Dan Kenyal', 13000, 'manis', 2, 17),
+(305, 'Mochi Dango', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/793babd5-7f43-465a-8a98-5c6f93670092_Go-Biz_20231116_195316.jpeg?auto=format', 'Mochi rasa buah dengan cocolan saus coklat', 19000, 'manis', 2, 17),
+(306, 'Lychee Daifuku Mochi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/11ae5fd7-2f41-4037-972a-1a3c6cb19371_Go-Biz_20231116_200254.jpeg?auto=format', 'Mochi khas jepang dengan isian buah lychee yang dipadukan dengan cream cheese dengan rasa cocopandan', 13000, 'manis', 2, 17),
+(307, 'Daifuku Cheesy Rainbow Bites', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2b993129-b920-47bd-8671-0c82d5657d11_Go-Biz_20231204_104107.jpeg?auto=format', 'Potongan Mochi Berukuran Kecil Dengan Isian Creamcheese Dengan Berbagai Rasa Buah, Terdiri Dari 9 Potong Kecil', 22500, 'manis', 2, 17),
+(308, 'Mochi Dubai', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1b63b452-5098-4827-9482-659b90812114_Go-Biz_20250802_122438.jpeg?auto=format', 'Mochi dengan isian coklat dubai', 13500, 'manis', 2, 17),
+(309, 'Mix Choco Rainbow (6pcs)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f77b6b86-ed59-4896-827e-6e197ef8cfac_Go-Food-Merchant_20251108_102825.jpeg?auto=format', 'mochi dengan isian coklat dibalut dengan crumble beraneka rasa', 19000, 'manis', 2, 17),
+(310, 'Daifuku Choco Mochi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b99deebb-08ff-480a-a3b5-68ce4c8f273a_Go-Biz_20230306_214111.jpeg?auto=format', 'Mochi Khas Jepang Dengan Kulit Yg Lembut Dan Kenyal Dengan Isian Coklat Pasta Dan Buah Strawberry Segar', 12500, 'manis', 2, 17),
+(311, 'Daifuku Cookies And Cream Mochi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bc5144ce-39a9-42fb-bfba-03447f335169_Go-Biz_20230515_175742.jpeg?auto=format', 'Mochi khas jepang dengan isian biskuit dilapisi dengan cream cheese dan dibalut dengan kulit charcoal', 13000, 'manis', 2, 17),
+(312, 'Mochi Choco Bites', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/857edaa7-c930-4955-ae1c-e2fe5099b67e_Go-Biz_20230704_121207.jpeg?auto=format', 'Mochi rasa coklat tanpa isian disajikan dengan toping fla keju dan oreo flakes', 19000, 'manis', 2, 17),
+(313, 'Matcha Bites', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c5a5e666-f400-4830-9f5d-4a54cf334b5f_Go-Biz_20240316_173129.jpeg?auto=format', 'Potongan mochi rasa matcha tanpa isian dengan saus cocolan keju dipadukan dengan matcha dan taburan crumble matcha', 19000, 'manis', 2, 17),
+(314, 'Mix Baby Mochi (3Pcs)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d6a2850c-1908-4073-bc44-9b13bef12ece_Go-Food-Merchant_20251108_102515.jpeg?auto=format', 'Mochi versi ekonomis dengan isian buah buahan dan cookies dibalut dengan whipcream', 14000, 'manis', 2, 17),
+(315, 'Es Teler Sultan 14oz', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/57e154c1-61dd-4907-9937-f33964ac6a59_Go-Biz_20251126_070223.jpeg?auto=format', 'Perpaduan sagu mutiara, agar agar, kelapa muda,nangka,alpukat disiram dengan kuah yang creamy sudah pasti segar dan lezat untuk disantap', 13800, 'manis', 3, 17),
+(316, 'Manggo Silky Pudding', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f4a73237-7a1a-4271-81a4-8272d44c38ee_Go-Biz_20250105_231337.jpeg?auto=format', 'Silky Pudding Rasa Manggo Yang Lembut', 8500, 'manis', 2, 17),
+(317, 'Strawberry Silky Pudding', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5751099c-6c1f-4dd9-a933-77f19c412622_Go-Biz_20250105_231427.jpeg?auto=format', 'Silky Pudding Rasa Strawberry Yang Lembut', 8500, 'manis', 2, 17),
+(318, 'Taro Silky Pudding', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/176e649e-c912-43c2-bae4-40a260b4b454_Go-Biz_20250105_231814.jpeg?auto=format', 'Silky Pudding Rasa Taro Yang Lembut', 8500, 'manis', 2, 17),
+(319, 'Vanilla Blue Silky Pudding', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9b440585-bc5c-41bb-b737-2711f98c218c_Go-Biz_20250105_231901.jpeg?auto=format', 'Silky Pudding Rasa Vanilla Yang Lembut', 8500, 'manis', 2, 17),
+(320, 'Choco Silky Pudding', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c9f41a54-3d23-42fa-8df7-bf4b97b3490e_Go-Biz_20250105_232001.jpeg?auto=format', 'Silky Pudding Rasa Coklat Yang Lembut', 8500, 'manis', 2, 17),
+(321, 'Green Tea Silky Pudding', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/23c34249-86b2-4d41-b063-5e4776388b9f_Go-Biz_20250105_232038.jpeg?auto=format', 'Silky Pudding Rasa Green Tea Yang Lembut', 8500, 'manis', 2, 17),
+(322, 'Sosis Bakar Barbeqiu + Saos Keju + Saos Mayones', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b8f7c528-45c0-418e-bb19-37ea7738b883_Go-Biz_20201207_113458.jpeg?auto=format', 'Fish Roll Sayur + Cikua Bakar', 17500, '', 2, 18),
+(323, 'Dumpling Ayam', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d21e3529-3056-4bb2-977d-af697e5ee7b1_Go-Biz_20201209_112511.jpeg?auto=format', 'Dumpling Ayam + Saos Pedas + Saos Mayones + Saos Keju', 12500, 'pedas', 2, 18),
+(324, 'Suki Kuah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cda13e00-f9e8-45c3-9fe5-b90a951f3ba1_Go-Biz_20201209_113404.jpeg?auto=format', 'Suki + Bumbu Tomyum + Mie', 17500, 'pedas', 2, 18),
+(325, 'Suki Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f4dc78a1-3fdb-443d-a9a9-a11a40e6c571_Go-Biz_20201209_114252.jpeg?auto=format', 'Suki Bakar + Saos Pedas + Saos Barbeqiu + Saos Keju', 12500, 'pedas', 2, 18),
+(326, 'Jamur Enoki + Cikua', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/deab5c0b-624d-4697-ae14-0df891b51b73_Go-Biz_20201227_182242.jpeg?auto=format', 'Pilihan Level 1 sampai Level 10', 15000, 'pedas', 2, 18),
+(327, 'Burger Teriyaki', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1b0c4c1e-52f8-48c8-8cb3-402581be4ac0_Go-Biz_20210222_222305.jpeg?auto=format', 'Daging Sapi + Sayuran + Keju', 17500, '', 2, 18),
+(328, 'Seblak Suki', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5f5f99c3-e80a-4c0e-84ac-6399bc767bfd_Go-Biz_20210908_164645.jpeg?auto=format', 'Seblak Suki Dengan Super Pedas Di Taburi Bumbu Norri Rasa Rumput Laut', 18000, 'pedas', 2, 18),
+(329, 'Corn Dog', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/50c2b3ac-ed25-4cb1-be49-e23153b295c5_Go-Biz_20210908_164903.jpeg?auto=format', 'Corn Dog Isi Mozarella', 20000, '', 2, 18),
+(330, 'Burger Mini', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/468166de-29e8-4583-9eb1-7ebccd9c84e1_Go-Biz_20210908_165923.jpeg?auto=format', 'Burger Mini + Salad + Pedes + Keju', 7500, '', 2, 18),
+(331, 'Kebab Mini', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f62ff16c-8559-4afc-a4d4-6c59a1757a16_Go-Biz_20210908_170325.jpeg?auto=format', 'Kebab + Saos Keju + Saos Mayones', 7500, '', 2, 18),
+(332, 'Seblak Al Fathir', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/507881ed-1ac7-4dae-ab68-2f7407546428_Go-Biz_20210909_150242.jpeg?auto=format', 'Seblak Kerupuk + Makaroni + Pangsit', 17500, 'pedas', 2, 18),
+(333, 'Flower Twister Paket Besar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ac9d8229-dd77-4f3e-a798-77170e72bc1f_Go-Biz_20201207_205348.jpeg?auto=format', 'Saos Keju + Saos Mayones + Saos Pedas', 12000, 'pedas', 2, 18),
+(334, 'Fishroll Pedas', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/45a61374-e12d-4837-95ec-b85664c19718_Go-Biz_20201208_111702.jpeg?auto=format', 'Fisroll Pedas + Saos Pedes + Saos Barbeqiu', 12000, 'pedas', 2, 18),
+(335, 'Dumpling Ayam + Dumpling Cheese', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0a20c603-9b20-49c7-9ebf-b1ffb9c5e930_Go-Biz_20201208_111841.jpeg?auto=format', 'Saos Pedas + Saos Mayones', 12500, 'pedas', 2, 18),
+(336, 'Fofu Bakar (Tofu Bakar)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cd685d3e-f209-4a9d-be2f-f3cadcc07f17_Go-Biz_20201209_112644.jpeg?auto=format', 'Tofu + Saos Pedas + Saos Keju', 12500, 'pedas', 2, 18),
+(337, 'Baso Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9397e45c-2279-4609-a1fb-b7e26e108760_Go-Biz_20201209_114140.jpeg?auto=format', 'Baso Bakar + Saos Pedas + Saos Barbeqiu', 12500, 'pedas', 2, 18),
+(338, 'Lotek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d59d1df0-4739-4f1e-aee5-50d69b7da8a3_Go-Biz_20210923_112856.jpeg?auto=format', 'Lotek + Tahu bumbu kacang khas', 17500, '', 2, 18),
+(339, 'Ayam Geprek BeJeuk Barbeque (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5126a379-5196-4467-a264-4326027162d3_Go-Biz_20200921_132644.jpeg?auto=format', 'Ayam Paha Bawah / Sayap Level Kepedasan 0-5 Nb:Tanpa Nasi', 13000, 'pedas', 1, 19),
+(340, 'Ayam Geprek BeJeuk Lada Hitam (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/30afe731-8386-4baa-8ae4-01fc65efa650_Go-Biz_20200921_133016.jpeg?auto=format', 'Ayam Paha Bawah / Sayap Level Kepedasan 0-5', 13000, 'pedas', 1, 19),
+(341, 'Ayam Geprek BeJeuk Original (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ede03ecc-ad20-4135-87fc-68706b433eee_Go-Biz_20200921_132708.jpeg?auto=format', 'Ayam Paha Bawah / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 13000, 'pedas', 1, 19),
+(342, 'Ayam Geprek BeJeuk Rica Rica (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7f63ff6d-c347-402b-bbfa-860ecc1c1920_Go-Biz_20200921_132728.jpeg?auto=format', 'Ayam Paha Bawah / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 13000, 'pedas', 1, 19),
+(343, 'Ayam Geprek BeJeuk Sambel Ijo (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/25bd352d-4524-4837-9f36-c2c59dc5e3be_Go-Biz_20200921_132746.jpeg?auto=format', 'Ayam Paha Bawah / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 13000, 'pedas', 1, 19),
+(344, 'Ayam Geprek BeJeuk Saus Keju (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7243ddaa-64d1-4d4e-8b0e-8652d58ec642_Go-Biz_20200921_132800.jpeg?auto=format', 'Ayam Paha Bawah / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 13000, '', 1, 19),
+(345, 'Ayam Geprek BeJeuk Teriyaki (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/09d2d106-3001-4c29-a6e5-2cd837071c88_Go-Biz_20200921_132818.jpeg?auto=format', 'Ayam Paha Bawah / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 13000, '', 1, 19),
+(346, 'Ayam Crispy Original (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a9229885-8b9b-443a-ad23-bc2e2340c59e_42faa6c3-3131-4023-b3bd-530c12e0d223_Go-Biz_20200307_035403.jpeg?auto=format', 'Ayam Paha Bawah / Sayap. Tidak Pedas. Nb:Tanpa Nasi', 10500, '', 1, 19),
+(347, 'Ayam Geprek BeJeuk Mozarella (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bdeb475c-efcd-4c2c-a602-164198b0efbd_Go-Biz_20200921_132839.jpeg?auto=format', 'Pilihan Saus: Bbq/Teriyaki/Lada Hitam/Hot Lava/Rica Rica/Korean/Original/Sambel Ijo/Lava Cheese/Saus Keju. Kepedasan LV 0-5. Nb:Tanpa Nasi', 21500, 'pedas', 1, 19),
+(348, 'Ayam Geprek BeJeuk Keju Parut (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/02820ea9-5ab8-438f-a780-a78be888529c_Go-Biz_20200921_132856.jpeg?auto=format', 'Pilihan Saus: Bbq/Teriyaki/Lada Hitam/Hot Lava/Rica Rica/Korean/Demiglas/Original/Sambel Ijo/Lava Cheese/Saus Keju. Level Kepedasan.0-5. Nb:Tanpa Nasi', 17000, 'pedas', 1, 19),
+(349, 'Ayam Geprek BeJeuk Hot Fire (Reguler)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/eefc80cd-af60-4e0c-801a-313aefc11cc4_Go-Biz_20200901_222043.jpeg?auto=format', 'Pedasnya Bikin Nagih. Nb:Tanpa Nasi', 13000, 'pedas', 1, 19),
+(350, 'Ayam Geprek Bejeuk Korean (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5e76b642-a388-4ca4-87be-21afedfa4e0c_Go-Biz_20200921_132914.jpeg?auto=format', 'Ayam Paha Bawah / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 13000, 'pedas', 1, 19),
+(351, 'Ayam Geprek Bejeuk Lava Cheese (r)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e7fef2f3-8aff-4dd9-9c0d-e46f8cbc4c29_Go-Biz_20200921_132958.jpeg?auto=format', 'Ayam Paha Bawah / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 13000, 'pedas', 1, 19),
+(352, 'Ayam Geprek BeJeuk Barbeque (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/65a4eff9-25db-4fae-8fbb-481bb25f11dc_Go-Biz_20200921_133104.jpeg?auto=format', 'Ayam Paha Atas / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 16000, 'pedas', 1, 19),
+(353, 'Ayam Geprek BeJeuk Lada Hitam (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/062e4c67-6dbe-491d-800b-3001-4c29-a6e5-2cd837071c88_Go-Biz_20200921_132818.jpeg?auto=format', 'Ayam Paha Atas / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 16000, 'pedas', 1, 19),
+(354, 'Ayam Geprek BeJeuk Original (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f5c53790-c49d-472f-805e-316f1234ec69_Go-Biz_20200921_133121.jpeg?auto=format', 'Ayam Paha Atas / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 16000, 'pedas', 1, 19),
+(355, 'Ayam Geprek BeJeuk Rica Rica (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6f43774a-9b34-4d19-bb11-4db6db11a4da_Go-Biz_20200921_133136.jpeg?auto=format', 'Ayam Paha Atas / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 16000, 'pedas', 1, 19),
+(356, 'Ayam Geprek BeJeuk Sambel Ijo (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7e0fddc0-7c25-4052-b001-13921e22ce1a_Go-Biz_20200921_133152.jpeg?auto=format', 'Ayam Paha Atas / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 16000, 'pedas', 1, 19),
+(357, 'Ayam Geprek Saus Keju (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/196db0f6-a4ec-4b52-b929-0bdbcdd5be98_Go-Biz_20200921_133241.jpeg?auto=format', 'Ayam Paha Atas / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 16000, '', 1, 19),
+(358, 'Ayam Geprek BeJeuk Teriyaki (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/fd75758a-bc89-4225-86aa-01c19d6fe0cd_Go-Biz_20200921_133209.jpeg?auto=format', 'Ayam Paha Atas / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 16000, '', 1, 19),
+(359, 'Ayam Original Crispy (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6a71eedb-d302-46e7-bf7b-90282e4f4904_0a2ea29e-27e7-47bc-aa52-cbd4483a83d9_Go-Biz_20200307_041012.jpeg?auto=format', 'Ayam Paha Atas / Sayap. Tidak Pedas. Nb:Tanpa Nasi', 13000, '', 1, 19),
+(360, 'Ayam Geprek BeJeuk Keju Parut (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9b749067-c46e-4467-a264-4326027162d3_Go-Biz_20200921_132644.jpeg?auto=format', 'Pilihan Saus: Bbq/Teriyaki/Lada Hitam/Hot Lava/Rica Rica/Korean/Demiglas/Original/Sambel Ijo/Lava Cheese/Saus Keju. Level Kepedasan 0-5. Nb:Tanpa Nasi', 19500, 'pedas', 1, 19),
+(361, 'Ayam Geprek Mozarella (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d1238fe0-5607-4be5-b24f-4e010544e6b5_Go-Biz_20200921_133255.jpeg?auto=format', 'Pilihan Saus: Bbq/Teriyaki/Lada Hitam/Hot Lava/Rica Rica/Korean/Original/Sambel Ijo/Lava Cheese/Saus Keju. Level Kepedasan 0-5. Nb:Tanpa Nasi', 24000, 'pedas', 1, 19),
+(362, 'Ayam Geprek BeJeuk Hot Fire (Medium)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1b7fb2d0-0ec0-4f76-9271-c946899709c1_Go-Biz_20200901_222136.jpeg?auto=format', 'Pedasnya Bikin Nagih. Nb:Tanpa Nasi', 16000, 'pedas', 1, 19),
+(363, 'Ayam Geprek BeJeuk Korean (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9a0f3c83-eb1a-4800-87d9-b7728fd4057d_Go-Biz_20200921_133309.jpeg?auto=format', 'Ayam Paha Atas / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 16000, 'pedas', 1, 19),
+(364, 'Ayam Geprek BeJeuk Lava Cheese (m)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6f4369a6-9517-469c-83d6-bf8dafe85ba7_Go-Biz_20200921_133325.jpeg?auto=format', 'Ayam Paha Atas / Sayap Level Kepedasan 0-5. Nb:Tanpa Nasi', 16000, 'pedas', 1, 19),
+(365, 'Ayam Geprek BeJeuk Barbeque (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2356b70b-c38c-4bf7-a7a8-fe3aa68685ce_Go-Biz_20200921_133612.jpeg?auto=format', 'Ayam Dada (Jumbo) Level Kepedasan 0-5. Nb:Tanpa Nasi', 19000, 'pedas', 1, 19),
+(366, 'Ayam Geprek BeJeuk Lada Hitam (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d4c1c7b8-6bf4-4f2d-961b-46ed88fb21d6_Go-Biz_20200921_133853.jpeg?auto=format', 'Ayam Dada / Paha Atas (Jumbo) Level Kepedasan 0-5. Nb:Tanpa Nasi', 19000, 'pedas', 1, 19),
+(367, 'Ayam Geprek BeJeuk Original (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/87089ec5-0db2-4e60-bb37-88bd7122a99f_Go-Biz_20200921_133632.jpeg?auto=format', 'Ayam Dada (Jumbo) Level Kepedasan 0-5. Nb:Tanpa Nasi', 19000, 'pedas', 1, 19),
+(368, 'Ayam Geprek BeJeuk Rica Rica (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0fc39e70-3077-4535-ba03-3a5560bcb47f_Go-Biz_20200921_133648.jpeg?auto=format', 'Ayam Dada (Jumbo) Level Kepedasan 0-5. Nb:Tanpa Nasi', 19000, 'pedas', 1, 19),
+(369, 'Ayam Geprek BeJeuk Sambel Ijo (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a017ddee-e792-465d-94d9-3bf4ceac0242_Go-Biz_20200921_133705.jpeg?auto=format', 'Ayam Dada (Jumbo) Level Kepedasan 0-5. Nb:Tanpa Nasi', 19000, 'pedas', 1, 19),
+(370, 'Ayam Geprek BeJeuk Saus Keju (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/038dbde1-e356-4eb7-b8f3-e3dad2b19d90_Go-Biz_20200921_133718.jpeg?auto=format', 'Ayam Dada (Jumbo) Level Kepedasan 0-5. Nb:Tanpa Nasi', 19000, '', 1, 19),
+(371, 'Ayam Geprek BeJeuk Teriyaki (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2df959d9-d5b2-4ddb-bf9c-694ed5715d62_Go-Biz_20200921_133731.jpeg?auto=format', 'Ayam Dada (Jumbo) Level Kepedasan 0-5. Nb:Tanpa Nasi', 19000, '', 1, 19),
+(372, 'Ayam Original Crispy (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/77e26ef6-a32c-4108-8b12-fbcd0a26bf38_98e2b170-1d38-46dd-8003-1fe76ca2ccaa_Go-Biz_20200307_042036.jpeg?auto=format', 'Ayam Dada (Jumbo). Tidak Pedas. Nb:Tanpa Nasi', 17000, '', 1, 19),
+(373, 'Ayam Geprek Keju Parut (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/89c71202-ce8e-4b09-b681-7b4a7464e77d_Go-Biz_20200921_133752.jpeg?auto=format', 'Pilihan Saus: Bbq/Teriyaki/Lada Hitam/Hot Lava/Rica Rica/Korean/Demiglas/Original/Sambel Ijo/Lava Cheese/Saus Keju. Level Kepedasan: 0-5. Nb:Tanpa Nasi', 22500, 'pedas', 1, 19),
+(374, 'Ayam Geprek Mozarella (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1a4626e9-bfb6-42d6-a413-763bbd880315_Go-Biz_20200921_133808.jpeg?auto=format', 'Pilihan Saus: Bbq/Teriyaki/Lada Hitam/Hot Lava/Rica Rica/Korean/Original/Sambel Ijo/Lava Cheese/Saus Keju. Level Kepedasan 0-5. Nb:Tanpa Nasi', 27000, 'pedas', 1, 19),
+(375, 'Ayam Geprek BeJeuk Hot Fire (Jumbo)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/982bd8c8-947a-46cb-8cae-57b6c1732c63_Go-Biz_20200901_222229.jpeg?auto=format', 'Pedasnya Bikin Nagih. Nb:Tanpa Nasi', 19000, 'pedas', 1, 19),
+(376, 'Ayam Geprek BeJeuk Korean (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/860130f8-cfdb-47b3-b009-0b0759a5baf9_Go-Biz_20200921_133821.jpeg?auto=format', 'Ayam Dada / Paha Atas (Jumbo) Level Kepedasan 0-5. Nb:Tanpa Nasi', 19000, 'pedas', 1, 19),
+(377, 'Ayam Geprek Bejeuk Lava Cheese (j)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/58f5e617-33a7-49e4-9ccd-91c58f165468_Go-Biz_20200921_133836.jpeg?auto=format', 'Ayam Dada / Paha Atas (Jumbo) Level Kepedasan 0-5. Nb:Tanpa Nasi', 19000, 'pedas', 1, 19),
+(378, 'SUHE 1 (Super Hemat)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c6b30fa1-134f-4c99-8f50-7ccec9fd2e55_Go-Biz_20210301_034321.jpeg?auto=format', 'Ayam Geprek BeJeuk (All Variant Saus, Kecuali Mozarella Dan Keju Parut) + Nasi Level Kepedasan 0-5', 18000, 'pedas', 1, 19),
+(379, 'Saling Berbagi Dengan Mitra Driver', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/da392e15-7b00-499d-beb9-ed684daa85c7_Go-Biz_20201211_195531.jpeg?auto=format', 'Saling berbagi di akhir tahun dengan traktir Mitra Pengemudimu. 1 Ayam BeJeuk + 1 Nasi.', 15000, 'pedas', 1, 19),
+(380, 'Paket Mantul 1', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/42994661-8657-4b3e-944b-bfa3b01413da_5856547d-3ae7-417d-ae57-aa779590f9c9_Go-Biz_20190709_160211.jpeg?auto=format', 'Ayam Regular + Nasi + Teh Pucuk. Level Kepedasan 1-5.', 22000, 'pedas', 1, 19),
+(381, 'Paket Mantul 2', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4629ca61-7eeb-4165-8418-c1c886c5509f_fc683783-fe06-4465-9983-55a5aa83133f_Go-Biz_20190709_160335.jpeg?auto=format', 'Ayam Medium + Nasi + Teh Pucuk. Level Kepedasan 1-5.', 25000, 'pedas', 1, 19);
+INSERT INTO `menu` (`id_menu`, `nama_menu`, `foto_menu`, `deskripsi`, `harga`, `rasa`, `id_kategori`, `id_toko`) VALUES
+(382, 'Paket Mantul 3', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/31bbab1e-81b8-4d7f-aba6-abc9ceba41dd_f36f3eab-2431-4a86-95de-d99f062acf28_Go-Biz_20190709_160447.jpeg?auto=format', 'Ayam Jumbo + Nasi + Teh Pucuk. Level Kepedasan 1-5.', 27500, 'pedas', 1, 19),
+(383, 'Paket Ayam + Nasi + Ichitan Tea Coffee', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/81cbb431-202f-47f6-8be1-9cde83caa7f8_Go-Biz_20210317_193102.jpeg?auto=format', 'Ayam Medium + Nasi + Teh Pucuk / Kopi Ichitan. Level Kepedasan 1-5.', 35000, 'pedas', 1, 19),
+(384, 'Ayam Bejeuk + Nasi + Ichithan Green Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c4e46c91-ed39-4fd0-adab-1ca21ecfa926_Go-Biz_20210317_193348.jpeg?auto=format', 'Ayam Medium + Nasi + Teh Pucuk / Green Tea Ichitan. Level Kepedasan 1-5.', 35000, 'pedas', 1, 19),
+(385, 'Ayam Bejeuk + Nasi + Ichitan Tea Manggo Coconut', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/441ce590-ca63-4c66-bd8f-a0a3a950b479_Go-Biz_20210317_193557.jpeg?auto=format', 'Ayam Medium + Nasi + Teh Pucuk / Mango Coconut Ichitan. Level Kepedasan 1-5.', 35000, 'pedas', 1, 19),
+(386, 'Pempek Paket Hemat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8e554f22-7585-49d8-af9f-6113185d1ca2_Go-Biz_20210228_160648.jpeg?auto=format', 'Pempek Siap Goreng Isi : 2Lenjer + 2Telur Kocok + 1Kulit + 1 Cuko', 25000, 'asam', 1, 19),
+(387, 'Pempek Paket 2', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3295426c-9e7c-49d1-902f-8512c5cfeb9f_Go-Biz_20210228_161219.jpeg?auto=format', 'Pempek Siap Goreng Isi : 4Lenjer + 4Telur Kocok + 2Kulit + 2 Cuko', 50000, 'asam', 1, 19),
+(388, 'Paket Nasi Gulai Tunjang Kaki Sapi (Kikil)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/970aa8a9-75df-4935-ba9a-0924abdcc177_Go-Biz_20260401_225309.jpeg?auto=format', 'Nasi putih dengan gulai tunjang sapi kaya rempah dan cita rasa otentik, lengkap sambal dan lalapan serta jangan lupa sayur nangkanya juga.', 42000, '', 1, 20),
+(389, 'Paket Nasi Dendeng Batokok Lado Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6007cc28-aca9-4ad6-a5f3-d785573e3a08_Go-Biz_20260401_224725.jpeg?auto=format', 'Paket nasi komplit lauk dendeng batokok dengan sambal lado hijau khasnya yang menggoda selera.', 29000, 'pedas', 1, 20),
+(390, 'Paket Nasi Cumi Goreng Lado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f76872f8-703b-4e90-a9c2-672e720705da_Go-Biz_20260401_224939.jpeg?auto=format', 'Cumi goreng dengan irisan cabe dan tomat menambah segar dan gurih, dipadukan nasi lengkap dengan sayur nangka, lalapan, dan sambal. Istimewa !', 26000, 'pedas', 1, 20),
+(391, 'Paket Nasi Ayam Rendang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/96102937-af3f-4cf5-a86e-0453e8bfd20f_Go-Biz_20260401_215707.jpeg?auto=format', 'Ayam dibumbui dengan Bumbu rendang khas Minang yang sangat ciamik, dagingnya empuk ditambah nasi dengan kuah gulai, lalapan, sayur nangka dan sambal. Selalu ada kenikmatan disetiap suapan.', 26000, 'pedas', 1, 20),
+(392, 'Paket Nasi Ayam Lado Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/31c13bcf-a52f-45fc-8517-50f66e3f8186_Go-Biz_20260401_211758.jpeg?auto=format', 'Ayam goreng dicambur cabe hijau semakin nikmat ditambah nasi lengkap dengan lalapan, sayur nangka, sambal disiriam kuah gulai yang semakin nikmat.', 26000, 'pedas', 1, 20),
+(393, 'Paket Nasi Ayam Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/331a0f0d-4823-4189-8a79-d2afbb71c3c0_Go-Biz_20260401_211044.jpeg?auto=format', 'Ayam goreng dengan cabe merah ditambah nasi dengan siraman kuah gulai ditambah lalapan, sambal dan sayur nangka yang sangat maknyooosss.', 26000, 'pedas', 1, 20),
+(394, 'Paket Nasi Ayam Gulai / Ayam Sayur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ee93c2a6-6c2f-494e-bd2c-d47d1d27e819_Go-Biz_20260401_225115.jpeg?auto=format', 'Nasi lengkap dengan ayam gulai lembut dan gurih santan khas Minang.', 26000, '', 1, 20),
+(395, 'Paket Nasi Ayam Goreng Bumbu / Serundeng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/dcacb165-687e-46e0-9539-a38ad434121b_Go-Biz_20260401_223823.jpeg?auto=format', 'Paket nasi putih komplit dengan lauk ayam goreng kemudian ditaburi bumbu/serundeng khas minang rasa nya gurih dan mantap.', 26000, '', 1, 20),
+(396, 'Paket Nasi Ayam Pop', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1e5e752c-7935-49be-93fe-d19836b9b4f1_Go-Biz_20260403_235819.jpeg?auto=format', 'Nasi hangat dipadukan ayam pop gurih, sambal khas padang, dan lalapan serta sayur nangka yang menggoda selera.', 26000, '', 1, 20),
+(397, 'Paket Nasi Ikan Kembung Balado / Sambal Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1edd2b4a-6a0a-4021-ac32-413c48f1b967_Go-Biz_20260401_210346.jpeg?auto=format', 'Ikan kembung digoreng garing, ditaburi sambal merah atau boleh juga dengan sambal hijau, lengkap dengan nasi+sayur nangka+lalapan+sambal.', 24000, 'pedas', 1, 20),
+(398, 'Paket Nasi Ikan Tongkol Goreng Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ae8f2234-b42f-4d78-aea5-90b849840206_Go-Biz_20260403_235851.jpeg?auto=format', 'Nasi hangat dengan ikan tongkol balado dengan sayuran komplit.', 20000, 'pedas', 1, 20),
+(399, 'Paket Nasi Kepala Tongkol Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b95e6e32-69fe-4169-89aa-285d29e4391b_Go-Biz_20260401_211648.jpeg?auto=format', 'Paket nasi komplit dengan kepala tongkol dan sambal balado merah yang menggoda.', 20000, 'pedas', 1, 20),
+(400, 'Paket Nasi Ikan Nila Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1800683c-bb3a-4194-a483-7365e42d2b3c_Go-Biz_20260401_223951.jpeg?auto=format', 'Nasi putih disajikan dengan ikan nila goreng garing dan sambal balado serta lalapan dan sayur nangka juga.', 20000, 'pedas', 1, 20),
+(401, 'Paket Nasi Patin Goreng Lado Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c9561226-f523-4926-8970-4cd790fb28cd_Go-Biz_20260401_210459.jpeg?auto=format', 'Nasi lengkap dengan ikan patin goreng dengan sambal hijau serta jangan lupa sayur nangka beserta lalapannya juga.', 20000, 'pedas', 1, 20),
+(402, 'Paket Nasi Patin Goreng Lado Merah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1255cb81-8eb7-4908-8846-9fac068b8659_Go-Biz_20260402_234344.jpeg?auto=format', 'Nasi lengkap dengan ikan patin goreng dengan sambal merah serta jangan lupa sayur nangka beserta lalapannya juga.', 20000, 'pedas', 1, 20),
+(403, 'Paket Nasi Lele Sambel Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bccd316a-ff58-42cb-a54f-925659c635df_Go-Biz_20260402_234331.jpeg?auto=format', 'Nasi lembut disajikan dengan lele goreng garing dan sambal hijau serta jangan lupa lalapan dan sayur nangkanya juga.', 20000, 'pedas', 1, 20),
+(404, 'Paket Nasi Gulai Ikan Tongkol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/30a9a734-310d-4676-907a-a2dbbc3fe453_a7794325-95e0-492a-9785-f7ede3530f33_Go-Biz_20200104_111918.jpeg?auto=format', 'Paket nasi komplit dengan lauk gulai ikan tongkol yang gurih, serta kaya rempah khas minang yang mengunggah selera.', 20000, '', 1, 20),
+(405, 'Paket Nasi Gulai Kepala Ikan Tongkol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e5b1e2f9-1387-4d07-9f26-59a459205a0b_Go-Biz_20241022_135423.jpeg?auto=format', 'Paket nasi komplit dengan lauk gulai kepala ikan tongkol yang gurih, serta kaya rempah khas minang yang mengunggah selera.', 20000, '', 1, 20),
+(406, 'Paket Nasi Gulai Ikan Patin', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c22e8ddc-02b5-400d-a16b-7a30a61cd8a5_Go-Biz_20240316_144300.jpeg?auto=format', 'Paket nasi komplit dengan lauk gulai ikan patin yang gurih, serta kaya rempah khas minang yang mengunggah selera.', 20000, '', 1, 20),
+(407, 'Paket Nasi Rendang (Daging Sapi)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5cac92fb-dbc9-4a1c-8681-573218657c1f_Go-Biz_20260412_201053.jpeg?auto=format', 'Nasi lengkap dengan rendang sapi khas Minang, lalapan, sayur nangka, sambal hijau, dan kuah gulai. (Harga Promo)', 26000, 'pedas', 1, 20),
+(408, 'Paket Nasi Gulai Cincang Sapi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2b91a106-601a-4ee4-9779-20e964afd3ca_Go-Biz_20260402_230153.jpeg?auto=format', 'Olahan gulai cincang sapi dimasak dengan bumbu gulai khas Minang kaya rempah, sehingga tidak bau amis dan wangi rempah rempah yang nikmat ditambah dengan nasi. lalapan, sambal, dan gulai nangka semakin nikmat disantap.', 26000, 'pedas', 1, 20),
+(409, 'Paket Nasi Gulai Kikil (Kulit)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/90adfd46-9eed-4846-a4fa-187791cce74a_Go-Biz_20240317_205306.jpeg?auto=format', 'Paket nasi putih dengan lauk gulai kikil kenyal dengan kuah rempah kaya rasa yang menggoda selera.', 31000, '', 1, 20),
+(410, 'Paket Nasi Gulai Babat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ef6cf08c-c254-4073-a613-68f89eda2be1_Go-Biz_20250130_132815.jpeg?auto=format', 'Nasi putih disajikan dengan gulai babat kaya rempah, lalapan segar dan sambal serta sayur nangka yang menggoda selera.', 26000, '', 1, 20),
+(411, 'Paket Nasi Asam Padeh Gajeboh', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a3ea35d3-1e41-44c3-ae4b-bd4c1cf1b16a_Go-Food-Merchant_20251107_151636.jpeg?auto=format', 'Nasi asam padeh gajeboh pedas dan segar kaya rempah, lengkap dengan lalapan,sambal dan sayur nangka.', 26000, 'pedas', 1, 20),
+(412, 'Paket Nasi Rendang Limpa', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/29d3432d-7f5c-4cd4-bf58-e600f8bb3a3e_Go-Food-Merchant_20250617_115727.jpeg?auto=format', 'Nasi lengkap dengan rendang limpa yang menggoda selera.', 28000, 'pedas', 1, 20),
+(413, 'Paket Nasi Gulai Kalio Hati Sapi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/67f1023a-5b61-426a-b239-7b19182ddd27_Go-Food-Merchant_20250617_115854.jpeg?auto=format', 'Paket nasi komplit disajikan dengan gulai kalio hati sapi yang kaya rempah.', 26000, '', 1, 20),
+(414, 'Paket Nasi Dendeng Batokok Lado Merah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c9b6abcd-9687-4585-b53a-37e032346298_Go-Biz_20240114_120808.jpeg?auto=format', 'Paket nasi komplit dengan lauk dendeng batokok lado merah yang menggoda selera.', 29000, 'pedas', 1, 20),
+(415, 'Paket Nasi Udang Cabe Merah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4844c188-9de2-48a0-ad05-98ae3a5c3dd4_Go-Biz_20260402_234317.jpeg?auto=format', 'Udang Laut digoreng gurih dicambur cabe merah, disantap dengan nasi lengkap lalapan sayur nangka dan disiram kuah mantap buat pembangkit selera.', 26000, 'pedas', 1, 20),
+(416, 'Paket Nasi Paru Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3597a8d3-d94f-490d-a38c-419be8a9c4f9_Go-Biz_20260401_220128.jpeg?auto=format', 'Paket nasi komplit dengan lauk paru goreng yang menggoda selera.', 28000, '', 1, 20),
+(417, 'Paket Nasi Ikan Salam Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/eb1f5f0b-345a-40c9-827b-717570837bb0_1120c7cc-0da1-4fe9-a00a-c0dcd36d2bf5_Go-Biz_20190705_190544.jpeg?auto=format', 'Sajian ikan salam yang di goreng kemudian dicampur cabe merah dipadukan dengan nasi lengkap dengan lalapan, sayur nangka, sambal merah, disiram kuah gulai yang menambah kegurihan dalam setiap suapan nya.', 24000, 'pedas', 1, 20),
+(418, 'Paket Nasi Ikan Mas Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/52fbd324-d8fb-41f0-99c7-ea3cef7c73f3_Go-Food-Merchant_20250817_112325.jpeg?auto=format', 'Paket nasi komplit dipadukan dengan ikan mas goreng renyah dan segar.', 20000, '', 1, 20),
+(419, 'Paket Nasi Gulai Kepala Kakap', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cdb3795f-0d7d-4253-aab9-bfff096d0e70_Go-Food-Merchant_20260412_201610.jpeg?auto=format', 'Paket Nasi Lengkap Dengan Lauk Gulai Kepala Kakap Yang Menggoda Selera.', 35000, '', 1, 20),
+(420, 'Paket Nasi Asam Padeh Tongkol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/768c88d5-fa5c-483c-84f7-190fb1f22b55_Go-Biz_20260402_230359.jpeg?auto=format', 'Paket nasi komplit dengan lauk asam pedas tongkol khas minang yang mengunggah selera.', 20000, 'pedas', 1, 20),
+(421, 'Paket Nasi Asam Padeh Kepala Tongkol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a85dec49-72f6-4dfa-bf99-7fa1fadb5ecc_Go-Biz_20260401_225706.jpeg?auto=format', 'Paket nasi komplit dengan lauk asam pedas kepala tongkol khas minang yang mengunggah selera.', 20000, 'pedas', 1, 20),
+(422, 'Paket Nasi Asam Padeh Ikan Patin', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d8b168d6-a510-4ea1-a7b3-0d3364c81392_Go-Biz_20260401_225521.jpeg?auto=format', 'Paket nasi komplit dengan lauk asam pedas ikan patin khas minang yang mengunggah selera.', 20000, 'pedas', 1, 20),
+(423, 'Paket Nasi Pindang Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0e5748b0-b1ed-4e06-9889-0e4fc87214b6_Go-Biz_20260407_220211.jpeg?auto=format', 'Pindang digoreng dibumbu cabe merah yang nikmat dan gurih ditambah nasi lengkap dengan lalapan, sayur nangka, sambal, disiram dengan kuah gulai semakin nikmat untuk memanjakan lidah.', 19000, 'pedas', 1, 20),
+(424, 'Paket Nasi Telur Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3e98a117-33ae-41c3-bae7-ada4aa0fbfc6_Go-Biz_20260401_224054.jpeg?auto=format', 'Telur digoreng dibumbui cabe merah dipadukan nasi lengkap lalapan, sayur nangka, sambal, dan disiram kuah gulai yang semakin nikmat dan harga pas dikantong.', 19000, 'pedas', 1, 20),
+(425, 'Paket Nasi Gulai Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4f5893ed-68ab-4e5c-b3d5-d5877c7a66b9_Go-Biz_20260412_201845.jpeg?auto=format', 'Telur bulat yang digulai dipadukan nasi lengkap lalapan, sayur nangka, sambal, dan disiram kuah gulai yang semakin nikmat dan harga pas dikantong.', 19000, '', 1, 20),
+(426, 'Paket Nasi Perkedel Kentang + Tahu Tempe', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/18be668a-8fc9-4cf8-861d-d8620b9bed24_Go-Biz_20260402_234300.jpeg?auto=format', 'Paket nasi komplit dengan lauk satu perkedel kentang dan satu tahu tempe yang menggugah selera.', 19000, '', 1, 20),
+(427, 'Paket Nasi Tahu Tempe', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1036ec6c-ab3b-4058-8033-39a09e129058_Go-Biz_20260401_224837.jpeg?auto=format', 'Paket nasi komplit dengan lauk dua tahu, dua tempe yang menggoda selera.', 19000, '', 1, 20),
+(428, 'Paket Nasi Ati Ampela Goreng Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/24452319-b8b2-41d5-8236-b26839db0b4b_Go-Biz_20260401_224425.jpeg?auto=format', 'Paket nasi putih komplit disajikan dengan ati ampela goreng lado merah yang menggoda.', 19000, 'pedas', 1, 20),
+(429, 'Paket Nasi Asin Tempe Cabe Merah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bd23d86f-97e8-4c81-be4e-69bc8bc348ac_e701f32d-1beb-4bc5-862c-d2784c79ef70_Go-Biz_20190702_095717.jpeg?auto=format', 'Sajian Asin + tempe digoreng dengan sambel cabe merah dipadukan nasi dan lalapan disiram kuah gulai membuat gurih disetiap suapannya.', 19000, 'pedas', 1, 20),
+(430, 'Paket Nasi Telor Dadar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a2a9fbdd-d5c8-427e-8d24-45e66c33d28f_Go-Biz_20260402_234239.jpeg?auto=format', 'Paket nasi putih komplit dengan lauk telor dadar yang menggoda selera.', 19000, '', 1, 20),
+(431, 'Paket Nasi Rendang Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7983ea47-18ed-434b-bca8-3eadf69c1095_Go-Food-Merchant_20260401_213236.jpeg?auto=format', 'Paket nasi lengkap dengan rendang telur lembut, cita rasa kaya rempah khas Minang dan menggoda untuk disantap.', 19000, 'pedas', 1, 20),
+(432, 'Paket Nasi Ikan Bilis Kering/maco Bilis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3cc2ebeb-27f9-403b-8230-6875475472fc_Go-Biz_20230325_150932.jpeg?auto=format', 'Paket Nasi Putih Komplit Dengan Lauk IIkan Bilis Kering/maco Bilis Digoreng Garing Kemudian Disambal Hijau.rasanya Mantap...', 19000, 'pedas', 1, 20),
+(433, 'Paket Nasi Teri Goreng Petay', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/35487fa0-29e4-4a7d-a4f3-fe141e19c786_Go-Biz_20260401_224539.jpeg?auto=format', 'Nasi teri goreng petay lengkap dengan sambal, lalapan serta sayur nangka juga.', 19000, 'pedas', 1, 20),
+(434, 'Paket Nasi Teri Goreng Kacang Dan Tempe', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d2d66704-01d3-40d1-b3d8-1da74b7a3648_Go-Biz_20230522_111358.jpeg?auto=format', 'Nasi teri goreng kacang tempe lengkap dengan sambal, lalapan serta sayur nangka juga.', 19000, 'pedas', 1, 20),
+(435, 'Paket Nasi Taruang Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f0fd1a56-f8d1-4bf5-a007-a0c8a5fc25fe_Go-Biz_20260401_224318.jpeg?auto=format', 'Nasi lengkap dengan terong balado yang menggoda.', 19000, 'pedas', 1, 20),
+(436, 'Paket Nasi Jengkol Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5a275cdd-0903-41cd-94e8-46d8aaba5e18_Go-Biz_20220823_154114.jpeg?auto=format', 'Paket nasi komplit dengan lauk jengkol balado yang menggoda selera.', 19000, 'pedas', 1, 20),
+(437, 'Gulai Tunjang Kaki Sapi (Kikil)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/385d6af1-38c5-41d9-be11-a460cc817c64_Go-Biz_20260402_234923.jpeg?auto=format', 'Gulai tunjang sapi khas Minang, rempah gurih dan daging lembut.', 30000, '', 1, 20),
+(438, 'Dendeng Batokok Lado Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b85147f2-5f21-4300-aa0b-6d05f40db0a4_Go-Biz_20260402_234847.jpeg?auto=format', 'Dendeng batokok ditambah dengan lado khas Minang.', 22000, 'pedas', 1, 20),
+(439, 'Cumi Goreng Lado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/99e22574-4327-4699-9667-49611457a92d_Go-Biz_20260402_234948.jpeg?auto=format', 'Cumi goreng dicampur potongan cabe dan tomat sehingga rasanya yang asin, pedas, segar, yang meningkatkan selera makan.', 18000, 'pedas', 1, 20),
+(440, 'Ayam Rendang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ca8d76c0-9667-46d6-867d-6b297cb7dfc4_Go-Biz_20260402_234909.jpeg?auto=format', 'Ayam yang dimasak dengan bumbu rendang khas Minang, sangat nikmat apalagi dimakan dengan nasi disantap dengan keluarga, pasangan atau sendiri. Membuat perut kenyang dan berkah.', 18000, 'pedas', 1, 20),
+(441, 'Ayam Lado Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3296fcea-7843-468b-a996-3788bccd6ee2_Go-Biz_20260402_234512.jpeg?auto=format', 'Ayam goreng (Paha dan Dada) dibumbui cabe hijau digoreng, rasanya gurih dan pedas membuat selera makan bertambah.', 18000, 'pedas', 1, 20),
+(442, 'Ayam Gulai', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/673c139b-4330-433f-b47d-435d70c23931_Go-Biz_20260402_234936.jpeg?auto=format', 'Ayam Gulai khas minang yang enak dan lembut serta gurih santan nikmat untuk disantap.', 18000, '', 1, 20),
+(443, 'Ayam Goreng Bumbu / Serundeng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f4ef1876-dae0-49a5-b780-86ab1b76a1b4_Go-Biz_20260402_234818.jpeg?auto=format', 'Ayam goreng bumbu atau bisa disebut ayam serundeng yang mengunggah selera.', 18000, '', 1, 20),
+(444, 'Ayam Goreng Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3e3b151a-a396-4492-b994-358ca6eee23f_Go-Biz_20260402_234553.jpeg?auto=format', 'Ayam goreng dengan bumbu cabe merah yang segar sehingga nikmat dimakan dengan nasi.', 18000, 'pedas', 1, 20),
+(445, 'Ayam Pop', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6fa2ab78-15cf-4214-958d-6e67f12f06f6_Go-Biz_20260403_235913.jpeg?auto=format', 'Ayam pop dan sambal khas padang yg mengunggah selera.', 18000, '', 1, 20),
+(446, 'Ikan Kembung Balado / Sambal Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/caf491b8-2e8d-4025-b753-d55e9492790f_Go-Biz_20260402_234525.jpeg?auto=format', 'Ikan kembung yang digoreng lalu dicampuri sambal merah maupun sambal hijau yang menggugah selera (boleh request mau dicampur sambal merah atau sambal hijau).', 17000, 'pedas', 1, 20),
+(447, 'Ikan Nila Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/19ff085a-d65f-4e8b-aeb7-c806d25b0fea_Go-Biz_20260402_234756.jpeg?auto=format', 'Ikan nila yang digoreng lalu dicampur dengan sambal balado maupun sambal hijau yang mantap (boleh request pake sambal merah atau hijau).', 16000, 'pedas', 1, 20),
+(448, 'Patin Goreng Lado Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3f75cb39-4bf6-4286-a715-8d77674aeecf_Go-Biz_20260402_234446.jpeg?auto=format', 'Patin goreng renyah dengan sambal hijau.', 16000, 'pedas', 1, 20),
+(449, 'Patin Goreng Lado Merah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/005823fc-88ff-49e9-9b87-826c33209b24_Go-Biz_20260402_234709.jpeg?auto=format', 'Patin goreng renyah dengan sambal balado.', 16000, 'pedas', 1, 20),
+(450, 'Ikan Tongkol Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/01500b88-1f61-450e-bd54-7ff1d0f7e22a_Go-Biz_20260403_235934.jpeg?auto=format', 'Ikan tongkol goreng disirami sambal balado yang menggugah selera.', 16000, 'pedas', 1, 20),
+(451, 'Kepala Tongkol Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/fd023edb-169d-4b18-9466-2612bb07e484_Go-Biz_20260402_234608.jpeg?auto=format', 'Kepala Ikan tongkol goreng disirami sambal balado yang menggugah selera.', 16000, 'pedas', 1, 20),
+(452, 'Lele Cabe Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/acae2c57-36dd-4036-8f5f-fd6ddaaa0e71_Go-Biz_20260402_234430.jpeg?auto=format', 'Ikan lele yang digoreng dikasih sambal hijau yang mantap.', 16000, 'pedas', 1, 20),
+(453, 'Gulai Ikan Tongkol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/13f36594-2693-4792-ba02-c63415566a4e_f6c0805b-420a-4b50-a5a3-6a096cad06fc_Go-Biz_20200121_105034.jpeg?auto=format', 'Gulai Ikan tongkol dengan kuah santan lezat khas Minang.', 16000, '', 1, 20),
+(454, 'Gulai Kepala Ikan Tongkol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0d7fc718-235b-4177-a7bf-535d08c7fd00_Go-Biz_20241022_140116.jpeg?auto=format', 'Gulai Kepala Ikan tongkol dengan kuah santan lezat khas Minang.', 16000, '', 1, 20),
+(455, 'Gulai Ikan Patin', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a237aa84-7e43-4e39-bd55-3a83a96d86d8_Go-Biz_20240316_144351.jpeg?auto=format', 'Gulai Ikan patin dengan kuah santan lezat khas Minang.', 16000, '', 1, 20),
+(456, 'Pindang Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3806e02d-f05f-4ef3-967c-35d424d6315c_Go-Biz_20260407_220232.jpeg?auto=format', 'Ikan Pindang di goreng and dibumbui cabe merah. kelembutan ikan pindang dan gurihnya cabe tambah nikmat dalam setiap suapan.', 10000, 'pedas', 1, 20),
+(457, 'Telur Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b2431fd7-5803-4c9f-af57-9fab53abe1f1_Go-Biz_20260402_234625.jpeg?auto=format', 'Telur bulat yang dengan bumbu cabe merah yang terasa sangat gurih dan nikmat disantap dengan nasi. Harga irit, perut kenyang, hati senang.', 10000, 'pedas', 1, 20),
+(458, 'Gulai Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cd713016-c577-4cee-b6fb-cbdb7e607753_Go-Biz_20240307_114211.jpeg?auto=format', 'Telur rebus yang digulai rempah khas Minang.', 10000, '', 1, 20),
+(459, 'Nasi Putih', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3557dd20-f0f5-45ef-bd37-f36dd20abc2c_d48a9073-372f-4ac8-aa3d-aa1ec789b885_Go-Biz_20190705_193734.jpeg?auto=format', 'Nasi putih temannya lauk,gabakal kenyang kalo makan lauk tanpa sebongkah nasi.', 10000, '', 1, 20),
+(460, 'Perkedel Kentang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e14e4d3b-187f-452d-8d92-5ef84f07d2b6_Go-Biz_20260402_234416.jpeg?auto=format', 'Perkedel kentang lembut dan gurih, cocok sebagai lauk pelengkap.', 8000, '', 1, 20),
+(461, 'Tahu Tempe', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3de84881-eaa9-4cf0-ad43-624568983796_Go-Biz_20260402_234835.jpeg?auto=format', '1tahu 2 tempe atau bebas yang penting 3 buah ,,bisa tambahkan di catatan mau ditambah sambal merah, hijau ataupun kuah gulai.', 8000, '', 1, 20),
+(462, 'Rendang Sapi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/dfcd5c91-1e77-493b-b2b0-56d800f3b717_Go-Biz_20260402_234858.jpeg?auto=format', 'Sajian daging sapi yang direndang khas minang, dengan berbagai macam rempah-rempah dan santan yang menggugah selera.', 20000, 'pedas', 1, 20),
+(463, 'Gulai Cincang Sapi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8e70f2f8-56bc-44b2-8fea-decbb22040f3_Go-Biz_20260402_230254.jpeg?auto=format', 'Gulai cincang sapi dimasak dengan gulai Khas Minang dengan rempah-rempah. Sangat nikmat untuk dinikmati.', 23000, 'pedas', 1, 20),
+(464, 'Gulai Kikil (Kulit)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d2e315a8-04cc-497d-a9e7-a68c65e10e59_Go-Biz_20240317_205337.jpeg?auto=format', 'Gulai kikil kulit lembut, kuah kaya rempah khas minang yang menggoda selera.', 23000, '', 1, 20),
+(465, 'Gulai Babat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/689ca329-725d-4bbc-82f6-c980e96ef1f9_Go-Biz_20250130_132916.jpeg?auto=format', 'Gulai babat khas minang yang kaya rempah.', 18000, '', 1, 20),
+(466, 'Asam Padeh Gajeboh', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2a3525df-75cc-411f-8f17-8ca41deb8a44_Go-Biz_20251107_183425.jpeg?auto=format', 'Lauk asam padeh gajeboh yang mengunggah selera.', 18000, 'pedas', 1, 20),
+(467, 'Gulai Kalio Limpa', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/113e4681-5ecf-4dfb-b4bc-9c0d0c8d5fa8_Go-Food-Merchant_20250617_120020.jpeg?auto=format', 'gulai kalio limpa yang mengunggah selera', 20000, 'pedas', 1, 20),
+(468, 'Gulai Kalio Hati Sapi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cbc39362-01a8-4d86-a387-8be761a9eaff_Go-Food-Merchant_20250617_120056.jpeg?auto=format', 'Gulai kalio hati sapi yang mengunggah selera.', 18000, '', 1, 20),
+(469, 'Dendeng Batokok Lado Merah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6d5da3ec-7041-4747-a8cd-cd5c192a8721_Go-Biz_20240114_121356.jpeg?auto=format', 'Dendeng batokok dengan sambal merah khasnya.', 22000, 'pedas', 1, 20),
+(470, 'Udang Goreng Cabe Merah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/66b0403c-5045-44ea-a39a-10fdc1d4afe2_Go-Biz_20260402_234539.jpeg?auto=format', 'Udang laut yang digoreng renyah ,lalu dicampur cabe merah yang menggoda selera.', 18000, 'pedas', 1, 20),
+(471, 'Paru Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/68f3d4c4-c643-4568-b4d2-04a0a9aba0a8_Go-Biz_20260402_234808.jpeg?auto=format', 'Paru goreng yang mengunggah selera.', 20000, '', 1, 20),
+(472, 'Ikan Salam Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5e3dcae1-be8e-4590-bc85-712b6abb9ef1_Go-Biz_20240709_113713.jpeg?auto=format', 'Sajian ikan salam yang di goreng kemudian dicampur cabe merah dipadukan dengan nasi lengkap dengan lalapan, sayur nangka, sambal merah, disiram kuah gulai yang menambah kegurihan dalam setiap suapan nya.', 17000, 'pedas', 1, 20),
+(473, 'Ikan Mas Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2593a98e-c309-4ff8-ad2f-6b1e17d5ec09_Go-Food-Merchant_20250817_112406.jpeg?auto=format', 'Ikan mas goreng renyah, gurih yang menggoda selera.', 16000, '', 1, 20),
+(474, 'Gulai Kepala Kakap', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ba0f390d-7d05-41a2-b158-9ef0e2ef7e5b_Go-Food-Merchant_20260412_201900.jpeg?auto=format', 'Gulai Kepala Kakap Khas Minang.', 27000, '', 1, 20),
+(475, 'Asam Padeh Tongkol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1a2154a9-0f3e-4a49-88d0-cc3a9c7fb441_Go-Biz_20260402_234153.jpeg?auto=format', 'Asam pedas Ikan tongkol dengan kuah segar khas Minang.', 16000, 'pedas', 1, 20),
+(476, 'Asam Padeh Kepala Tongkol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5ccd11df-dd76-45b8-ae31-5d0af4dbedd9_Go-Biz_20260402_234224.jpeg?auto=format', 'Asam pedas Kepala Ikan tongkol dengan kuah segar khas Minang.', 16000, 'pedas', 1, 20),
+(477, 'Asam Padeh Ikan Patin', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b4bff650-3dae-4894-8f83-1a7c0478fa21_Go-Biz_20260402_234210.jpeg?auto=format', 'Asam pedas Ikan patin dengan kuah segar khas Minang.', 16000, 'pedas', 1, 20),
+(478, 'Telor Dadar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/84684327-cfc2-4b9f-b8a0-83fc05b822a3_Go-Biz_20260402_234400.jpeg?auto=format', 'Telor dadar tanpa tepung,full telor yang original.', 10000, '', 1, 20),
+(479, 'Rendang Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ab54ea49-146f-496b-9b6c-65ac50a47319_Go-Food-Merchant_20260401_213319.jpeg?auto=format', 'Rendang telur kaya rempah khas minang, sempurna disajikan dengan nasi hangat.', 10000, 'pedas', 1, 20),
+(480, 'Gulai Sayur Nangka', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cbc18bd0-b16d-429f-8386-da198c25ec0f_Go-Biz_20220811_231449.jpeg?auto=format', 'Sayur kol, kacang panjang, dicambur nangka dimasak menjadi gulai. Cocok untuk sayur pelengkap makan.', 10000, '', 1, 20),
+(481, 'Taruang Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/773281af-7a03-4464-8b17-42357831d625_Go-Biz_20260402_234743.jpeg?auto=format', 'Terong yang digoreng,lalu ditambahkan cabe merah yang menggoda selera.', 10000, 'pedas', 1, 20),
+(482, 'Jengkol Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4a8ba045-2a95-4507-bf24-39e98d213beb_7b7fd82d-69b4-4da5-a490-3ea115efefce_Go-Biz_20190702_113539.jpeg?auto=format', 'Jengkol digoreng dan dibumbui cabe merah sangat cocok Penambah nafsu makan, rasanya yang khas dan gurih membuat semakin terus nambah makannya.', 13000, 'pedas', 1, 20),
+(483, 'Ati Ampela Goreng Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2269a302-6f58-4188-bf3a-2c7cc348b0a7_Go-Biz_20260402_234650.jpeg?auto=format', 'Ati ampela yang digoreng ditambah sambal merah yang menggoda selera.', 10000, 'pedas', 1, 20),
+(484, 'Asin Tempe Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/390b802f-9dcb-4630-bd1f-7c0014602079_e24cebd8-0562-4217-a475-f9962cab406c_Go-Biz_20190702_140900.jpeg?auto=format', 'Asin dicampur dengan tempe diberi cabe merah yang menggoda selera.', 10000, 'pedas', 1, 20),
+(485, 'Ikan Bilis Kering/maco Bilih Sambal Hijau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/078cf03c-a245-4871-8bd4-bd36e631ef04_Go-Biz_20230325_151008.jpeg?auto=format', 'Ikan bilis kering renyah dengan sambal hijau yang menggoda selera.', 13000, 'pedas', 1, 20),
+(486, 'Teri Goreng Petay', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d026b82a-fdf9-42c3-8403-7f1aa0249969_Go-Biz_20260402_234726.jpeg?auto=format', 'Teri goreng yang dicampur dengan pete.', 10000, 'pedas', 1, 20),
+(487, 'Teri Goreng Kacang Dan Tempe', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cbb8c883-48ac-4e10-8733-61a7505fd798_Go-Biz_20230522_111324.jpeg?auto=format', 'Teri goreng yang dicampur dengan kacang dan tempe.', 10000, 'pedas', 1, 20),
+(488, 'Beef Kebab Creamy Cheese Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/263e31ba-52eb-4076-8136-cac5e0543e31_f5ef5820ed8f7d4ff9248b7470741bd7f8794a5c.jpg?auto=format', 'Kebab Ukuran Besar Isi Sayuran Segar, Daging Sapi Disiram Mayo N Saus Keju', 18000, '', 1, 21),
+(489, 'Beef Kebab Curry Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/128f15be-6109-46fe-a77f-19b0e8141c9b_c5aca51fe6d5a62016adcdcfa7be664e17a12723.jpg?auto=format', 'Kebab Ukuran Besar isi Sayuran Segar, Daging Sapi Disiram Mayo dan Saus Kari', 18000, '', 1, 21),
+(490, 'Beef Kebab Roasted Sesame (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ae954ca1-8144-4bcd-baec-75367f15cc2c_0ce4c8641818fbf2e83d10d447496b445764e0bd.jpg?auto=format', 'Balutan tortilla dengan isi sayuran segar dan potongan daging sapi asap disiram saus tomat, saus sambal, dan saus wijen dengan aroma yang khas dan creamy', 24000, '', 1, 21),
+(491, 'Beef Kebab With Korean Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d8501b28-c846-4d72-a8b1-cd265873e867_2298d6cbfe7ffb255e8dd31ece23e9ef08b084d0.jpg?auto=format', 'Balutan tortilla dengan isi sayuran segar dan potongan daging sapi asap disiram saus tomat, mayo, dan racikan saus korea yang pedas', 24000, 'pedas', 1, 21),
+(492, 'Beef Mexicano Kebab (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/40621030-cef7-4771-90d2-7aa085d89522_978941bd99168ab37fbef666604ba7dae5f31291.jpg?auto=format', 'Balutan tortilla dengan isi sayuran segar dan racikan beef kebab latin khas meksiko dengan bumbu rempah yang khas', 28500, 'pedas', 1, 21),
+(493, 'Beef Kebab Original Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3aaeecde-3b4a-4019-963d-d4d64375d44a_5f8a511b5f16f44b0ddf18a937aefc55c4aec30a.jpg?auto=format', 'Kebab Ukuran Besar Isi Sayuran Segar, Daging Sapi Disiram Mayo N Saus Original', 21500, '', 1, 21),
+(494, 'Beef Kebab Bolognese Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ba68675d-2a1a-4662-833d-d8c8dc63e154_7f140000618e6e5e748a01bfd6298ae11fa6aa89.jpg?auto=format', 'Kebab Ukuran Besar Isi Sayuran Segar, Daging Sapi Disiram Mayo N Saus Bolognese', 23000, '', 1, 21),
+(495, 'Beef Kebab Barbeque Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c8020251-5d9c-4bfa-9250-dd1fdc26887d_cda4e259b84658a701e35dca0e40db7c2b53affd.jpg?auto=format', 'Kebab Ukuran Besar isi Sayuran Segar, Daging Sapi Disiram Mayo dan Saus Barbeque', 24000, '', 1, 21),
+(496, 'Beef Kebab Blackpepper Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b65efe53-afa1-4504-a463-cc0926e6e570_c7585305355feded3796bc1b0a2c11045b10f26f.jpg?auto=format', 'Kebab Ukuran Besar isi Sayuran Segar, Daging Sapi Disiram Mayo dan Saus Blackpepper', 24000, 'pedas', 1, 21),
+(497, 'Beef Kebab Spicy Garlic Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/48a32197-3161-4446-9987-a83ae03bf1bd_48dcff0e356f0a2712a5097148c9d4d45a735863.jpg?auto=format', 'Kebab Ukuran Besar isi Sayuran Segar, Daging Sapi Disiram Mayo dan Saus Bawang Pedas', 24000, 'pedas', 1, 21),
+(498, 'Beef Kebab Mozzarella Cheese (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/95f57761-fb8f-41b3-83e6-f19acfd236f0_9d9ddbae72c6b2a6519b7a8d50e7e5b411a22c54.jpg?auto=format', 'Kebab Ukuran Besar Isi Sayuran Segar, Daging Sapi Disiram Mayo N Dilumuri Keju Mozarella Yg Meleleh', 27500, '', 1, 21),
+(499, 'Beef Kebab Spicy Pineapple Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/78d2a46e-f419-4562-919a-f038ef9befc9_465d6376ff198ba4aba1cc9150282785fad44964.jpg?auto=format', 'Balutan tortilla dengan isi sayuran segar dan potongan daging sapi asap disiram saus tomat, mayo, dan racikan saus nanas yang pedas', 20000, 'pedas', 1, 21),
+(500, 'Beef Kebab Original Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3b463f02-d40c-4279-af3f-da88c4335977_fd6be8f943694a48b40f510223226b99a624a4c8.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Sapi Disiram Mayo N Saus Original', 15000, '', 1, 21),
+(501, 'Beef Kebab Bolognese Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1b1b9eb4-cd9d-41d4-9001-05a4d352d693_12cc8b25b0aba195ddb8567b6f39699931e2d5f6.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Sapi Disiram Mayo N Saus Bolognese', 16500, '', 1, 21),
+(502, 'Beef Kebab Barbeque Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/78fe3887-dbf6-4dc0-b3d7-e338e3017c30_5a170a9122492673d4d92a09b4ed248eeb0a0b37.jpg?auto=format', 'Kebab Ukuran Kecil isi Sayuran Segar, Daging Sapi Disiram Mayo dan Saus Barbeque', 17500, '', 1, 21),
+(503, 'Beef Kebab Blackpepper Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b0b2882b-62ab-4786-a8ad-9d97075c5a31_0662d1e0a121485cbe6c7b8a15c901aa782d52d0.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Sapi Disiram Mayo N Saus Lada Hitam', 17500, 'pedas', 1, 21),
+(504, 'Beef Kebab Creamy Cheese Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/32ca9c81-fe4c-4fd9-a0ce-fc13f7fddd19_5abac6c301c2ea3710a02cc8c7d0fe4a0a458f02.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Sapi Disiram Mayo N Saus Keju', 17500, '', 1, 21),
+(505, 'Beef Kebab Spicy Garlic Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9169908d-89fc-4088-8c09-4214b528a59b_7b20c7e7492403b04208460e9c4c0aa35a5c3d76.jpg?auto=format', 'Kebab Ukuran Kecil isi Sayuran Segar, Daging Sapi Disiram Mayo dan Saus Bawang Pedas', 17500, 'pedas', 1, 21),
+(506, 'Beef Kebab Mozzarella Cheese (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/063b9879-ec16-4a5a-acc6-935402e5028e_ad5ef1362973eb16fda4eec8a6affe38e860cbbd.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Sapi Disiram Mayo N Dilumuri Keju Mozarella Yg Meleleh', 21500, '', 1, 21),
+(507, 'Beef Kebab Spicy Pineapple Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ce5f5752-79f4-42f8-a6e2-dc53aca6dbc7_719036d680ca7ffffd55fcc293a43d79b89af145.jpg?auto=format', 'Balutan tortilla dengan isi sayuran segar dan potongan daging sapi asap disiram saus tomat, mayo, dan racikan saus nanas yang pedas', 15000, 'pedas', 1, 21),
+(508, 'Beef Kebab Curry Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/069e1c5f-08e8-4889-a800-bcc3f326d019_366ce6ab9bc8e911941f945d52b1bce10435a078.jpg?auto=format', 'Kebab Ukuran Kecil isi Sayuran Segar, Daging Sapi Disiram Mayo dan Saus Kari', 17500, '', 1, 21),
+(509, 'Chicken Kebab Original Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2577e977-5eef-419a-abe2-4117199fb3c1_ed244a5001fd7ea7b730cba234463a5152e704ee.jpg?auto=format', 'Kebab Ukuran Besar Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Saus Original', 22500, '', 1, 21),
+(510, 'Chicken Kebab Bolognese Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6abead87-5146-43d9-88d6-9d1d008587b1_0e1a1cd139cc8bfac94d7b87058037fb36fcfce5.jpg?auto=format', 'Kebab Ukuran Besar Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Saus Bolognese', 24000, '', 1, 21),
+(511, 'Chicken Kebab Barbeque Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/333986e6-5af3-424e-aedf-c18dc1977fe3_03e517c05a5a70983e3dbd20d3bcf5cf8ca1f64e.jpg?auto=format', 'Kebab Ukuran Besar isi Sayuran Segar, Daging Ayam Disiram Mayo dan Saus Barbeque', 25000, '', 1, 21),
+(512, 'Chicken Kebab Blackpepper Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a3429371-27bf-41 d7-9e97-5646e2fc9230_b328dae35aa31d17dc8c9ce06ca25a764317f1f3.jpg?auto=format', 'Kebab Ukuran Besar Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Saus Lada Hitam', 25000, 'pedas', 1, 21),
+(513, 'Chicken Kebab Creamy Cheese Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7113a31b-5c69-4ab3-a2c0-01db433dc84a_e166fd5bc99849dcbfa75866fec178febf29f345.jpg?auto=format', 'Kebab Ukuran Besar Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Saus Keju', 25000, '', 1, 21),
+(514, 'Chicken Kebab Spicy Garlic Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/409f7f6b-60df-4306-bf02-e35e925587c4_a9c850493e984b73f130b9e10af4d414b15b016a.jpg?auto=format', 'Kebab Ukuran Besar isi Sayuran Segar, Daging Ayam Disiram Mayo dan Saus Bawang Pedas', 25000, 'pedas', 1, 21),
+(515, 'Chicken Kebab Mozzarella Cheese (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2d8d235c-f2bc-4000-a1b8-cd685b3f39f1_5efc7a859127e0bf6eeb2ed24214f6626addeb56.jpg?auto=format', 'Kebab Ukuran Besar Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Dilumuri Keju Mozarella Yg Meleleh', 28500, '', 1, 21),
+(516, 'Chicken Kebab Spicy Pineapple Sauce (Big)', '', 'Kebab Ukuran Besar isi Sayuran Segar, Daging Ayam Disiram Mayo dan Saus Nanas Pedas', 21000, 'pedas', 1, 21),
+(517, 'Chicken Kebab Curry Sauce (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f43cce4e-f616-49c3-8a1c-7d61cd705819_e903dee4a346770b2589553316eb47d095cdce71.jpg?auto=format', 'Kebab Ukuran Besar isi Sayuran Segar, Daging Ayam Disiram Mayo dan Saus Kari', 25000, '', 1, 21),
+(518, 'Chicken Kebab Original Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7ccbd7a3-987e-4ee4-bdb3-5125f593ba22_d05ed298f299114effef7c9b03f0a7a85078310a.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Saus Original', 16000, '', 1, 21),
+(519, 'Chicken Kebab Bolognese Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/45b7527b-89be-43ce-bf32-32912cedfa8b_58a0484568c4baea42015c9a685be44ca264369f.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Saus Bolognese', 18500, '', 1, 21),
+(520, 'Chicken Kebab Barbeque Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9fdb3ef4-285e-4480-9b68-b62c422023ef_ebd87f9e6ba3a699170d864d292e1054af5e6a44.jpg?auto=format', 'Kebab Ukuran Kecil isi Sayuran Segar, Daging Ayam Disiram Mayo dan Saus Barbeque', 18500, '', 1, 21),
+(521, 'Chicken Kebab Blackpepper Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4da02f33-3240-414b-9994-84f3de977a32_67e19403ca9dd0e56830afabf50fb12669f9bc38.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Saus Lada Hitam', 18500, 'pedas', 1, 21),
+(522, 'Chicken Kebab Creamy Cheese Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0251794d-1abc-420c-9653-6834debc87c9_9f6617f03bee77a2c428f6965828476e0ad7695f.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Saus Keju', 18500, '', 1, 21),
+(523, 'Chicken Kebab Spicy Garlic Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8ab44ce0-bd18-4bbb-a85b-01137792be8b_5697bef576afc80dd10897aa9a9bc9bc96a70e70.jpg?auto=format', 'Kebab Ukuran Kecil isi Sayuran Segar, Daging Ayam Disiram Mayo dan Saus Bawang Pedas', 18500, 'pedas', 1, 21),
+(524, 'Chicken Kebab Mozzarella Cheese (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/36603bec-c29c-4a0e-8969-f072a7541407_8cdf53551bb33f561f36f140e9b3427d31885419.jpg?auto=format', 'Kebab Ukuran Kecil Isi Sayuran Segar, Daging Ayam Spesial Disiram Mayo N Dilumuri Keju Mozarella Yg Meleleh', 22500, '', 1, 21),
+(525, 'Chicken Kebab Spicy Pineapple Sauce (Small)', '', 'Balutan tortilla dengan isi sayuran segar dan potongan daging ayam asap disiram saus tomat, mayo, dan racikan saus nanas yang pedas', 16000, 'pedas', 1, 21),
+(526, 'Chicken Kebab Curry Sauce (Small)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0bcd790d-8763-489e-bb7a-7217bd4e7edb_669bb5b8c8b37d4669f2b19a6cc86c186b477ad1.jpg?auto=format', 'Kebab Ukuran Kecil isi Sayuran Segar, Daging Ayam Disiram Mayo dan Saus Kari', 18500, '', 1, 21),
+(527, 'Bratwurst Sausage Kebab (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6db9d89e-611a-4337-b577-c59d450c061d_852c896cca930bf4ed45f4204d7de8e414c11c52.jpg?auto=format', 'Balutan Tortilla Diisi Sayuran Segar, Sosis Bockwurst Dgn Original Sauce N Mayonaise, Cocok Bt Yg Demen Sosis', 23500, '', 1, 21),
+(528, 'Zuper Beef Kebab (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5a720b1d-220b-4095-829d-865e826e25f4_9020e7848bf94913ebb1dc784357d37ea81e2ee7.jpg?auto=format', 'Balutan Tortilla Diisi Full Beef Kebab Plus Smoked Beef, Melted Cheese, Original Sauce N Mayonaise, Tanpa Sayuran', 28500, '', 1, 21),
+(529, 'Cheese Fusion Kebab (Big)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2fc76d6b-d9c5-41ad-a5ea-0c1a3d3b3a6d_3ae2c089ae69f686b9d0a89a6fd2d05786e26581.jpg?auto=format', 'Cocok Utk Cheesy Lovers, Kebab Dgn Isi 3 Macam Keju: Cheese Slice, Mozarella Cheese, Creamy Cheese, Yummy!', 31500, '', 1, 21),
+(530, 'Roti John - Original', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8dbacebe-27dd-4e17-8586-a2370abb1aca_7685393d9449f7801bcab42aa302d8223e6de039.jpg?auto=format', 'Roti panggang lembut dgn isi telur dadar spesial+daging kebab+lettuce+bombay disiram dgn saus n mayo khas republic kebab.', 21000, '', 1, 21),
+(531, 'Roti John - Cheese', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bf734d52-6109-4a64-ad93-a61cd02d4434_7ce20bc06b391427c5c40ad334bcda2aa36e9f4e.jpg?auto=format', 'Roti panggang lembut dgn isi telur dadar spesial+daging kebab+lettuce+bombay ditaburi keju parut dan disiram saus n mayo khas republic kebab.', 25000, '', 1, 21),
+(532, 'Roti John - Supreme', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ea9a5fba-77bd-4011-ba7e-b484e77aaba4_793828a57a0cf426767cd22f72fa16500c149965.jpg?auto=format', 'Roti panggang lembut dgn isi telur dadar spesial+daging kebab+lettuce+bombay ditaburi keju parut dgn tambahan sosis bockwurst', 29000, '', 1, 21),
+(533, 'Beef Burger', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/976303ed-cca6-4c59-a182-44c382792dc9_a0cbc72a72adbfe14a90ed0984522eebf8179125.jpg?auto=format', 'Beef Burger lezat rasa original dengan sayuran segar.', 16500, '', 1, 21),
+(534, 'Chicken Burger', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/31fbcb23-504d-4e37-a5d1-68fea4350f9e_04d54a83cb1799b74de1625a0f7b726ea2a8a835.jpg?auto=format', 'Chicken Burger lezat rasa original dengan sayuran segar.', 16500, '', 1, 21),
+(535, 'Zuper Beef Burger', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/76714c5b-5a8d-4dce-ba9f-25272600941f_a784ccea72116afe9db895bce24fa671a8a687e8.jpg?auto=format', 'Beef Burger + Smoked Beef', 25000, '', 1, 21),
+(536, 'Sosis Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f6039156-87fe-4965-bf8f-13ff8badffc9_fb09e5927550add775d83481a5203f3be8545baf.jpg?auto=format', 'Sosis bakar bumbu racikan gurih spesial.', 15500, '', 2, 21),
+(537, 'Sosis Bakar Keju', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4030acd5-b038-4f0b-abbe-b5f3e96659ac_6014a86c01e16a7e6f8254590ce9d8f068b7e6fd.jpg?auto=format', 'Sosis bakar dengan balutan keju yang gurih mantap.', 20000, '', 2, 21),
+(538, 'Hotdough', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4ef27e68-88e0-41e4-8169-c14d3f740f5f_ec756fe4179c5a99145a0008186d97cd3afd7f13.jpg?auto=format', 'Hotdog lezat isi sosis gurih dengan sayuran segar pilihan.', 20000, '', 1, 21),
+(539, 'Double Big Kebab Original', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/37c25717-07e9-49f8-bc95-ba90bfe3c259_8e59a624-64e1-4b24-8376-d26175dd3730_Double-Big-Kebab-Ori.jpeg?auto=format', 'Kebab porsi double berukuran besar dengan saus original.', 32550, '', 1, 21),
+(540, 'Beef Kebab Spicy BBQ', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8f73910b-d9de-424c-824d-187e7816e5ec_ab14957b-f58e-4ae3-bb2d-2500632c6309_Beef-Kebab-Spicy-BBQ.jpeg?auto=format', 'Kebab dengan isi potongan daging sapi pilihan disiram saus barbeque yang pedas mantap.', 16800, 'pedas', 1, 21),
+(541, 'Chocolate Changer Original', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/99a2d21a-c5ae-4bb7-ac07-87c13f409c1f_Go-Biz_20240226_160036.jpeg?auto=format', 'Coklat Original', 13500, 'manis', 3, 22),
+(542, 'Chocolate Changer + Bubble', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c96f6168-8a67-46d7-baf6-a3155fd58c2a_Go-Biz_20240226_160056.jpeg?auto=format', 'Coklat + Bubble', 16000, 'manis', 3, 22),
+(543, 'Chocolate Changer + Jelly Strawberry', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2b65e3aa-ee52-4427-afcb-aab96c7ea845_Go-Biz_20240226_160135.jpeg?auto=format', 'Coklat + Jelly Strawberry', 16000, 'manis', 3, 22),
+(544, 'Chocolate Changer + Milk Pudding', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e9b6f4cd-338d-430d-83c5-303dbd60f713_Go-Biz_20240226_160151.jpeg?auto=format', 'Coklat + Milk Puding', 16000, 'manis', 3, 22),
+(545, 'Chocolate Changer + Jelly Melon', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/277d0ac1-36b2-47d4-a777-3e480e20f572_Go-Biz_20240226_160209.jpeg?auto=format', 'Coklat + Jelly Melon', 16000, 'manis', 3, 22),
+(546, 'Chocolate Changer 1 Liter', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e51701bc-cb79-4c5d-b9c7-f3f898eb2356_Go-Biz_20240226_160235.jpeg?auto=format', 'Coklat + kemasan 1 liter', 78000, 'manis', 3, 22);
+INSERT INTO `menu` (`id_menu`, `nama_menu`, `foto_menu`, `deskripsi`, `harga`, `rasa`, `id_kategori`, `id_toko`) VALUES
+(547, 'Nasi Ayam BBQ', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8ca314e2-32b2-45bc-a378-d4a6e742060a_Go-Biz_20221228_154608.jpeg?auto=format', 'Nasi + Ayam Saus Barbeque', 30000, '', 1, 23),
+(548, 'Nasi Ayam Geprek Original', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/00461f42-2e19-4fb0-a0e5-a49d0d106915_Go-Biz_20251028_112903.jpeg?auto=format', 'Nasi + Ayam Geprek Original', 30000, 'pedas', 1, 23),
+(549, 'Nasi Ayam Geprek Sambal Bawang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f4835eb8-ed91-49f8-baef-d8d82191e1a5_Go-Biz_20221222_155039.jpeg?auto=format', 'Nasi + Ayam Geprek Sambal Bawang', 30000, 'pedas', 1, 23),
+(550, 'Nasi Ayam Geprek Sambal Matah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d8cac242-b459-414b-8bb1-ebd938646538_Go-Biz_20251028_110344.jpeg?auto=format', 'Nasi + Ayam Geprek Sambal Matah', 33000, 'pedas', 1, 23),
+(551, 'Nasi Ayam Geprek + Tahu', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/284b0766-7c7c-46cb-830e-5322c13636fc_Go-Biz_20251028_111207.jpeg?auto=format', 'Nasi + Ayam Geprek + Tahu', 30500, 'pedas', 1, 23),
+(552, 'Nasi Ayam Geprek + Tempe', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/70ed17e4-99e3-4c42-a980-6c68411c5330_Go-Biz_20251028_111223.jpeg?auto=format', 'Nasi + Ayam Geprek + Tempe', 30500, 'pedas', 1, 23),
+(553, 'Nasi Ayam Geprek + Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8639c426-17c1-4873-a31f-cf430a4ce1d2_Go-Biz_20251028_111236.jpeg?auto=format', 'Nasi + Ayam Geprek + Telur', 35000, 'pedas', 1, 23),
+(554, 'Nasi Ayam Geprek + Tumis Sayur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/38d4da76-407a-4059-9953-c6121a694a3d_Go-Biz_20221222_153530.jpeg?auto=format', 'Nasi + Ayam Geprek + Tumis Sayur', 37000, 'pedas', 1, 23),
+(555, 'Nasi Ayam Geprek + Paru', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f40190be-50f2-42cd-9ac2-0f20447bf494_Go-Biz_20221222_153441.jpeg?auto=format', 'Nasi + Ayam Geprek + Paru', 42000, 'pedas', 1, 23),
+(556, 'Nasi Ayam Geprek Cabe Ijo', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/04aea9fe-4a8a-46d7-8045-460776c3f8b4_Go-Biz_20251028_105534.jpeg?auto=format', 'Nasi + Ayam Geprek + Sambel Cabe Ijo', 33000, 'pedas', 1, 23),
+(557, 'Nasi Ayam Sambal Bajak', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/666d8646-a6f4-4cc4-9822-8e82b81b75c6_Go-Biz_20231106_135152.jpeg?auto=format', 'Nasi + Ayam Sambal Bajak', 30000, 'pedas', 1, 23),
+(558, 'Nasi Ayam Sambal Cikur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1bdfebca-c549-4c34-acfb-c223c1bc258c_Go-Biz_20251028_111546.jpeg?auto=format', 'Nasi + Ayam Sambal Cikur', 30000, 'pedas', 1, 23),
+(559, 'Nasi Ayam Geprek + Oseng Jamur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/86adeb2b-8e93-4bd4-b0d7-691ba5645215_Go-Biz_20221222_153505.jpeg?auto=format', 'Nasi + Ayam Geprek + Oseng Jamur', 40000, 'pedas', 1, 23),
+(560, 'Nasi Ayam Geprek + Milky Way', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a3fac84d-a16e-45de-bab7-62fd842e7ef2_Go-Biz_20251103_125658.jpeg?auto=format', 'Paket Nasi Ayam Geprek + Minuman Milky Way', 39000, 'pedas', 1, 23),
+(561, 'Nasi Ayam Geprek + Telur Geprek & Es Teh Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b031ab0a-15b8-4c16-a8fd-a51ef6e7919e_Go-Biz_20251103_125618.jpeg?auto=format', 'Paket Nasi Ayam, Telur Geprek, dan Es Teh Manis', 38000, 'pedas', 1, 23),
+(562, 'Nasi Ayam Geprek + Tahu Geprek & Coklat Cincau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/07678d2d-d364-4a93-a21f-5c146d9809e7_Go-Biz_20251103_125500.jpeg?auto=format', 'Paket Nasi Ayam, Tahu Geprek, dan Coklat Cincau', 40000, 'pedas', 1, 23),
+(563, 'Nasi Ayam Geprek + Kol Goreng & Es Jeruk Florida', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2504b36f-3f4e-4d63-82ac-bd0b95025c17_Go-Biz_20251103_132617.jpeg?auto=format', 'Paket Nasi Ayam, Kol Goreng, dan Es Jeruk', 38000, 'pedas', 1, 23),
+(564, 'Nasi Ayam Geprek + Tumis Sayur + Es Jeruk Peras', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/05cd63b6-d56a-4a42-aba2-b340cd5bdd83_Go-Biz_20251103_125514.jpeg?auto=format', 'Paket Nasi Ayam, Tumis Sayur, dan Es Jeruk Peras', 48000, 'pedas', 1, 23),
+(565, 'Ayam Crispy Original', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8325cb24-ccfc-41ee-8e32-27fdb0aa0ea9_Go-Biz_20221228_155812.jpeg?auto=format', 'Ayam goreng tepung krispi tanpa geprek', 20000, '', 1, 23),
+(566, 'Ayam Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f4790500-4085-4a3c-8afc-1d5f395b7e73_Go-Biz_20251028_112920.jpeg?auto=format', 'Ayam Geprek Original', 23500, 'pedas', 1, 23),
+(567, 'Ayam Geprek Sambal Bawang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d7008821-f312-4c2d-81d9-790fa945813e_Go-Biz_20251028_113108.jpeg?auto=format', 'Ayam Geprek dengan Sambal Bawang', 23500, 'pedas', 1, 23),
+(568, 'Ayam Geprek Sambal Matah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ed9e234c-b848-4af7-829e-79d3762ecc9b_Go-Biz_20251028_110407.jpeg?auto=format', 'Ayam Geprek dengan Sambal Matah', 27000, 'pedas', 1, 23),
+(569, 'Ayam Barbeque', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/33ee6f83-84b8-4343-9ec8-37c96f2cb2b3_Go-Biz_20221228_155955.jpeg?auto=format', 'Ayam dengan siraman Saus Barbeque', 23500, '', 1, 23),
+(570, 'Paru Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f2fcf4b9-79a6-4686-ab54-2e8041d51ed0_Go-Biz_20221228_160023.jpeg?auto=format', 'Paru sapi yang digeprek dengan sambal', 25000, 'pedas', 1, 23),
+(571, 'Tahu Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/fdd462e9-b253-4109-afbc-740e016a307d_Go-Biz_20221228_160043.jpeg?auto=format', 'Tahu goreng (Harga termasuk PPN 10%)', 5000, '', 2, 23),
+(572, 'Tempe Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/688d4893-21ae-4062-86f9-22814e5408e7_Go-Biz_20221228_170430.jpeg?auto=format', 'Tempe goreng (Harga termasuk PPN 10%)', 5000, '', 2, 23),
+(573, 'Telor Dadar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/04ce8bb5-145a-4fce-ac32-fbd0bb93640f_Go-Biz_20221228_160117.jpeg?auto=format', 'Telur dadar original (Harga termasuk PPN 10%)', 8000, '', 2, 23),
+(574, 'Tempe Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/088f092b-62f3-45d9-b060-bce77049ee9d_Go-Biz_20251117_101803.jpeg?auto=format', 'Tempe yang digeprek dengan sambal', 10000, 'pedas', 2, 23),
+(575, 'Tahu Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4c225b29-fd83-41bd-b0ce-ff60f015be17_Go-Biz_20251117_100523.jpeg?auto=format', 'Tahu yang digeprek dengan sambal', 10000, 'pedas', 2, 23),
+(576, 'Telor Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/377a96f1-5e77-4add-9a64-cb7a40037900_Go-Biz_20221228_160207.jpeg?auto=format', 'Telur dadar yang digeprek dengan sambal', 11000, 'pedas', 2, 23),
+(577, 'Kol Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8adce921-21c6-41c6-b4d4-6e28005ed9ea_Go-Biz_20221228_160238.jpeg?auto=format', 'Kol goreng gurih (Harga termasuk PPN 10%)', 7500, '', 2, 23),
+(578, 'Kerupuk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f4d18ac4-da50-44af-bc95-f44ed8b6b3ec_Go-Biz_20251117_100406.jpeg?auto=format', 'Kerupuk pelengkap (Harga termasuk PPN 10%)', 2000, '', 2, 23),
+(579, 'Nasi Putih', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cc7f3bd6-756a-42ae-b466-254a18746c33_Go-Biz_20251117_100419.jpeg?auto=format', 'Nasi putih hangat (Harga termasuk PPN 10%)', 8000, '', 2, 23),
+(580, 'Ayam Geprek Cabe Ijo', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6f8aa3db-d7e2-4562-a673-2734d7be633e_Go-Biz_20251028_105633.jpeg?auto=format', 'Ayam Geprek dengan Sambal Cabe Ijo', 27000, 'pedas', 1, 23),
+(581, 'Ayam Geprek Sambal Bajak', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/85b07713-b1a8-4f2b-ba09-11c6ffa7a847_Go-Biz_20231106_135339.jpeg?auto=format', 'Ayam Geprek dengan Sambal Bajak', 23500, 'pedas', 1, 23),
+(582, 'Ayam Geprek Sambal Cikur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/87d0ff53-5440-4734-bec2-fdc2be24c991_Go-Biz_20251028_111608.jpeg?auto=format', 'Ayam Geprek dengan Sambal Cikur (Kencur)', 23500, 'pedas', 1, 23),
+(583, 'Paru Goreng', '', 'Paru sapi goreng tanpa geprek', 24000, '', 1, 23),
+(584, 'Kol Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/121d2f66-69f6-46b4-aa07-9a3fe2f29522_Go-Biz_20251117_100436.jpeg?auto=format', 'Kol goreng yang digeprek dengan sambal', 10000, 'pedas', 2, 23),
+(585, 'Jamur Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/de9cf069-4a8a-4dd9-a72d-00dfd77f2ae9_Go-Biz_20221228_160402.jpeg?auto=format', 'Jamur krispi yang digeprek dengan sambal', 17000, 'pedas', 2, 23),
+(586, 'Jamur Crispy', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b0074c5d-6823-4191-a002-10c51fbad7d0_Go-Biz_20251117_100506.jpeg?auto=format', 'Jamur goreng tepung krispi', 15000, '', 2, 23),
+(587, 'Oseng Paru', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4aa84541-dc01-4d4d-b152-6b49222bc307_Go-Biz_20221228_160543.jpeg?auto=format', 'Tumis/oseng paru sapi bumbu pedas', 24000, 'pedas', 1, 23),
+(588, 'Oseng Jamur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/656c6d67-a103-4dc1-96b1-cb4ed97449fa_Go-Biz_20221228_160528.jpeg?auto=format', 'Tumis/oseng jamur', 15000, '', 2, 23),
+(589, 'Sayur Tumis Keciwis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1a179045-dade-49ca-b63f-f0537958cadd_Go-Biz_20221228_160729.jpeg?auto=format', 'Tumis sayur keciwis segar', 11000, '', 2, 23),
+(590, 'Tumis Jamur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/96e7bdcb-5d2b-42c9-adce-882a11e96bca_Go-Biz_20251117_101749.jpeg?auto=format', 'Hanya level 3 (tidak bisa pilih level)', 15000, 'pedas', 2, 23),
+(591, 'Sayur Tumis Kangkung', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4b3dcb36-be3e-491b-9015-226c0c9726d4_Go-Biz_20251117_101730.jpeg?auto=format', 'Tumis kangkung', 11000, '', 2, 23),
+(592, 'Sayur Tumis Tauge', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5966d334-0b41-4e47-b9c9-6156e7e990f2_Go-Biz_20251117_101740.jpeg?auto=format', 'Tumis tauge/tauco', 11000, '', 2, 23),
+(593, 'Es Jeruk Florida', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e1976126-2d92-45e8-9f7a-5907698f61a4_Go-Biz_20221229_152024.jpeg?auto=format', 'Minuman es rasa jeruk Florida', 8000, 'manis', 3, 23),
+(594, 'Es Teh Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ebbd0a87-6c99-40ef-9cd9-ece358a59870_Go-Biz_20221229_152129.jpeg?auto=format', 'Es teh manis segar', 8000, 'manis', 3, 23),
+(595, 'Es Lemon Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3ee09899-d9b7-4cb0-b7e2-c8ade9cbd535_Go-Biz_20221229_152149.jpeg?auto=format', 'Es teh dengan perasan lemon', 15000, 'manis', 3, 23),
+(596, 'Es Lychee Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8f6774f4-bae4-4d2e-9dae-8de059fe1e69_Go-Biz_20221229_152211.jpeg?auto=format', 'Es teh dengan aroma/buah litchi', 17000, 'manis', 3, 23),
+(597, 'Air Mineral', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/50d8b7f3-2ca6-4eb7-a917-d61cd031ecac_menu-item-image_1628759383610.jpg?auto=format', 'Air mineral kemasan', 8000, '', 3, 23),
+(598, 'Coklat Cincau', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9d32f5f5-974b-4141-b67c-a66a6d26fa76_Go-Biz_20221229_152235.jpeg?auto=format', 'Minuman coklat dengan potongan cincau', 20000, 'manis', 3, 23),
+(599, 'Strawberry Tea', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/70a0f387-ef40-44d0-a34e-ac718d685165_Go-Biz_20221229_152251.jpeg?auto=format', 'Es teh rasa strawberry', 17000, 'manis', 3, 23),
+(600, 'Es Jeruk Peras', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/59e6f559-487a-4396-8520-95618a478240_Go-Biz_20221229_152107.jpeg?auto=format', 'Es dari jeruk peras asli', 19000, 'manis', 3, 23),
+(601, 'Strawberry Milky Way', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/aae784a3-4114-4730-bf6e-e0bd7774b82f_Go-Biz_20221228_161218.jpeg?auto=format', 'Minuman susu rasa strawberry', 17000, 'manis', 3, 23),
+(602, 'Mango Milky Way', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/93f1a896-8ca7-4b72-87f6-434d815194cc_Go-Biz_20221228_161234.jpeg?auto=format', 'Minuman susu rasa mangga', 17000, 'manis', 3, 23),
+(603, 'Lychee Milky Way', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2900ea9c-0a66-4d75-b113-93ad15162044_Go-Biz_20221228_161251.jpeg?auto=format', 'Minuman susu rasa litchi', 17000, 'manis', 3, 23),
+(604, 'Teh Manis Panas', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/cd16dd0f-6495-4528-95e6-3ebc5fa94c50_menu-item-image_1628759876028.jpg?auto=format', 'Teh manis hangat/panas', 8000, 'manis', 3, 23),
+(605, 'Lemon Tea Panas', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/97a240f2-2047-4fcc-bbe4-2d0f6c9a671c_menu-item-image_1628759509645.jpg?auto=format', 'Teh lemon hangat/panas', 15000, 'manis', 3, 23),
+(606, 'Jeruk Peras Panas', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b749a84e-c99c-4381-a23e-d9ef54395244_Go-Biz_20221229_152533.jpeg?auto=format', 'Jeruk peras hangat/panas', 19000, 'manis', 3, 23),
+(607, 'Extra Saus BBQ', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/22be3a24-b498-4428-ac3e-fcc53071e839_menu-item-image_1633508408147.jpg?auto=format', 'Tambahan Saus Barbeque', 8000, '', 2, 23),
+(608, 'Extra Sambal Original', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/032ab744-590d-440d-a998-d899763cb689_Go-Biz_20221228_161446.jpeg?auto=format', 'Tambahan Sambal Geprek Original', 8000, 'pedas', 2, 23),
+(609, 'Extra Sambal Matah', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5508a803-eed3-4215-b97b-b56fbf4bf3ce_Go-Biz_20221228_161413.jpeg?auto=format', 'Tambahan Sambal Matah khas Bali', 11360, 'pedas', 2, 23),
+(610, 'Extra Sambal Cabe Ijo', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6d8209f0-6ee4-4cc5-9a49-0c2c71afb050_Go-Biz_20221228_161357.jpeg?auto=format', 'Tambahan Sambal Cabe Ijo', 9940, 'pedas', 2, 23),
+(611, 'Extra Sambal Bajak', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d99380b7-5fff-4840-8fe1-7d65a34c0e46_Go-Biz_20231106_135500.jpeg?auto=format', 'Tambahan Sambal Bajak', 9940, 'pedas', 2, 23),
+(612, 'Extra Sambal Cikur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/85159a78-d326-4ce5-afe7-22ad2fbcc314_Go-Biz_20231106_135542.jpeg?auto=format', 'Tambahan Sambal Cikur (Kencur)', 8000, 'pedas', 2, 23),
+(613, 'Mie Ayam Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/17cb22ed-b477-429f-8af7-df502db6157d_Go-Biz_20240102_190338.jpeg?auto=format', 'Mie Ayam Geprek Sambal Original + Telur', 32000, 'pedas', 1, 23),
+(614, 'Blackberry Botol', '', 'Jus blackberry kemasan botol 1 liter', 33000, 'manis', 3, 24),
+(615, 'Strawberry Botol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/25c0a944-f59f-45df-a293-986e6fc0ab81_Go-Biz_20220224_132417.jpeg?auto=format', 'Jus strawberry kemasan botol 1 liter', 33000, 'manis', 3, 24),
+(616, 'Buah Naga Botol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/67d209ee-657a-4c83-97b4-a088ab771080_Go-Biz_20220225_103235.jpeg?auto=format', 'Dikemas Dalam Botol 1liter Lebih Praktis', 33000, 'manis', 3, 24),
+(617, 'Mangga Botol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f0d55df0-a5a6-4368-ad51-99a3f055302b_Go-Biz_20220224_132457.jpeg?auto=format', 'Jus mangga kemasan botol 1 liter', 33000, 'manis', 3, 24),
+(618, 'Jambu Botol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1c620a78-4f0f-436f-a19d-a291161e5686_Go-Biz_20220224_132555.jpeg?auto=format', 'Jus jambu kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(619, 'Sirsak Botol', '', 'Jus sirsak kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(620, 'Jeruk Botol', '', 'Jus jeruk kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(621, 'Pisang Botol', '', 'Jus pisang kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(622, 'Melon Botol', '', 'Jus melon kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(623, 'Semangka Botol', '', 'Jus semangka kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(624, 'Apel Botol', '', 'Jus apel kemasan botol 1 liter', 33000, 'manis', 3, 24),
+(625, 'Belimbing Botol', '', 'Jus belimbing kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(626, 'Tomat Botol', '', 'Jus tomat kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(627, 'Nanas Botol', '', 'Jus nanas kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(628, 'Wortel Botol', '', 'Disaring/tidak Disaring', 30000, 'manis', 3, 24),
+(629, 'Lemon Botol', '', 'Jus lemon kemasan botol 1 liter', 30000, 'manis', 3, 24),
+(630, 'Strawberry Pisang Botol', '', 'Jus kombinasi strawberry dan pisang 1 liter', 36000, 'manis', 3, 24),
+(631, 'Strawberry Naga Botol', '', 'Jus kombinasi strawberry dan buah naga 1 liter', 36000, 'manis', 3, 24),
+(632, 'Strawberry Mangga Botol', '', 'Jus kombinasi strawberry dan mangga 1 liter', 36000, 'manis', 3, 24),
+(633, 'Strawberry Sirsak Botol', '', 'Jus kombinasi strawberry dan sirsak 1 liter', 36000, 'manis', 3, 24),
+(634, 'Buah Naga Sirsak Botol', '', 'Jus kombinasi buah naga dan sirsak 1 liter', 35000, 'manis', 3, 24),
+(635, 'Buah Naga Pisang Botol', '', 'Jus kombinasi buah naga dan pisang 1 liter', 35000, 'manis', 3, 24),
+(636, 'Naga Mangga Botol', '', 'Jus kombinasi buah naga dan mangga 1 liter', 36000, 'manis', 3, 24),
+(637, 'Mangga Sirsak Botol', '', 'Jus kombinasi mangga dan sirsak 1 liter', 36000, 'manis', 3, 24),
+(638, 'Mangga Pisang Botol', '', 'Jus kombinasi mangga dan pisang 1 liter', 36000, 'manis', 3, 24),
+(639, 'Mix Berry Botol', '', 'Jus kombinasi aneka buah berry 1 liter', 36000, 'manis', 3, 24),
+(640, 'Wortel Tomat Botol', '', 'Jus kombinasi wortel dan tomat 1 liter', 35000, 'manis', 3, 24),
+(641, 'Wortel Jeruk Botol', '', 'Jus kombinasi wortel dan jeruk 1 liter', 35000, 'manis', 3, 24),
+(642, 'Jeruk Tomat Botol', '', 'Jus kombinasi jeruk dan tomat 1 liter', 36000, 'manis', 3, 24),
+(643, 'Jeruk Apel Botol', '', 'Jus kombinasi jeruk dan apel 1 liter', 36000, 'manis', 3, 24),
+(644, 'Alpukat Botol', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5f587ad0-5218-4a98-9965-82082cb1c05b_Go-Biz_20220224_132300.jpeg?auto=format', 'Dikemas Dalam Botol 1liter Yg Lebih Praktis', 33000, 'manis', 3, 24),
+(645, 'Jus Blackberry', '', 'Jus blackberry kemasan plastik', 18000, 'manis', 3, 24),
+(646, 'Jus mangga', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9a69185f-f71b-450d-8609-fa4d8bfc062b_277860ab-c82f-4047-b50c-46c6327cf5fd_file20190506-22379-co9wma.jpeg?auto=format', 'Jus mangga kemasan plastik', 18000, 'manis', 3, 24),
+(647, 'Jus sirsak', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/32dacf46-5f8f-4647-b535-045d7a689c8a_42cea180-6408-488c-9fa6-9296ee52562d_file20190430-22379-gaji9h.jpeg?auto=format', 'Jus sirsak kemasan plastik', 17000, 'manis', 3, 24),
+(648, 'Jus Strobery', '', 'Jus Strobery', 18000, 'manis', 3, 24),
+(649, 'Jus Jambu', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a0ae9385-08aa-4c7b-8ec2-4e832b4202e9_7ac7e9ba-0ef9-4b61-96d9-bb9c2a4b2085_file20190426-2942-1b5aie4.jpeg?auto=format', 'Jus jambu kemasan plastik', 17000, 'manis', 3, 24),
+(650, 'Jus Jeruk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e330de06-45ff-47ac-9d35-52ccd189e994_724992d0-ff05-45bc-a5fe-dfafca1f5e43_file20190502-2942-1bi0xlj.jpeg?auto=format', 'Jus jeruk kemasan plastik', 17000, 'manis', 3, 24),
+(651, 'Jus nanas', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/4ef6ecf0-7444-4073-8953-42fe8a16179a_3c3c409e-568c-499b-8833-28403fd5b502.jpg?auto=format', 'Jus nanas kemasan plastik', 17000, 'manis', 3, 24),
+(652, 'Jus Naga sirsak', '', 'Jus kombinasi buah naga dan sirsak', 22000, 'manis', 3, 24),
+(653, 'Jus Strawberry Naga', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2b6a801e-68d1-4c83-a68d-6fe60985a2e9_193c42c4-636f-4afe-a0f8-f1f2f977394b.jpg?auto=format', 'Jus kombinasi strawberry dan buah naga', 22000, 'manis', 3, 24),
+(654, 'Jus Strawberry Mangga', '', 'Jus kombinasi strawberry dan mangga', 22000, 'manis', 3, 24),
+(655, 'Jus Strawberry Sirsak', '', 'Jus kombinasi strawberry dan sirsak', 22000, 'manis', 3, 24),
+(656, 'Jus Strobery Pisang', '', 'Jus kombinasi strawberry dan pisang', 22000, 'manis', 3, 24),
+(657, 'Blackberry Pisang', '', 'Jus kombinasi blackberry dan pisang', 22000, 'manis', 3, 24),
+(658, 'Mix Berry', '', 'Jus kombinasi aneka buah berry', 22000, 'manis', 3, 24),
+(659, 'Jus pisang', '', 'Jus pisang kemasan plastik', 17000, 'manis', 3, 24),
+(660, 'Jus Pisang Dancow', '', 'Jus Pisang Ditambah Susu Dancow', 22000, 'manis', 3, 24),
+(661, 'Jus mangga pisang', '', 'Jus kombinasi mangga dan pisang', 22000, 'manis', 3, 24),
+(662, 'Naga Pisang', '', 'Jus kombinasi buah naga dan pisang', 22000, 'manis', 3, 24),
+(663, 'Strawbery Pisang Dancow', '', 'Jus strawberry dan pisang dengan susu Dancow', 27000, 'manis', 3, 24),
+(664, 'Jus melon', '', 'Jus melon kemasan plastik', 17000, 'manis', 3, 24),
+(665, 'Jus lemon', '', 'Jus lemon kemasan plastik', 17000, 'manis', 3, 24),
+(666, 'Jus belimbing', '', 'Jus belimbing kemasan plastik', 17000, 'manis', 3, 24),
+(667, 'Jus apel', '', 'Jus apel kemasan plastik', 18000, 'manis', 3, 24),
+(668, 'Jus tomat', '', 'Jus tomat kemasan plastik', 17000, 'manis', 3, 24),
+(669, 'Jus semangka', '', 'Jus semangka kemasan plastik', 17000, 'manis', 3, 24),
+(670, 'Jus wortel', '', 'Jus wortel kemasan plastik', 17000, 'manis', 3, 24),
+(671, 'Jus pepaya', '', 'Jus pepaya kemasan plastik', 17000, 'manis', 3, 24),
+(672, 'Jus Wortel Jeruk', '', 'Jus kombinasi wortel dan jeruk', 22000, 'manis', 3, 24),
+(673, 'Es Alpukat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/489c4233-240d-4882-acfe-e40c88e147c0_master-menu-item-image_1593959659364.jpg?auto=format', 'Potongan Alpukat Ditambah Biji Selasih Dengan Kuah Susu', 25000, 'manis', 3, 24),
+(674, 'Sop Buah Kuah Jeruk', '', 'Sop buah segar dengan kuah jus jeruk', 23000, 'manis', 3, 24),
+(675, 'Jus Strawberry Dancow', '', 'Jus strawberry ditambah susu bubuk Dancow', 22000, 'manis', 3, 24),
+(676, 'Jus Alpukat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9f164e21-85b8-42d4-a90c-201d27a1f5a4_7d935222-d49a-481d-8e21-a8b61c125df7_file20190328-30440-fgqfs5.jpeg?auto=format', 'Jus alpukat kemasan plastik', 18000, 'manis', 3, 24),
+(677, 'Jus Alpukat Dancow', '', 'Jus Alpukat Ditambah Susu Bubuk Dancow', 23000, 'manis', 3, 24),
+(678, 'Jus Buah Naga', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/65f1af56-3b22-4da8-9dcb-23d588e4e818_532c4855-f623-4764-9f68-cd8ad485329e.jpg?auto=format', 'Jus Buah Naga merah segar', 18000, 'manis', 3, 24),
+(679, 'Sop Buah Original', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d7286264-9c9d-4d8f-b240-fc97a50bfbfb_6010bb08-a0f6-4a00-9522-12caf75b084a.jpg?auto=format', 'Irisan Berbagai macam buah segar kuah Gula dan susu', 18000, 'manis', 3, 24),
+(680, 'Sop Buah Kuah Jus', '', 'Bebas pilih kuah jus apa saja (cantumkan di catatan)', 25000, 'manis', 3, 24),
+(681, 'Sop Buah Plus Buah Naga', '', 'Sop buah original dengan tambahan buah naga lebih banyak', 22000, 'manis', 3, 24),
+(682, 'Sop Buah + Alpukat', '', 'Sop buah original dengan tambahan potongan alpukat', 23000, 'manis', 3, 24),
+(683, 'Sop Buah + Alpukat + Buah Naga', '', 'Sop buah lengkap dengan alpukat dan buah naga', 26000, 'manis', 3, 24),
+(684, 'Es Jeruk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/dfba9242-f5e1-4224-a624-5c4c59026295_c26308dd-f3e8-4074-98e5-f2bc3b519862_file20190321-16038-188lbgs.jpeg?auto=format', 'Es jeruk segar peras/manis', 17000, 'manis', 3, 24),
+(685, 'Es Alpukat (Gelas)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d750b710-1b0d-47be-b897-eaba6e32c6a9_master-menu-item-image_1593959650197.jpg?auto=format', 'Potongan Alpukat Ditambah Biji Selasih Dengan Kuah Susu', 23000, 'manis', 3, 24),
+(686, 'Strawberry Dancow Botol', '', 'Jus strawberry mix susu Dancow botolan', 37000, 'manis', 3, 24),
+(687, 'Mangga Dancow Botol', '', 'Jus mangga mix susu Dancow botolan', 37000, 'manis', 3, 24),
+(688, 'Pisang Dancow Botol', '', 'Jus pisang mix susu Dancow botolan', 35000, 'manis', 3, 24),
+(689, 'Strawberry Pisang Dancow Botol', '', 'Jus strawberry dan pisang mix susu Dancow botolan', 40000, 'manis', 3, 24),
+(690, 'Mangga Pisang Dancow Botol', '', 'Jus mangga dan pisang mix susu Dancow botolan', 40000, 'manis', 3, 24),
+(691, 'Blackberry Dancow Botol', '', 'Jus blackberry mix susu Dancow botolan', 37000, 'manis', 3, 24),
+(692, 'Alpukat Dancow Botol', '', 'Jus alpukat mix susu Dancow botolan', 37000, 'manis', 3, 24),
+(693, 'Alpukat Pisang Dancow Botol', '', 'Jus alpukat dan pisang mix susu Dancow botolan', 40000, 'manis', 3, 24),
+(694, 'Sop Buah Original Bucket', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e46b787f-3395-4fd6-8549-f677fdc1cf21_Go-Biz_20250216_125948.jpeg?auto=format', 'Sop buah porsi besar kemasan bucket', 30000, 'manis', 3, 24),
+(695, 'Sop Buah + Buah Naga Bucket', '', 'Sop buah porsi besar dengan tambahan buah naga', 33000, 'manis', 3, 24),
+(696, 'Sop Buah Kuah Jeruk Bucket', '', 'Sop buah porsi besar dengan kuah jeruk', 33000, 'manis', 3, 24),
+(697, 'Sop Buah Kuah Jus Mangga Bucket', '', 'Sop buah porsi besar dengan kuah jus mangga', 35000, 'manis', 3, 24),
+(698, 'Sop Buah Kuah Jus Strawbery Bucket', '', 'Sop buah porsi besar dengan kuah jus strawberry', 35000, 'manis', 3, 24),
+(699, 'Sop Buah Kuah Jus Sirsak Bucket', '', 'Sop buah porsi besar dengan kuah jus sirsak', 35000, 'manis', 3, 24),
+(700, 'Sop Buah Kuah Jus Jambu Bucket', '', 'Sop buah porsi besar dengan kuah jus jambu', 35000, 'manis', 3, 24),
+(701, 'Sop Buah + Alpukat Bucket', '', 'Sop buah porsi besar dengan tambahan alpukat', 35000, 'manis', 3, 24),
+(702, 'Sop Buah + Alpukat + Buah Naga Bucket', '', 'Sop buah lengkap porsi besar (alpukat + buah naga)', 38000, 'manis', 3, 24),
+(703, 'Sop Buah Kuah Jus Alpukat Bucket', '', 'Sop buah porsi besar dengan kuah jus alpukat', 35000, 'manis', 3, 24),
+(704, 'Es Alpukat Bucket', '', 'Potongan alpukat dan selasih kuah susu porsi bucket', 35000, 'manis', 3, 24),
+(705, 'Promo Paket Ber22 Porsi Nasi Rendang (Lebih Hemat)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e01a0650-a7ab-4b90-9973-fc4f268ea9c7_8932f27d-5956-4326-b856-163d880a7931.jpg?auto=format', 'Paket hemat 2 porsi nasi rendang', 54000, 'pedas', 1, 25),
+(706, 'Paket Nasi Dus Komplit Kuah Lalapan Sambal + Daging Rendang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f2b63c44-01e5-4ebb-943b-19d29919ef68_137b840e-e31a-4073-a006-00e02f32543c_Go-Biz_20190318_214318.jpeg?auto=format', 'Nasi Rendang Pakai Dus Komplit cocok untuk acara', 35500, 'pedas', 1, 25),
+(707, 'Rendang + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a4c5ffd6-4af9-4554-a2f3-45164a42f6c1_3f9b8628-e4a6-41ba-be20-bae58bc3fe05_Go-Biz_20191018_201024.jpeg?auto=format', 'Nasi + Daging Rendang khas Padang', 27500, 'pedas', 1, 25),
+(708, 'Daging Cincang + Nasi', '', 'Nasi + Gulai Daging Cincang', 29000, 'pedas', 1, 25),
+(709, 'Kikil + Nasi', '', 'Nasi + Gulai Kikil/Tunjang', 35000, 'pedas', 1, 25),
+(710, 'Ayam Bakar + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/450b98d8-269c-42dd-86a9-3be2ea1746d5_c977d4f4-270e-426e-9c87-0240f159e402_Go-Biz_20191018_201113.jpeg?auto=format', 'Nasi + Ayam Bakar bumbu Padang', 27500, 'pedas', 1, 25),
+(711, 'Ayam Goreng + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e42feb18-b251-4a37-a08f-9f37c1f05741_fc69db36-c958-4874-8a21-39475ba7f343_Go-Biz_20191018_201152.jpeg?auto=format', 'Nasi + Ayam Goreng', 27000, '', 1, 25),
+(712, 'Gulai Ayam + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6720a7e4-e2af-4049-9096-2e866e15e268_ce5b473d-4f15-42fe-89d1-7aab57aa4279_Go-Biz_20191018_202357.jpeg?auto=format', 'Nasi + Gulai Ayam', 27000, 'pedas', 1, 25),
+(713, 'Ayam Reca-reca Sambal Ijo + Nasi', '', 'Nasi + Ayam Reca-reca Sambal Ijo', 27000, 'pedas', 1, 25),
+(714, 'Paru Goreng + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ba78cf3e-50d0-4f11-8f7a-edc5b4f33661_cac9b27e-3a7b-4889-baa8-9dac3cb7a220_Go-Biz_20191018_201354.jpeg?auto=format', 'Nasi + Paru Sapi Goreng', 28000, '', 1, 25),
+(715, 'Ikan Nila Bakar + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/32e2940e-8d29-4110-af17-f321ba048a92_d2d26df9-7c91-4da6-80bf-d42141872e0c_Go-Biz_20191018_201549.jpeg?auto=format', 'Nasi + Ikan Nila Bakar', 27000, 'pedas', 1, 25),
+(716, 'Ikan Bakar Kembung + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/893f7594-0e20-4b94-bd74-d9d4da293ff2_c3a4ef52-376c-40cf-9db1-bdfbea2a3797_Go-Biz_20191018_201231.jpeg?auto=format', 'Nasi + Ikan Kembung Bakar', 27000, 'pedas', 1, 25),
+(717, 'Ikan Goreng + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e795e9b-eff5-438f-9dfd-3e57f07a6d8a_d6ce6137-f58b-43ad-8dc6-561e4d88b9fb_Go-Biz_20191018_202639.jpeg?auto=format', 'Nasi + Ikan Goreng', 25000, '', 1, 25),
+(718, 'Kepala Kakap + Nasi', '', 'Nasi + Gulai Kepala Ikan Kakap', 48500, 'pedas', 1, 25),
+(719, 'Peyet Udang + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/59d1c13d-ced9-4b1e-9c7c-d7b75b2d5502_df3ae431-0545-4c6f-83aa-0507c9ce94ca_Go-Biz_20191018_201431.jpeg?auto=format', 'Nasi + Peyek Udang Garing', 23000, '', 1, 25),
+(720, 'Cumi-cumi + Nasi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3d92e039-b4be-49c1-bc33-14096f2eddcb_d70a6d40-3b6d-4d90-918b-af8bf7a810e9_Go-Biz_20191018_201950.jpeg?auto=format', 'Nasi + Cumi-cumi bumbu Padang', 28000, 'pedas', 1, 25),
+(721, 'Otak Otak Goreng / Otak Otak Gulai + Nasi', '', 'Nasi + Pilihan Otak-otak Goreng atau Gulai', 28000, '', 1, 25),
+(722, 'Telor Dadar + Nasi', '', 'Nasi + Telur Dadar Khas Padang yang tebal', 18000, '', 1, 25),
+(723, 'Rendang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/df9624b7-b2de-4aab-98b5-4b19355a0ac1_master-menu-item-image_1591017773267.jpg?auto=format', 'Daging Rendang satuan (tanpa nasi)', 23000, 'pedas', 1, 25),
+(724, 'Gulai Daging Cincang', '', 'Gulai daging cincang porsi satuan', 25000, 'pedas', 1, 25),
+(725, 'Kikil Gulai', '', 'Kikil/Tunjang gulai satuan', 28000, 'pedas', 1, 25),
+(726, 'Ayam Bakar', '', 'Ayam bakar satuan', 22500, 'pedas', 1, 25),
+(727, 'Ayam Goreng Serundeng', '', 'Ayam goreng dengan taburan serundeng', 19500, '', 1, 25),
+(728, 'Ayam Goreng Sambal Merah', '', 'Ayam goreng disiram sambal merah', 19500, 'pedas', 1, 25),
+(729, 'Ayam Reca-reca Sambal Ijo', '', 'Ayam reca-reca dengan sambal ijo satuan', 20500, 'pedas', 1, 25),
+(730, 'Paru Paru Sapi Goreng', '', 'Paru sapi goreng garing satuan', 23000, '', 1, 25),
+(731, 'Ikan Kembung Bakar', '', 'Ikan kembung bakar satuan', 21000, 'pedas', 1, 25),
+(732, 'Segala Jenis Ikan Goreng', '', 'Pilihan ikan goreng satuan', 19000, '', 1, 25),
+(733, 'Ikan Kepala Kakap', '', 'Gulai kepala ikan kakap satuan', 43000, 'pedas', 1, 25),
+(734, 'Kepala Ikan Tongkol', '', 'Gulai/masakan kepala ikan tongkol', 27000, 'pedas', 1, 25),
+(735, 'Cumi-cumi Isi Tahu Telor', '', 'Cumi-cumi yang diisi tahu & telur dengan kuah', 24000, 'pedas', 1, 25),
+(736, 'Peyek Udang', '', 'Lauk peyek udang garing satuan', 18000, '', 1, 25),
+(737, 'Perkedel Kentang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e3d43615-895b-4867-9ee1-de2c4a7e28c4_dfa32fa6-5244-405a-89e2-d338fce5d948_file20190910-10424-c9kmes.jpeg?auto=format', 'Perkedel kentang tebal', 7000, '', 2, 25),
+(738, 'Perkedel', '', 'Perkedel pelengkap', 6000, '', 2, 25),
+(739, 'Kerupuk Kulit Khas Padang', '', '1 bungkus kerupuk kulit/rambak', 9000, '', 2, 25),
+(740, 'Kerupuk Kulit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e2f2e143-58d1-4ab9-bd8f-021f4f30d1db_9b72ec33-8948-4c88-a401-36bf92220a37_Go-Biz_20191018_203144.jpeg?auto=format', 'Kerupuk kulit pelengkap', 9000, '', 2, 25),
+(741, 'Nasi + Sayur Lalapan', '', 'Nasi putih disiram kuah padang, daun singkong, & sambal', 13000, 'pedas', 1, 25),
+(742, 'Nasi Putih', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2803ec27-b8e5-42f8-a2a7-5d8e7a809f36_5bb35dab-c250-494a-b566-327ae438634d.jpg?auto=format', 'Nasi putih hangat satuan', 9000, '', 2, 25),
+(743, 'Es Jeruk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5d738ac8-f50b-48d6-a6f1-d9d7349718a1_a8ea8caa-7a8f-4000-9e5f-1e0fac55e82e_file20190429-22379-xilizk.jpeg?auto=format', 'Es jeruk peras segar', 10000, 'manis', 3, 25),
+(744, 'Es Teh Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5e6b25e3-c8a4-49d7-9cde-c92230b84d86_9548c021-6bcc-4b0e-95f5-c12364709642_file20190425-22379-g221ks.jpeg?auto=format', 'Es teh manis', 9000, 'manis', 3, 25),
+(745, 'Cappucino Cincaw', '', 'Minuman rasa kopi cappucino dingin dengan potongan cincau', 6000, 'manis', 3, 26),
+(746, 'Jeruk Dingin', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/02d7b93e-af5d-4661-ad6b-0161e7894b57_544cbc85-61e1-47b5-936d-b111e97a189b.jpg?auto=format', 'Es jeruk peras/seduh segar', 6000, 'manis', 3, 26),
+(747, 'Nutrisari', '', 'Minuman rasa buah segar (dingin/hangat)', 4000, 'manis', 3, 26),
+(748, 'Teh Botol', '', 'Teh kemasan botol siap minum', 4000, 'manis', 3, 26),
+(749, 'Good Day Singin', '', 'Es kopi instan Good Day dingin', 4000, 'manis', 3, 26),
+(750, 'Dancow', '', 'Minuman susu Dancow seduh (dingin/hangat)', 4000, 'manis', 3, 26),
+(751, 'Teh Manis Dingin', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3d672397-ecc7-487e-8cac-161ca6e435e5_6ab7e793-4c95-4441-9851-12e26f0445e5.jpg?auto=format', 'Es teh manis segar', 4000, 'manis', 3, 26),
+(752, 'Kopi Kapal Api', '', 'Kopi hitam seduh Kapal Api', 3000, '', 3, 26),
+(753, 'Campur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/79b840b3-3bdb-4212-9cbb-4d7776c670b5_Go-Food-Merchant_20260222_175113.jpeg?auto=format', '12pcs Gehu Citarasa Cikur Yang Khas Serta 12pcs Combro Lemet, Dengan Kemasan Besek', 43750, 'pedas', 2, 27),
+(754, 'Paket Kop3T B', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/06131b77-ecfa-4f0d-bc80-cce0495a1148_Go-Food-Merchant_20260222_192503.jpeg?auto=format', '3 gehu cikur + 6 combro lemet dan pilihan minuman favorit anda', 28100, 'pedas', 2, 27),
+(755, 'Paket Kop3T A', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6c75b20a-f170-42e5-b469-3936f4e1d11e_Go-Food-Merchant_20260222_191833.jpeg?auto=format', '3 gehu cikur + 6 combro lemet dan pilihan minuman favorit anda', 22000, 'pedas', 2, 27),
+(756, 'Gehu Cikur', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e8b1c83e-ac6c-43fe-b4d8-0700ddc36320_Go-Food-Merchant_20260222_175455.jpeg?auto=format', '6pcs Gehu Citarasa Cikur Yang Khas. Perpaduan Tahu Premium, Cikur, Dan Toge. Dikemas Dengan Packaging Kertas', 16250, 'pedas', 2, 27),
+(757, 'Comet', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e192757-8047-4944-812c-03fe72063827_Go-Food-Merchant_20260222_181940.jpeg?auto=format', '12pcs combro lemet yang lezat, perpaduan oncom, cikur, dan bumbu-bumbu lainnya. Dikemas dengan packaging kertas', 12500, 'pedas', 2, 27),
+(758, 'Lepeut', '', 'Lepeut / lontong tanpa isi yang kenyal cocok dimakan bersama dengan gehu cikur', 26000, '', 2, 27),
+(759, 'Es Lemon', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/abd86bbb-e0d7-465a-8ae4-0f7df3428de9_Go-Food-Merchant_20260222_175028.jpeg?auto=format', 'Air Mineral Dingin Dengan Lemon Yang Segar', 15480, 'manis', 3, 27),
+(760, 'Es Teh Lemon', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8c25d2c8-cb22-431e-8174-aa84f81a58ba_Go-Food-Merchant_20260222_192928.jpeg?auto=format', 'Es Teh Melati Dengan Lemon Yang Segar', 15480, 'manis', 3, 27),
+(761, 'Limun', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/78728c03-c644-4fdd-93d6-dec2a9afe4d6_Go-Food-Merchant_20260222_193157.jpeg?auto=format', 'Es Limun (coca cola, sprite, atau fanta) dan Es Limun dengan Lemon yang segar (coca cola atau sprite lemon)', 15480, 'manis', 3, 27),
+(762, 'Es Teh', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/03ddcb50-3b40-414e-89ca-f686eb7849b6_Go-Food-Merchant_20260222_192829.jpeg?auto=format', 'Es Teh Melati Tawar / Manis', 10320, 'manis', 3, 27),
+(763, 'Air Mineral', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c441ef60-e394-4a16-860f-a474e4a6e639_Go-Food-Merchant_20260222_193336.jpeg?auto=format', 'Kemasan 600ml', 9030, '', 3, 27),
+(764, 'Paket Ara 1', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3a9efdcc-c186-4645-b7d8-17c8df9d9869_Go-Food-Merchant_20250810_125213.jpeg?auto=format', 'Nasi + ayam Paha Bawah/sayap + saos', 15500, '', 1, 28),
+(765, 'Paket Ara 2', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/705c8e86-870d-44e6-be58-a856bf164a3c_Go-Food-Merchant_20250810_125359.jpeg?auto=format', 'Nasi + ayam Dada/paha Atas + saos', 19000, '', 1, 28),
+(766, 'Paket Ara 3', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/76b6b9d5-833d-4510-a12c-de70d65e9594_Go-Food-Merchant_20250810_125515.jpeg?auto=format', 'Ayam Paha Bawah/sayap + kentang', 20500, '', 1, 28),
+(767, 'Paket Ara 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2d1ae639-0535-40ab-863d-3a3792057fd2_Go-Food-Merchant_20250810_125648.jpeg?auto=format', 'Ayam Dada/paha Atas + kentang', 24500, '', 1, 28),
+(768, 'Paket Chiken Terayaki', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8f59a999-46e3-42a7-adf9-f0ce51c09a2f_Go-Food-Merchant_20250810_140406.jpeg?auto=format', 'Nasi + Chiken Teriyaki + Saos Teriyaki Himalaya', 19000, '', 1, 28),
+(769, 'Paket Beef Teriyaki', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3a26b1e4-b814-4d14-95e1-d6d16b946720_Go-Food-Merchant_20250810_140516.jpeg?auto=format', 'Nasi + Daging Sapi + Saos Teriyaki Yang Nikmat', 25500, '', 1, 28),
+(770, 'Paket Ara 1 Crisbar Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0d23d6e7-5870-4556-b577-33f0a64867df_Go-Food-Merchant_20250810_130310.jpeg?auto=format', 'Nasi + ayam Paha Bawah/sayap + sambel Geprek + lalapan', 22000, 'pedas', 1, 28),
+(771, 'Paket Ara 2 Crisbar Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e9fb2d71-f7cb-4965-806f-caf6f8e4633a_Go-Food-Merchant_20250810_130525.jpeg?auto=format', 'Nasi + ayam Dada/paha Atas + sambel Geprek + lalapan', 27000, 'pedas', 1, 28),
+(772, 'Paket Ara 1 Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c9c54aab-e13c-4674-bbb7-e7319353b561_Go-Food-Merchant_20250810_130757.jpeg?auto=format', 'Nasi + ayam paha bawah/sayap + sambel geprek + lalapan', 19000, 'pedas', 1, 28),
+(773, 'Paket Ara 2 Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d96c0765-3f86-4b99-a0ed-3d85c4d004ec_Go-Food-Merchant_20250810_131033.jpeg?auto=format', 'Nasi + ayam dada/paha atas + sambel geprek + lalapan', 23000, 'pedas', 1, 28),
+(774, 'Paket Mie Ayam Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/20bb5930-011c-4f8a-8fbb-1af0e4c5a98d_Go-Food-Merchant_20250810_141212.jpeg?auto=format', 'Mie Tumis + bakso + telur + ayam Paha Bawah/sayap + sambel Geprek + lalapan', 29500, 'pedas', 1, 28),
+(775, 'P.Nasi Goreng Ayam Geprek', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7f52e6ae-8810-4fd1-a4ea-4c3475d94346_Go-Food-Merchant_20250821_201359.jpeg?auto=format', 'Nasi Goreng + telur + bakso + ayam Paha Bawah/sayap + sambel Geprek + lalapan', 29500, 'pedas', 1, 28),
+(776, 'Ayam Crispy Dada / Paha Atas', '', 'Potongan Ayam Besar dibalut Bumbu Rahasia South Sumatra', 15500, '', 1, 28),
+(777, 'Ayam Crispy Sayap / Paha Bawah', '', 'Potongan Ayam Yang Bikin Kenyang Seharian', 11500, '', 1, 28),
+(778, 'Paha Bawah / Sayap Geprek', '', 'Ayam Crispy Geprek dibalut Sambal Pedas Indonesia Barat', 15500, 'pedas', 1, 28),
+(779, 'Dada / Paha Atas Geprek', '', 'Ayam Crispy Besar + Sambal Khas Indonesia Barat', 19000, 'pedas', 1, 28),
+(780, 'Paha Bawah / Sayap Crisbar', '', 'Ayam Crispy Dipanggang dengan Bumbu Kaya Rasa', 14000, '', 1, 28),
+(781, 'Paha Atas / Dada Crisbar', '', 'Ayam Crispy Dipanggang dengan Bumbu Kaya Rasa', 18000, '', 1, 28),
+(782, 'Paha Bawah / Sayap Crisbar Geprek', '', 'Ayam crispy panggang bumbu khas dibalut sambal south sumatra', 18000, 'pedas', 1, 28),
+(783, 'Paha Atas / Dada Crisbar Geprek', '', 'Ayam Crispy Panggang bumbu khas dibalut sambal south sumatra', 22000, 'pedas', 1, 28),
+(784, 'Kentang Soestring', '', 'Kentang Goreng Lembut Dan Gurih Yang Kaya Rasa', 10200, '', 2, 28),
+(785, 'Nasi', '', 'Nasi Pulen Dari Beras Khas Indonesia Berkualitas', 5200, '', 2, 28),
+(786, 'Ice Pink Lava', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/48f141ba-34ae-4859-9d7a-3b0b28a4eba8_Go-Food-Merchant_20250810_134952.jpeg?auto=format', 'Minuman dingin rasa Pink Lava', 13000, 'manis', 3, 28),
+(787, 'Ice Green Lava', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3dd86082-48eb-4055-a20b-2ee7c6eb105c_Go-Food-Merchant_20250810_135026.jpeg?auto=format', 'Minuman dingin rasa Green Lava', 13000, 'manis', 3, 28),
+(788, 'Jus Mangga', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0f2f7ee5-c7bf-4c49-a877-f86d3ef94369_Go-Food-Merchant_20250810_135556.jpeg?auto=format', 'Jus buah mangga segar', 13000, 'manis', 3, 28),
+(789, 'Capucino', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/aba5003e-a652-43a3-a4fe-a67a4a4e0f96_Go-Food-Merchant_20250810_134740.jpeg?auto=format', 'Pilihan penyajian Panas/Ice', 10500, 'manis', 3, 28),
+(790, 'Jeruk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/fa1f7cf2-1eb1-49b1-8c4f-931e9d71bf23_Go-Food-Merchant_20250810_134245.jpeg?auto=format', 'Perasan jeruk asli (Panas/Ice)', 8000, 'manis', 3, 28),
+(791, 'Ice Teh', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/78da685b-3ad0-49be-a6ab-1ed5d069c7e8_Go-Food-Merchant_20250810_134854.jpeg?auto=format', 'Pilihan penyajian Hot/Dingin', 6000, 'manis', 3, 28),
+(792, 'DIMSUM SPICY MAYO ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/da8fd0de-f006-470b-81ab-b5408cf8b8c2_Go-Food-Merchant_20250624_112156.jpeg?auto=format', 'Dimsum kukus isi 4 dengan saus spicy mayo gurih pedas', 26999, 'pedas', 1, 29),
+(793, 'DIMSUM SPICY MAYO ISI 6', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/54c85fff-1ef9-46dc-832e-2fd8e80076d1_Go-Food-Merchant_20250610_164420.jpeg?auto=format', 'Dimsum kukus isi 6 dengan saus spicy mayo gurih pedas', 39999, 'pedas', 1, 29),
+(794, 'DIMSUM SPICY MAYO ISI 8', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ba511648-7609-45d8-9514-d1780bea2317_Go-Food-Merchant_20250610_164518.jpeg?auto=format', 'Dimsum kukus isi 8 dengan saus spicy mayo gurih pedas', 52999, 'pedas', 1, 29),
+(795, 'DIMSUM DOWER', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/926358aa-37be-4eb2-bd8d-11746e219267_Go-Biz_20250612_190448.jpeg?auto=format', 'Perpaduan mi pedas dower dengan topping dimsum', 22999, 'pedas', 1, 29),
+(796, 'SIOMAY AYAM ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b444bc8f-486b-492f-b889-253069961311_Go-Biz_20250610_161815.jpeg?auto=format', 'Siomay olahan daging ayam premium isi 4', 20999, '', 1, 29),
+(797, 'SIOMAY UDANG ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e9f2395b-19c0-47bc-b834-8de16965b791_Go-Biz_20250610_161854.jpeg?auto=format', 'Siomay olahan daging udang segar isi 4', 20999, '', 1, 29),
+(798, 'NORI ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1a922e7f-e02e-42f1-8e53-96608a481af0_Go-Biz_20250610_161912.jpeg?auto=format', 'Dimsum dibalut dengan rumput laut (nori) isi 4', 20999, '', 1, 29),
+(799, 'HISITKAU ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d239cb06-24c3-46fb-a3e1-2f2661f2de28_Go-Biz_20250610_161937.jpeg?auto=format', 'Dimsum kukus oriental sirip hiu tiruan isi 4', 20999, '', 1, 29),
+(800, 'SIOMAY KEPITING ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0bea3491-f473-44b6-a19c-d744c99f74df_Go-Biz_20250610_161955.jpeg?auto=format', 'Siomay olahan dengan stik/daging kepiting isi 4', 20999, '', 1, 29),
+(801, 'SIOMAY CUMI ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3d80eaef-0461-49af-a35d-99d3ff15c54d_Go-Biz_20250610_162015.jpeg?auto=format', 'Siomay olahan dengan potongan cumi isi 4', 20999, '', 1, 29),
+(802, 'HAKAU ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d7b20be2-5947-4f71-bb42-2b429e9df122_Go-Biz_20250611_083712.jpeg?auto=format', 'Dimsum kulit transparan isi udang utuh isi 4', 23999, '', 1, 29),
+(803, 'SIOMAY MOZARELLA ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/036b628e-5286-44d9-bd52-255d7804cfad_Go-Biz_20250611_083756.jpeg?auto=format', 'Siomay ayam dengan topping keju mozzarella meleleh isi 4', 22999, '', 1, 29),
+(804, 'LUMPIA KULIT TAHU AYAM ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a77a5f16-2f6e-44a7-9545-6f24d559eda8_Go-Biz_20250610_162036.jpeg?auto=format', 'Olahan ayam dibungkus kulit tahu lembut isi 4', 22999, '', 1, 29),
+(805, 'LUMPIA KULIT TAHU UDANG ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/712471d5-b482-47e2-94d7-525def2ead62_Go-Biz_20250610_162056.jpeg?auto=format', 'Olahan udang dibungkus kulit tahu lembut isi 4', 22999, '', 1, 29),
+(806, 'ANGSIO CEKER', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/fa766f22-176f-47d2-b858-4ebc823b4a1e_Go-Biz_20210728_094709.jpeg?auto=format', 'Ceker ayam bumbu merah angsio khas dimsum', 23999, 'pedas', 1, 29),
+(807, 'EKADO ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/86581146-97d3-4b1b-9da4-803f95ad9510_Go-Biz_20250610_162116.jpeg?auto=format', 'Dimsum goreng isi telur puyuh dibungkus kulit tahu isi 4', 22999, '', 1, 29),
+(808, 'KUMIS NAGA ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/36e1dfff-978a-4023-ae74-4f952a831236_Go-Biz_20250610_162136.jpeg?auto=format', 'Dimsum goreng dibalut jala tepung renyah isi 4', 22999, '', 1, 29),
+(809, 'LUMPIA AYAM GORENG ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a8cba118-70db-4d65-800d-1e72b5443b8f_Go-Biz_20250610_162152.jpeg?auto=format', 'Lumpia isi olahan ayam yang digoreng garing isi 4', 22999, '', 1, 29),
+(810, 'KUOTIE ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/41ba4b24-95a7-4e1d-9c8f-e22d702e1b77_Go-Biz_20250610_162211.jpeg?auto=format', 'Pangsit goreng/pan-fried khas oriental isi 4', 22999, '', 1, 29),
+(811, 'WONTON ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ddc1e054-f1b1-4a84-81e7-45fab2de4a0e_Go-Biz_20250610_162230.jpeg?auto=format', 'Pangsit kukus/goreng oriental isi 4', 22999, '', 1, 29),
+(812, 'MIX DIMSUM KUKUS ISI 4', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3bfb0b9d-574c-4edf-ba3c-07642484a9f5_Go-Biz_20210728_094709.jpeg?auto=format', 'Varian dimsum kukus campur, tidak bisa request', 21999, '', 1, 29),
+(813, 'MIX DIMSUM KUKUS ISI 6', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c2ec992e-b34f-4711-88a1-d25bccdcec86_Go-Biz_20220619_091510.jpeg?auto=format', 'Varian dimsum kukus campur, tidak bisa request', 31999, '', 1, 29),
+(814, 'MIX DIMSUM KUKUS ISI 10', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/04f1fb3e-572e-4fd9-839f-e9cccae89c2e_Go-Biz_20220617_120108.jpeg?auto=format', 'Varian dimsum kukus campur, tidak bisa request', 64999, '', 1, 29),
+(815, 'MIX DIMSUM KUKUS ISI 15', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a875883d-59b8-4a06-8e66-042a6541fe24_Go-Biz_20220617_120355.jpeg?auto=format', 'Varian dimsum kukus campur, tidak bisa request', 78999, '', 1, 29),
+(816, 'MIX DIMSUM KUKUS ISI 20', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d1f57d99-89a8-4989-a037-53f806dcb786_Go-Biz_20220617_120215.jpeg?auto=format', 'Varian dimsum kukus campur, tidak bisa request', 104999, '', 1, 29),
+(817, 'MIX DIMSUM GORENG ISI 5', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1e7e01fa-7de9-4362-87a8-557ae7f1be62_Go-Biz_20250610_162556.jpeg?auto=format', 'Varian dimsum goreng campur, tidak bisa request', 27999, '', 1, 29),
+(818, 'MIX DIMSUM GORENG ISI 10', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/36509998-81bd-4417-b28c-1a5af6a957fa_Go-Biz_20250610_162631.jpeg?auto=format', 'Varian dimsum goreng campur, tidak bisa request', 55999, '', 1, 29),
+(819, 'MIX DIMSUM GORENG ISI 15', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8cbb0f90-de2a-46c3-ae0b-db122626d167_Go-Biz_20250610_162654.jpeg?auto=format', 'Varian dimsum goreng campur, tidak bisa request', 86999, '', 1, 29);
+INSERT INTO `menu` (`id_menu`, `nama_menu`, `foto_menu`, `deskripsi`, `harga`, `rasa`, `id_kategori`, `id_toko`) VALUES
+(820, 'MIX DIMSUM GORENG ISI 20', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a523e76c-048e-45b5-8d0c-52570ff3c579_Go-Biz_20250610_162715.jpeg?auto=format', 'Varian dimsum goreng campur, tidak bisa request', 110999, '', 1, 29),
+(821, 'Dimsum Kukus (( FROZEN )) MIX Isi 30', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ef113592-a4e3-42af-be93-ba7061f34f62_Go-Biz_20220412_212222.jpeg?auto=format', 'Dimsum frozen isi 30 + Chili Oil untuk distok di rumah', 130000, '', 2, 29),
+(822, 'PAKET MIX KELUARGA ISI 30', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/73b05fa7-a2ba-45ba-9f47-9396f137cd9c_Go-Food-Merchant_20250612_190236.jpeg?auto=format', 'Kombinasi besar dimsum kukus + dimsum goreng', 169000, '', 1, 29),
+(823, 'Beli 3 Free 1 Es Teh Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7615dc34-a606-4e59-9e19-2ae69636f18d_Go-Biz_20221011_082224.jpeg?auto=format', 'Paket bundling dimsum gratis 1 es teh manis', 90999, '', 1, 29),
+(824, 'Beli 4 Free 2 Es Teh Manis', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0508ccf0-25ea-4640-8966-149a738e0f40_Go-Biz_20221011_193016.jpeg?auto=format', 'Paket bundling dimsum gratis 2 es teh manis', 108999, '', 1, 29),
+(825, 'Indomie Goreng Cabe Ijo Toping Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/605efadb-22eb-49da-a919-450c9621920d_Go-Biz_20210723_122014.jpeg?auto=format', 'Mi instan Indomie rasa cabe ijo + telur', 14999, 'pedas', 1, 29),
+(826, 'Indomie Goreng Rendang Toping Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/269b50d3-a41c-4856-a38e-2aa3d5384e71_Go-Biz_20210723_122330.jpeg?auto=format', 'Mi instan Indomie rasa rendang + telur', 14999, 'pedas', 1, 29),
+(827, 'Mie Sedaap Korean Spicy Chicken Toping Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9153419b-4b09-4ed7-abf8-9b5d92e6c01d_Go-Biz_20210723_122432.jpeg?auto=format', 'Mi instan Sedaap rasa ayam pedas Korea + telur', 14999, 'pedas', 1, 29),
+(828, 'Indomie Hype Abis Ayam Geprek Toping Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/100f4c49-753e-40d4-8825-0fec905d0121_Go-Biz_20210723_122532.jpeg?auto=format', 'Mi instan Indomie rasa ayam geprek super pedas + telur', 14999, 'pedas', 1, 29),
+(829, 'Indomie Goreng Biasa Toping Telor', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/bb642c4c-fc12-4dfa-bd7e-973f741eb644_Go-Biz_20210723_122606.jpeg?auto=format', 'Mi instan Indomie goreng original + telur', 14999, '', 1, 29),
+(830, 'Nasi Kikil (Tunjang)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a91a1f45-90e5-4d2b-9a52-c3106c266449_Go-Biz_20200626_225022.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 36100, 'pedas', 1, 30),
+(831, 'Nasi Gulai Otak', '', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo (Habis)', 34500, 'pedas', 1, 30),
+(832, 'Nasi Cumi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1ea8a281-57a5-4d74-92ec-19defb9b4c27_Go-Biz_20230804_230454.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 32500, 'pedas', 1, 30),
+(833, 'Nasi Gule Cincang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c09738a4-628b-4f4d-b7c3-61ef09779b74_Go-Biz_20200626_225128.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 28900, 'pedas', 1, 30),
+(834, 'Nasi Rendang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/70df1594-8272-4f64-8b70-b718b5cc61e1_Go-Biz_20200626_225002.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 27700, 'pedas', 1, 30),
+(835, 'Nasi Dendeng Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f6d76226-40b4-4e4b-be5a-f7c40f881277_Go-Biz_20200626_225204.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 26500, 'pedas', 1, 30),
+(836, 'Nasi Udang Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/afc04d48-4557-4485-a5eb-eb0763190ffe_Go-Biz_20200626_225521.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 26500, 'pedas', 1, 30),
+(837, 'Nasi Paru Goreng', '', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 26500, 'pedas', 1, 30),
+(838, 'Nasi Ayam Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e0c071a8-aed1-4547-968f-10ffa50c2562_Go-Biz_20210108_010021.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 25300, 'pedas', 1, 30),
+(839, 'Nasi Ayam Gulai', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9d2db8c4-78b0-45f9-ae29-57af21fbef50_Go-Biz_20210208_092112.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 25300, 'pedas', 1, 30),
+(840, 'Nasi Ayam Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/55097139-5e76-4108-9b34-bf3aad7182db_Go-Biz_20200626_224735.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 25300, 'pedas', 1, 30),
+(841, 'Nasi Ayam Ijo', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9836b48d-c6c2-4794-bd19-b3335c5958dc_Go-Biz_20200626_224802.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 25300, 'pedas', 1, 30),
+(842, 'Nasi Ayam Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3acaaef5-6209-46a3-98ff-825c48adf7dd_Go-Biz_20230804_230209.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 25300, 'pedas', 1, 30),
+(843, 'Nasi Ayam Rendang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/27ebc3ed-edb1-4dc5-aebe-db1b52201d6a_Go-Biz_20200626_224828.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 25300, 'pedas', 1, 30),
+(844, 'Nasi Gulai Limpa', '', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo (Habis)', 25100, 'pedas', 1, 30),
+(845, 'Nasi Gulai Usus', '', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo (Habis)', 25100, 'pedas', 1, 30),
+(846, 'Nasi Ikan Kembung Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/254bb735-b4cb-4daf-bf0c-321aee2f509a_Go-Biz_20200626_225238.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo (Habis)', 24800, 'pedas', 1, 30),
+(847, 'Nasi Ikan Nila Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3a29d57d-dfc5-4373-80f0-9217065f15d1_Go-Biz_20200626_225331.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 24100, 'pedas', 1, 30),
+(848, 'Nasi Ikan Tongkol Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ac5b0b6f-6836-416e-a2c2-c68a2723b07e_Go-Biz_20200626_225425.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 24100, 'pedas', 1, 30),
+(849, 'Nasi Tongkol Gulai Kuning', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a23120fd-96cc-44ef-aea9-17f5d7b96c33_Go-Biz_20240317_152532.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 24100, 'pedas', 1, 30),
+(850, 'Nasi Tongkol Asam Padeh', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0cc058d7-329a-45dc-9334-0aa794e765bd_Go-Biz_20230804_230738.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 24100, 'pedas', 1, 30),
+(851, 'Nasi Ikan Kembung Bakar', '', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo (Habis)', 24100, 'pedas', 1, 30),
+(852, 'Nasi Telur Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5a3e89cf-4ec5-40d6-8d64-2f9b19d4bdc7_Go-Biz_20200626_225552.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo', 17750, 'pedas', 1, 30),
+(853, 'Nasi Telur Dadar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/36bc30cc-506e-4a18-bd46-5878a4d23bdb_Go-Biz_20200626_225628.jpeg?auto=format', 'Nasi Padang + Daun Singkong + Gulai Nangka + Sambal Ijo (Habis)', 17750, 'pedas', 1, 30),
+(854, 'Kikil (Tunjang)', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e37c1879-7072-4676-8170-b1f61aef5e85_Go-Biz_20220325_060939.jpeg?auto=format', '1 Porsi lauk kikil', 32000, 'pedas', 1, 30),
+(855, 'Gulai Otak', '', '1 Pcs lauk gulai otak (Habis)', 29400, 'pedas', 1, 30),
+(856, 'Cumi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/793576b7-09f7-471f-b462-0e836bb3bdbb_Go-Biz_20230804_232208.jpeg?auto=format', '1 Pcs lauk cumi', 24200, 'pedas', 1, 30),
+(857, 'Gule Cincang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/054fef0b-ccba-4adb-b806-0b327ae19f85_Go-Biz_20220325_060917.jpeg?auto=format', '1 Porsi lauk gulai cincang (Habis)', 23600, 'pedas', 1, 30),
+(858, 'Udang Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d4c5082a-4f36-4ad6-befe-ca04100c175f_Go-Biz_20220325_061542.jpeg?auto=format', 'Sekitar 8-10 Pcs lauk udang balado (Tergantung ukuran)', 22400, 'pedas', 1, 30),
+(859, 'Paru Goreng Kering', '', '1-2 Pcs lauk paru goreng (Tergantung ukuran)', 22250, '', 1, 30),
+(860, 'Rendang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c3265c2a-f237-4e26-b550-5b73a73add29_Go-Biz_20220325_061812.jpeg?auto=format', '1 Porsi lauk rendang daging', 21800, 'pedas', 1, 30),
+(861, 'Dendeng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/06a7e8c7-d81f-45a9-92bb-2e537ecce72c_Go-Biz_20220325_060752.jpeg?auto=format', '1 Porsi lauk dendeng balado', 21250, 'pedas', 1, 30),
+(862, 'Ayam Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3f7cbd35-75f7-485c-bd48-c61f573372a4_Go-Biz_20220325_060657.jpeg?auto=format', '1 Pcs lauk ayam bakar', 20600, 'pedas', 1, 30),
+(863, 'Ayam Gule', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/10fdb715-7a7c-4779-b937-0e9991094ad2_Go-Biz_20220325_060719.jpeg?auto=format', '1 Pcs lauk ayam gulai', 20600, 'pedas', 1, 30),
+(864, 'Ayam Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/659fd2b6-0058-4ed7-a1ef-a25ca08252f2_Go-Biz_20220325_060552.jpeg?auto=format', '1 Pcs lauk ayam balado', 20600, 'pedas', 1, 30),
+(865, 'Ayam Ijo', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b1c8341f-751a-492d-a2b3-2d6cf96bfe1e_Go-Biz_20220325_060612.jpeg?auto=format', '1 Pcs lauk ayam cabai hijau', 20600, 'pedas', 1, 30),
+(866, 'Ayam Goreng', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b3dc9e44-9136-4a56-90c2-4b3e186c1400_Go-Biz_20220325_061448.jpeg?auto=format', '1 Pcs lauk ayam goreng', 20600, '', 1, 30),
+(867, 'Ayam Rendang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/470bc179-c4a8-47f3-9029-63135d297851_Go-Biz_20220325_061658.jpeg?auto=format', '1 Pcs lauk ayam bumbu rendang', 20600, 'pedas', 1, 30),
+(868, 'Gulai Limpa', '', '1 Pcs lauk gulai limpa (Habis)', 20000, 'pedas', 1, 30),
+(869, 'Gulai Usus', '', '1 Pcs lauk gulai usus (Habis)', 20000, 'pedas', 1, 30),
+(870, 'Tongkol Asam Padeh', '', '1 Pcs lauk tongkol asam padeh', 18500, 'pedas', 1, 30),
+(871, 'Tongkol Gulai Kuning', '', '1 Pcs lauk tongkol gulai kuning', 18500, 'pedas', 1, 30),
+(872, 'Tongkol Balado', '', '1 Pcs lauk tongkol balado', 18250, 'pedas', 1, 30),
+(873, 'Ikan Kembung Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/215dc23a-ed7e-4ea2-829f-0914f7d88c14_Go-Biz_20220325_061011.jpeg?auto=format', '1 Pcs lauk kembung balado (Habis)', 18250, 'pedas', 1, 30),
+(874, 'Ikan Kembung Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b33428ef-dc23-48c0-b223-3e2583dd7d60_Go-Biz_20220325_061156.jpeg?auto=format', '1 Pcs lauk kembung bakar (Habis)', 18250, 'pedas', 1, 30),
+(875, 'Ikan Nila Bakar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/98e63871-5ccc-451d-ba11-0a287c479407_Go-Biz_20220325_061250.jpeg?auto=format', '1 Pcs lauk nila bakar', 17950, 'pedas', 1, 30),
+(876, 'Telur Bulat', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/557e68a3-115c-4ff4-a5b5-f3126a60f394_Go-Biz_20220325_061401.jpeg?auto=format', '1 Pcs lauk telur bulat rebus/balado', 10400, 'pedas', 1, 30),
+(877, 'Telur Dadar', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/20210f06-2ca7-49e1-a0af-00086cbca784_Go-Biz_20220325_061348.jpeg?auto=format', '1 Pcs lauk telur dadar khas Padang (Habis)', 10400, '', 1, 30),
+(878, 'Jengkol Kalio Satu Porsi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6313857b-cb1b-474f-8bf6-07506c996666_Go-Biz_20230926_131008.jpeg?auto=format', 'Satu Porsi Jengkol bumbu kalio gurih kental (Habis)', 17000, 'pedas', 1, 30),
+(879, 'Teh Botol Original', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7b1de731-9a43-46f0-a3ca-e061e3e418c0_Go-Biz_20230917_225150.jpeg?auto=format', 'Minuman teh kemasan botol', 9950, 'manis', 3, 30),
+(880, 'Jengkol Kalio 1/2 porsi', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c6db2606-f819-485c-8d03-ca1bc35730bc_Go-Biz_20230926_131030.jpeg?auto=format', 'Setengah porsi jengkol bumbu kalio (Habis)', 9950, 'pedas', 1, 30),
+(881, 'Kerupuk Kulit', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b1e63799-38d0-497d-9bc6-9fbc48506de7_Go-Biz_20231105_140103.jpeg?auto=format', 'Kerupuk kulit/dorokdok pelengkap nasi Padang', 9750, '', 2, 30),
+(882, 'Peyek Udang', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b1aadbb9-4f28-4925-94eb-f1f62439dbee_Go-Biz_20220325_061937.jpeg?auto=format', 'Rempeyek garing dengan topping udang', 9200, '', 2, 30),
+(883, 'Nasi Putih', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1a6e776b-e954-4fd7-9c5a-8eabf1b534b6_Go-Biz_20250430_095716.jpeg?auto=format', 'Satu porsi nasi putih', 8400, '', 1, 30),
+(884, 'Teh Pucuk', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c7d611f1-4e2a-478f-9819-4cae1d4d31c2_Go-Biz_20210404_183925.jpeg?auto=format', 'Minuman teh kemasan botol', 8250, 'manis', 3, 30),
+(885, 'S-Tee', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b5f04696-da91-480d-9f80-aa2716110c11_Go-Food-Merchant_20250430_095103.jpeg?auto=format', 'Minuman teh kemasan (Habis)', 8000, 'manis', 3, 30),
+(886, 'Prima', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/c7c37299-8606-4302-aaf9-5be4e8886cfa_Go-Biz_20231105_140535.jpeg?auto=format', 'Air mineral kemasan', 6900, '', 3, 30),
+(887, 'Perkedel', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3cc3c408-71c5-4b14-babf-36b91aacce7e_Go-Biz_20210108_002157.jpeg?auto=format', 'Perkedel kentang lembut khas Padang', 6800, '', 2, 30),
+(888, 'Terong Balado', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/255ede33-20b5-4c97-8ea0-5deed74aef86_Go-Biz_20220325_061850.jpeg?auto=format', 'Terong masak sambal balado merah', 6550, 'pedas', 2, 30),
+(889, 'Peyek Jagung', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d3a414aa-f895-43e9-9f41-633855ff2776_Go-Biz_20210108_002236.jpeg?auto=format', 'Bakwan/rempeyek jagung garing (Habis)', 5950, '', 2, 30),
+(890, 'Tahu', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/e65bcd9b-75fa-4059-a2f0-2feb76e510d1_Go-Biz_20220402_140757.jpeg?auto=format', 'Tahu pelengkap (bisa kuah/goreng)', 4400, '', 2, 30),
+(891, 'tempe', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/d2bf47a3-0360-4592-9574-42d7cc22eed4_Go-Biz_20210108_002215.jpeg?auto=format', 'tempe', 4400, '', 2, 30),
+(892, 'Es Teler Sultan', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/23faf392-f8a4-4f05-abd2-2b7bbbc08c4e_Go-Biz_20260309_002944.jpeg?auto=format', 'Es Teler Creamy, alpukat + nangka + Jelly Blueberry - cincau + Jelly kelapa + Agar2 Strawberry + kuah Creamy Authentic AI Drinks', 23000, 'manis', 3, 31),
+(893, 'MANGO Sago Super Creamy!', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/577eb1db-21c7-4913-9c4c-836adcd6d12b_Go-Biz_20260309_003045.jpeg?auto=format', 'Dessert Populer Di Asian, Potongan Buah Mangga Yg Fresh Dan Yummy, Berpadu Dengan Kuah Creamy Yang Lezat. MANGO Sago Kaya Rasa, Sagu Mutiara + Bijih Selasih + Jelly Mangga + Daun Mint', 23000, 'manis', 3, 31),
+(894, 'Es Teler Tokyo', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/32a0cfb2-3e64-451b-acc3-f33571a08c20_Go-Biz_20250825_222917.jpeg?auto=format', 'Signature Es Teler A.I. Drinks, Dengan Sensasi Popping Boba Strawberry Yg Meletus Di Mulut, Taburan Keju, Isian Alpukat + Jelly kelapa + Jelly Strawberry + kuah Creamy Authentic AI Drinks', 23000, 'manis', 3, 31),
+(895, 'Buko Pandan Filipino', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/565d7efc-de84-4974-9a8a-8431a70bb8f0_Go-Biz_20250810_231538.jpeg?auto=format', 'Dessert khas negara Philipines, dengan isian: nata de coco + agar2 Ijo + nikmat dengan parutan keju dan saus creamy authentic khas ai drinks', 23000, 'manis', 3, 31),
+(896, 'Es Teler Teko', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8fac5015-ba40-4824-abc9-ca05dfffcfca_Go-Food-Merchant_20260108_223215.jpeg?auto=format', 'Es teler teko avengers! Dengan topping lengkap semua ada: jelly cincau, kelapa, melon, stroberi, kuah creamy terkental. Alpukat, nangka, selasih, keju melimpah. +Free teko ukuran 1000 ml', 45000, 'manis', 3, 31),
+(897, 'Iced Dubai Pistachio Coffee', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/eb610c7b-7d5f-4d42-822e-de0aee652ea7_Go-Food-Merchant_20260120_191945.jpeg?auto=format', 'Sauce Pistachio + Susu Uht + Espresso + Pistachio Nut Crumbs', 19000, '', 3, 31),
+(898, 'Butterscotch Sea Salt Latte', 'https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8f7620ae-16f5-427b-bfbb-eedc406c0196_Go-Food-Merchant_20260120_192103.jpeg?auto=format', 'Butterscotch Syrup + Susu Uht + Espresso + Creamer + Sea Salt + Cookie Crumbs', 19000, '', 3, 31),
+(899, 'Matcha Creamy Latte', '', 'Minuman susu dengan teh hijau (matcha) Jepang ala AI Drinks yang kental', 15000, 'manis', 3, 31),
+(900, 'Es Kopi Susu Gula Aren', '', 'Perpaduan espresso, susu segar, dan manisnya gula aren asli', 15000, 'manis', 3, 31);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `metode_toko`
+-- Struktur dari tabel `metode_toko`
 --
 
 CREATE TABLE `metode_toko` (
@@ -132,19 +1003,10 @@ CREATE TABLE `metode_toko` (
   `id_metode` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `metode_toko`
---
-
-INSERT INTO `metode_toko` (`id_toko`, `id_metode`) VALUES
-(1, 1),
-(1, 5),
-(1, 6);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `mitra`
+-- Struktur dari tabel `mitra`
 --
 
 CREATE TABLE `mitra` (
@@ -154,7 +1016,7 @@ CREATE TABLE `mitra` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `mitra`
+-- Dumping data untuk tabel `mitra`
 --
 
 INSERT INTO `mitra` (`id_mitra`, `nama_mitra`, `logo`) VALUES
@@ -165,7 +1027,7 @@ INSERT INTO `mitra` (`id_mitra`, `nama_mitra`, `logo`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `review`
+-- Struktur dari tabel `review`
 --
 
 CREATE TABLE `review` (
@@ -178,7 +1040,7 @@ CREATE TABLE `review` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Triggers `review`
+-- Trigger `review`
 --
 DELIMITER $$
 CREATE TRIGGER `trg_update_rating` AFTER INSERT ON `review` FOR EACH ROW BEGIN
@@ -198,7 +1060,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `role`
+-- Struktur dari tabel `role`
 --
 
 CREATE TABLE `role` (
@@ -209,7 +1071,7 @@ CREATE TABLE `role` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `toko`
+-- Struktur dari tabel `toko`
 --
 
 CREATE TABLE `toko` (
@@ -225,11 +1087,10 @@ CREATE TABLE `toko` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `toko`
+-- Dumping data untuk tabel `toko`
 --
 
 INSERT INTO `toko` (`id_toko`, `nama_toko`, `foto_outlet`, `lokasi`, `jam_buka`, `jam_tutup`, `status_halal`, `no_telepon`, `rating`) VALUES
-(1, 'contoh', 'gofood.png', 'hdhasjhjsabdjhcbsbd', '07:00:00', '22:00:00', 'belum tersertifikasi', '089999999999', NULL),
 (2, 'MIE BASO RESTORJA DO\'EL', '', 'Jalan Geger Kalong Girang No.65 Isola, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '08:30:00', '21:30:00', 'tersertifikasi', '', 0),
 (3, 'Mie Ayam Pedas Sugih', '', 'Jl. Gegerkalong Girang No.31, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '10:30:00', '20:30:00', 'tersertifikasi', '', 0),
 (4, 'AYAM JUBER - JUARA BERTAHAN - GERLONG', '', 'Jl. Gegerkalong Girang No.17, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:30:00', '22:00:00', 'tersertifikasi', '', 0),
@@ -264,7 +1125,7 @@ INSERT INTO `toko` (`id_toko`, `nama_toko`, `foto_outlet`, `lokasi`, `jam_buka`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `toko_mitra`
+-- Struktur dari tabel `toko_mitra`
 --
 
 CREATE TABLE `toko_mitra` (
@@ -272,19 +1133,10 @@ CREATE TABLE `toko_mitra` (
   `id_mitra` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `toko_mitra`
---
-
-INSERT INTO `toko_mitra` (`id_toko`, `id_mitra`) VALUES
-(1, 1),
-(1, 2),
-(1, 3);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struktur dari tabel `users`
 --
 
 CREATE TABLE `users` (
@@ -299,159 +1151,156 @@ CREATE TABLE `users` (
 --
 
 --
--- Indexes for table `bayar`
+-- Indeks untuk tabel `bayar`
 --
 ALTER TABLE `bayar`
   ADD PRIMARY KEY (`id_metode`);
 
 --
--- Indexes for table `kategori`
+-- Indeks untuk tabel `kategori`
 --
 ALTER TABLE `kategori`
   ADD PRIMARY KEY (`id_kategori`);
 
 --
--- Indexes for table `menu`
+-- Indeks untuk tabel `menu`
 --
 ALTER TABLE `menu`
   ADD PRIMARY KEY (`id_menu`),
   ADD KEY `id_kategori` (`id_kategori`),
   ADD KEY `id_toko` (`id_toko`);
 
-ALTER TABLE menu
-  MODIFY rasa VARCHAR(100);
-
 --
--- Indexes for table `metode_toko`
+-- Indeks untuk tabel `metode_toko`
 --
 ALTER TABLE `metode_toko`
   ADD PRIMARY KEY (`id_toko`,`id_metode`),
   ADD KEY `id_metode` (`id_metode`);
 
 --
--- Indexes for table `mitra`
+-- Indeks untuk tabel `mitra`
 --
 ALTER TABLE `mitra`
   ADD PRIMARY KEY (`id_mitra`);
 
 --
--- Indexes for table `review`
+-- Indeks untuk tabel `review`
 --
 ALTER TABLE `review`
   ADD PRIMARY KEY (`id_review`),
   ADD KEY `id_toko` (`id_toko`);
 
 --
--- Indexes for table `role`
+-- Indeks untuk tabel `role`
 --
 ALTER TABLE `role`
   ADD PRIMARY KEY (`id_role`);
 
 --
--- Indexes for table `toko`
+-- Indeks untuk tabel `toko`
 --
 ALTER TABLE `toko`
   ADD PRIMARY KEY (`id_toko`);
 
 --
--- Indexes for table `toko_mitra`
+-- Indeks untuk tabel `toko_mitra`
 --
 ALTER TABLE `toko_mitra`
   ADD PRIMARY KEY (`id_toko`,`id_mitra`),
   ADD KEY `id_mitra` (`id_mitra`);
 
 --
--- Indexes for table `users`
+-- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id_user`),
   ADD KEY `id_role` (`id_role`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `bayar`
+-- AUTO_INCREMENT untuk tabel `bayar`
 --
 ALTER TABLE `bayar`
   MODIFY `id_metode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `kategori`
+-- AUTO_INCREMENT untuk tabel `kategori`
 --
 ALTER TABLE `kategori`
   MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `menu`
+-- AUTO_INCREMENT untuk tabel `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=901;
 
 --
--- AUTO_INCREMENT for table `mitra`
+-- AUTO_INCREMENT untuk tabel `mitra`
 --
 ALTER TABLE `mitra`
   MODIFY `id_mitra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `review`
+-- AUTO_INCREMENT untuk tabel `review`
 --
 ALTER TABLE `review`
   MODIFY `id_review` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `role`
+-- AUTO_INCREMENT untuk tabel `role`
 --
 ALTER TABLE `role`
   MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `toko`
+-- AUTO_INCREMENT untuk tabel `toko`
 --
 ALTER TABLE `toko`
   MODIFY `id_toko` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
   MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `menu`
+-- Ketidakleluasaan untuk tabel `menu`
 --
 ALTER TABLE `menu`
   ADD CONSTRAINT `menu_ibfk_1` FOREIGN KEY (`id_kategori`) REFERENCES `kategori` (`id_kategori`),
   ADD CONSTRAINT `menu_ibfk_2` FOREIGN KEY (`id_toko`) REFERENCES `toko` (`id_toko`);
 
 --
--- Constraints for table `metode_toko`
+-- Ketidakleluasaan untuk tabel `metode_toko`
 --
 ALTER TABLE `metode_toko`
   ADD CONSTRAINT `metode_toko_ibfk_1` FOREIGN KEY (`id_toko`) REFERENCES `toko` (`id_toko`),
   ADD CONSTRAINT `metode_toko_ibfk_2` FOREIGN KEY (`id_metode`) REFERENCES `bayar` (`id_metode`);
 
 --
--- Constraints for table `review`
+-- Ketidakleluasaan untuk tabel `review`
 --
 ALTER TABLE `review`
   ADD CONSTRAINT `review_ibfk_1` FOREIGN KEY (`id_toko`) REFERENCES `toko` (`id_toko`);
 
 --
--- Constraints for table `toko_mitra`
+-- Ketidakleluasaan untuk tabel `toko_mitra`
 --
 ALTER TABLE `toko_mitra`
   ADD CONSTRAINT `toko_mitra_ibfk_1` FOREIGN KEY (`id_toko`) REFERENCES `toko` (`id_toko`),
   ADD CONSTRAINT `toko_mitra_ibfk_2` FOREIGN KEY (`id_mitra`) REFERENCES `mitra` (`id_mitra`);
 
 --
--- Constraints for table `users`
+-- Ketidakleluasaan untuk tabel `users`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`id_role`) REFERENCES `role` (`id_role`);
