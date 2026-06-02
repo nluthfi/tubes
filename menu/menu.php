@@ -36,6 +36,7 @@ include '../koneksi.php';
                         <tr>
                             <th>No</th>
                             <th>Nama Menu</th>
+                            <th>Foto</th>
                             <th>Toko</th>
                             <th>Detail</th>
                             <th>Aksi</th>
@@ -60,6 +61,7 @@ include '../koneksi.php';
                         ?>
 
                         <tr>
+                         
                             <td><?= $no++; ?></td>
 
                             <td><?= $row['nama_menu']; ?></td>
@@ -120,6 +122,7 @@ $query2 = mysqli_query($koneksi, "
     SELECT 
         m.id_menu,
         m.nama_menu,
+        m.foto_menu,
         m.deskripsi,
         m.harga,
         m.rasa,
@@ -170,6 +173,14 @@ while($row = mysqli_fetch_assoc($query2)){
                         <?= $row['nama_menu']; ?>
                     </span>
                 </div>
+
+            <div class="text-center mb-3">
+                <img
+                    src="../img/makanan/<?= $row['foto_menu']; ?>"
+                    width="120"
+                    style="border-radius:10px;"
+                >
+            </div>
 
                 <div class="detail-item">
                     <span class="detail-label">Deskripsi</span>
