@@ -2,154 +2,57 @@
 session_start();
 include 'koneksi.php';
 
-// ── FILTER PARAMETERS ──────────────────────────────────────────────────────
-$search        = isset($_GET['search'])         ? trim($_GET['search'])            : '';
-$harga_min     = isset($_GET['harga_min'])       ? (int)$_GET['harga_min']          : 0;
-$harga_max     = isset($_GET['harga_max'])       ? (int)$_GET['harga_max']          : 0;
-$jam_filter    = isset($_GET['jam'])             ? $_GET['jam']                     : '';
-$halal_filter  = isset($_GET['halal'])           ? $_GET['halal']                   : '';
-$mitra_filter  = isset($_GET['mitra'])           ? (array)$_GET['mitra']            : [];
-$bayar_filter  = isset($_GET['bayar'])           ? (array)$_GET['bayar']            : [];
-$rasa_filter   = isset($_GET['rasa'])            ? (array)$_GET['rasa']             : [];
-$terbuka       = isset($_GET['terbuka'])         ? $_GET['terbuka']                 : '';
-$sort          = isset($_GET['sort'])            ? $_GET['sort']                    : '';
-
-// ── PAGINATION ──────────────────────────────────────────────────────────────
-$per_page    = 6;
-$page        = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-$offset      = ($page - 1) * $per_page;
-
-// ── BUILD QUERY ─────────────────────────────────────────────────────────────
-$where   = [];
-$params  = [];
-$types   = '';
-
-if ($search !== '') {
-    $where[]  = '(t.nama_toko LIKE ? OR m.nama_menu LIKE ?)';
-    $params[] = "%$search%";
-    $params[] = "%$search%";
-    $types   .= 'ss';
-}
-
-if ($halal_filter !== '') {
-    $where[]  = 't.status_halal = ?';
-    $params[] = $halal_filter;
-    $types   .= 's';
-}
-
-if ($terbuka === '1') {
-    $now      = date('H:i:s');
-    $where[]  = '(t.jam_buka <= ? AND t.jam_tutup >= ?)';
-    $params[] = $now;
-    $params[] = $now;
-    $types   .= 'ss';
-}
-
-if ($jam_filter !== '') {
-    switch ($jam_filter) {
-        case '07-10': $w = "(t.jam_buka <= '10:00:00' AND t.jam_tutup >= '07:00:00')"; break;
-        case '10-14': $w = "(t.jam_buka <= '14:00:00' AND t.jam_tutup >= '10:00:00')"; break;
-        case '14-17': $w = "(t.jam_buka <= '17:00:00' AND t.jam_tutup >= '14:00:00')"; break;
-        case '17-21': $w = "(t.jam_buka <= '21:00:00' AND t.jam_tutup >= '17:00:00')"; break;
-        case '21-24': $w = "(t.jam_tutup >= '21:00:00' OR t.jam_tutup = '23:59:00')"; break;
-        default: $w = '';
-    }
-    if ($w) $where[] = $w;
-}
-
-if (!empty($mitra_filter)) {
-    $placeholders = implode(',', array_fill(0, count($mitra_filter), '?'));
-    $where[]  = "t.id_toko IN (SELECT id_toko FROM toko_mitra WHERE id_mitra IN ($placeholders))";
-    foreach ($mitra_filter as $v) { $params[] = $v; $types .= 'i'; }
-}
-
-if (!empty($bayar_filter)) {
-    $placeholders = implode(',', array_fill(0, count($bayar_filter), '?'));
-    $where[]  = "t.id_toko IN (SELECT id_toko FROM metode_toko WHERE id_metode IN ($placeholders))";
-    foreach ($bayar_filter as $v) { $params[] = $v; $types .= 'i'; }
-}
-
-if (!empty($rasa_filter)) {
-    $placeholders = implode(',', array_fill(0, count($rasa_filter), '?'));
-    $where[]  = "t.id_toko IN (SELECT id_toko FROM menu WHERE rasa IN ($placeholders))";
-    foreach ($rasa_filter as $v) { $params[] = $v; $types .= 's'; }
-}
-
-if ($harga_min > 0 || $harga_max > 0) {
-    if ($harga_min > 0 && $harga_max > 0) {
-        $where[]  = "t.id_toko IN (SELECT id_toko FROM menu WHERE harga >= ? AND harga <= ?)";
-        $params[] = $harga_min * 1000; $params[] = $harga_max * 1000;
-        $types   .= 'ii';
-    } elseif ($harga_min > 0) {
-        $where[]  = "t.id_toko IN (SELECT id_toko FROM menu WHERE harga >= ?)";
-        $params[] = $harga_min * 1000;
-        $types   .= 'i';
-    }
-}
-
-$where_sql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
-
-// Count query (with DISTINCT for search join)
-$count_join = ($search !== '') ? 'LEFT JOIN menu m ON m.id_toko = t.id_toko' : '';
-$count_sql  = "SELECT COUNT(DISTINCT t.id_toko) AS total FROM toko t $count_join $where_sql";
-$stmt_count = $koneksi->prepare($count_sql);
-if ($params) $stmt_count->bind_param($types, ...$params);
-$stmt_count->execute();
-$total_rows = $stmt_count->get_result()->fetch_assoc()['total'];
-$total_pages = max(1, ceil($total_rows / $per_page));
-$page = min($page, $total_pages);
-
-// Order
-$order_sql = match($sort) {
-    'rating_desc' => 'ORDER BY t.rating DESC',
-    'rating_asc'  => 'ORDER BY t.rating ASC',
-    'nama_az'     => 'ORDER BY t.nama_toko ASC',
-    'nama_za'     => 'ORDER BY t.nama_toko DESC',
-    default       => 'ORDER BY t.id_toko ASC',
-};
-
-$main_join  = ($search !== '') ? 'LEFT JOIN menu m ON m.id_toko = t.id_toko' : '';
-$main_sql   = "SELECT DISTINCT t.* FROM toko t $main_join $where_sql $order_sql LIMIT ? OFFSET ?";
-$params_main   = $params;
-$params_main[] = $per_page;
-$params_main[] = $offset;
-$types_main    = $types . 'ii';
-
-$stmt = $koneksi->prepare($main_sql);
-$stmt->bind_param($types_main, ...$params_main);
-$stmt->execute();
-$result = $stmt->get_result();
-
-// Fetch mitra for each toko (batch)
-$all_toko_ids = [];
+// Fetch ALL toko (no pagination)
+$all_toko_sql = "SELECT DISTINCT t.* FROM toko t ORDER BY t.id_toko ASC";
+$result = $koneksi->query($all_toko_sql);
 $rows = [];
-while ($row = $result->fetch_assoc()) { $rows[] = $row; $all_toko_ids[] = $row['id_toko']; }
+$all_toko_ids = [];
+while ($row = $result->fetch_assoc()) {
+    $rows[] = $row;
+    $all_toko_ids[] = $row['id_toko'];
+}
 
+// Batch fetch mitra & bayar per toko
 $mitra_map = [];
 $bayar_map = [];
 if ($all_toko_ids) {
     $ids_str = implode(',', $all_toko_ids);
-    $r_mitra = $koneksi->query("SELECT tm.id_toko, mi.nama_mitra, mi.logo FROM toko_mitra tm JOIN mitra mi ON mi.id_mitra = tm.id_mitra WHERE tm.id_toko IN ($ids_str)");
+    $r_mitra = $koneksi->query("SELECT tm.id_toko, mi.id_mitra, mi.nama_mitra, mi.logo FROM toko_mitra tm JOIN mitra mi ON mi.id_mitra = tm.id_mitra WHERE tm.id_toko IN ($ids_str)");
     while ($rm = $r_mitra->fetch_assoc()) $mitra_map[$rm['id_toko']][] = $rm;
-    $r_bayar = $koneksi->query("SELECT mt.id_toko, b.metode_pembayaran, b.logo FROM metode_toko mt JOIN bayar b ON b.id_metode = mt.id_metode WHERE mt.id_toko IN ($ids_str)");
+    $r_bayar = $koneksi->query("SELECT mt.id_toko, b.id_metode, b.metode_pembayaran, b.logo FROM metode_toko mt JOIN bayar b ON b.id_metode = mt.id_metode WHERE mt.id_toko IN ($ids_str)");
     while ($rb = $r_bayar->fetch_assoc()) $bayar_map[$rb['id_toko']][] = $rb;
+    // Fetch min harga per toko
+    $r_harga = $koneksi->query("SELECT id_toko, MIN(harga) as min_harga FROM menu WHERE id_toko IN ($ids_str) GROUP BY id_toko");
+    $harga_map = [];
+    while ($rh = $r_harga->fetch_assoc()) $harga_map[$rh['id_toko']] = $rh['min_harga'];
 }
 
-// Dropdown data
+// Dropdown data for filter
 $all_mitra = $koneksi->query("SELECT * FROM mitra ORDER BY nama_mitra");
-$all_bayar = $koneksi->query("SELECT * FROM bayar ORDER BY metode_pembayaran");
+$all_bayar  = $koneksi->query("SELECT * FROM bayar ORDER BY metode_pembayaran");
 
-// Build current query string (without page)
-$current_query = $_GET;
-unset($current_query['page']);
-function build_url($extra = []) {
-    global $current_query;
-    $q = array_merge($current_query, $extra);
-    $q = array_filter($q, fn($v) => $v !== '' && $v !== [] && $v !== null);
-    return '?' . http_build_query($q);
+// Build JSON data for JS filtering
+$toko_json = [];
+foreach ($rows as $row) {
+    $mitras = $mitra_map[$row['id_toko']] ?? [];
+    $bayars = $bayar_map[$row['id_toko']] ?? [];
+    $foto = $row['foto_outlet'] ? (strpos($row['foto_outlet'],'http')===0 ? $row['foto_outlet'] : 'img/pict/'.$row['foto_outlet']) : '';
+    $toko_json[] = [
+        'id'         => $row['id_toko'],
+        'nama'       => $row['nama_toko'],
+        'lokasi'     => $row['lokasi'] ?? '',
+        'jam_buka'   => $row['jam_buka']  ? substr($row['jam_buka'], 0, 5)  : null,
+        'jam_tutup'  => $row['jam_tutup'] ? substr($row['jam_tutup'], 0, 5) : null,
+        'halal'      => $row['status_halal'] ?? '',
+        'rating'     => $row['rating'] ? (float)$row['rating'] : null,
+        'foto'       => $foto,
+        'min_harga'  => isset($harga_map[$row['id_toko']]) ? (int)$harga_map[$row['id_toko']] : 0,
+        'mitra_ids'  => array_column($mitras, 'id_mitra'),
+        'mitra_names'=> array_column($mitras, 'nama_mitra'),
+        'bayar_ids'  => array_column($bayars, 'id_metode'),
+        'bayar_names'=> array_column($bayars, 'metode_pembayaran'),
+    ];
 }
-
-$now_time = date('H:i:s');
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -158,7 +61,6 @@ $now_time = date('H:i:s');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Street Food – Daftar Toko</title>
-    <link rel="prekoneksiect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -173,7 +75,6 @@ $now_time = date('H:i:s');
 
     :root {
         --bg: #0f1623;
-        --sidebar: #162035;
         --card: #1a2540;
         --card-hover: #1f2d4e;
         --border: #263354;
@@ -185,202 +86,92 @@ $now_time = date('H:i:s');
         --text-muted: #7a8aaa;
         --blue: #3b82f6;
         --radius: 16px;
+        --topbar: #111d30;
+    }
+
+    html {
+        scroll-behavior: smooth
     }
 
     body {
         font-family: 'Plus Jakarta Sans', sans-serif;
         background: var(--bg);
         color: var(--text);
-        display: flex;
-        min-height: 100vh;
-        overflow-x: hidden
+        min-height: 100vh
     }
 
-    /* ── SIDEBAR ── */
-    .sidebar {
-        width: 240px;
-        min-height: 100vh;
-        background: var(--sidebar);
-        border-right: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 100
-    }
-
-    .sidebar-logo {
-        padding: 22px 24px;
+    /* ── TOPBAR ── */
+    .topbar {
+        background: var(--topbar);
+        border-bottom: 1px solid var(--border);
+        padding: 0 24px;
+        height: 64px;
         display: flex;
         align-items: center;
-        gap: 12px;
-        border-bottom: 1px solid var(--border)
+        gap: 14px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(8px)
     }
 
-    .sidebar-logo .icon {
-        width: 38px;
-        height: 38px;
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        flex-shrink: 0
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
         background: linear-gradient(135deg, var(--accent), var(--accent2));
         border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px
+        font-size: 17px
     }
 
-    .sidebar-logo span {
+    .logo-text {
         font-weight: 800;
-        font-size: 16px;
-        letter-spacing: .5px;
-        color: #fff
+        font-size: 15px;
+        color: #fff;
+        white-space: nowrap
     }
 
-    .sidebar-logo span small {
+    .logo-text small {
         display: block;
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 500;
         color: var(--text-muted);
         letter-spacing: 1px;
         text-transform: uppercase
     }
 
-    .sidebar-nav {
-        padding: 16px 12px;
-        flex: 1
-    }
-
-    .sidebar-nav .nav-section {
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        padding: 8px 12px 4px
-    }
-
-    .sidebar-nav a {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 14px;
-        border-radius: 10px;
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        transition: .18s;
-        margin-bottom: 2px
-    }
-
-    .sidebar-nav a:hover {
-        background: rgba(255, 255, 255, .05);
-        color: var(--text)
-    }
-
-    .sidebar-nav a.active {
-        background: linear-gradient(90deg, rgba(240, 165, 0, .18), rgba(240, 165, 0, .06));
-        color: var(--accent);
-        font-weight: 700
-    }
-
-    .sidebar-nav a i {
-        width: 18px;
-        text-align: center;
-        font-size: 15px
-    }
-
-    .sidebar-nav a.active i {
-        color: var(--accent)
-    }
-
-    .sidebar-bottom {
-        padding: 16px;
-        border-top: 1px solid var(--border)
-    }
-
-    .user-card {
-        display: flex;
-        align-items: center;
-        gap: 10px
-    }
-
-    .user-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #3b5bdb, #7048e8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: 700;
-        color: #fff;
-        flex-shrink: 0
-    }
-
-    .user-info {
-        flex: 1;
-        min-width: 0
-    }
-
-    .user-info .name {
-        font-size: 13px;
-        font-weight: 700;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis
-    }
-
-    .user-info .role {
-        font-size: 11px;
-        color: var(--text-muted)
-    }
-
-    /* ── MAIN ── */
-    .main {
-        margin-left: 240px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh
-    }
-
-    /* TOPBAR */
-    .topbar {
-        background: var(--sidebar);
-        border-bottom: 1px solid var(--border);
-        padding: 0 28px;
-        height: 64px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        position: sticky;
-        top: 0;
-        z-index: 90
-    }
-
     .search-box {
         flex: 1;
         max-width: 480px;
-        position: relative
+        position: relative;
+        margin: 0 8px
     }
 
     .search-box i {
         position: absolute;
-        left: 14px;
+        left: 13px;
         top: 50%;
         transform: translateY(-50%);
         color: var(--text-muted);
-        font-size: 14px
+        font-size: 13px
     }
 
     .search-box input {
         width: 100%;
-        background: var(--bg);
+        background: rgba(255, 255, 255, .06);
         border: 1px solid var(--border);
         border-radius: 10px;
-        padding: 9px 14px 9px 38px;
+        padding: 9px 14px 9px 36px;
         color: var(--text);
         font-size: 14px;
         font-family: inherit;
@@ -401,23 +192,24 @@ $now_time = date('H:i:s');
         margin-left: auto;
         display: flex;
         align-items: center;
-        gap: 14px
+        gap: 10px
     }
 
     .btn-filter {
         display: flex;
         align-items: center;
-        gap: 8px;
-        background: var(--bg);
+        gap: 7px;
+        background: rgba(255, 255, 255, .06);
         border: 1px solid var(--border);
         border-radius: 10px;
-        padding: 9px 16px;
+        padding: 9px 14px;
         color: var(--text-muted);
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
         cursor: pointer;
         transition: .18s;
-        font-family: inherit
+        font-family: inherit;
+        white-space: nowrap
     }
 
     .btn-filter:hover,
@@ -426,135 +218,138 @@ $now_time = date('H:i:s');
         color: var(--accent)
     }
 
-    .notif-btn {
-        width: 38px;
-        height: 38px;
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        position: relative;
+    .filter-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: none
+    }
+
+    .filter-dot.show {
+        display: block
+    }
+
+    /* ── HERO ── */
+    .hero {
+        background: linear-gradient(135deg, #111d30 0%, #162035 60%, #1a2540 100%);
+        padding: 40px 24px 32px;
+        text-align: center;
+        border-bottom: 1px solid var(--border)
+    }
+
+    .hero h1 {
+        font-size: clamp(22px, 4vw, 36px);
+        font-weight: 800;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #fff, var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text
+    }
+
+    .hero p {
         color: var(--text-muted);
         font-size: 15px
     }
 
-    .notif-btn .badge {
-        position: absolute;
-        top: 6px;
-        right: 6px;
-        width: 8px;
-        height: 8px;
-        background: var(--accent2);
-        border-radius: 50%;
-        border: 2px solid var(--sidebar)
-    }
-
-    .topbar-user {
+    .hero-stats {
         display: flex;
-        align-items: center;
-        gap: 9px;
-        cursor: pointer
-    }
-
-    .topbar-user .avatar {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #3b5bdb, #7048e8);
-        display: flex;
-        align-items: center;
         justify-content: center;
-        font-size: 13px;
-        font-weight: 700;
-        color: #fff
+        gap: 32px;
+        margin-top: 24px;
+        flex-wrap: wrap
     }
 
-    .topbar-user .info .name {
-        font-size: 13px;
-        font-weight: 700;
-        line-height: 1
+    .hero-stat {
+        text-align: center
     }
 
-    .topbar-user .info .role {
-        font-size: 11px;
-        color: var(--text-muted)
-    }
-
-    .topbar-user i {
-        font-size: 12px;
-        color: var(--text-muted)
-    }
-
-    /* CONTENT */
-    .content {
-        padding: 28px 28px 40px;
-        flex: 1
-    }
-
-    .page-header {
-        margin-bottom: 24px
-    }
-
-    .page-header h1 {
-        font-size: 26px;
+    .hero-stat .num {
+        font-size: 22px;
         font-weight: 800;
-        margin-bottom: 4px
+        color: var(--accent)
     }
 
-    .page-header p {
+    .hero-stat .lbl {
+        font-size: 11px;
         color: var(--text-muted);
-        font-size: 14px
+        margin-top: 2px
     }
 
-    /* FILTER BAR */
-    .filter-bar {
+    /* ── FILTER CHIPS ── */
+    .filter-chips-bar {
+        padding: 16px 24px 0;
         display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 24px
+        gap: 8px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        border-bottom: 1px solid var(--border)
     }
 
-    .filter-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
+    .filter-chips-bar::-webkit-scrollbar {
+        display: none
+    }
+
+    .fchip {
         padding: 8px 16px;
         border-radius: 20px;
+        border: 1.5px solid var(--border);
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
-        border: 1.5px solid var(--border);
         background: transparent;
         color: var(--text-muted);
-        transition: .18s;
+        white-space: nowrap;
+        transition: .15s;
         font-family: inherit;
-        text-decoration: none
+        margin-bottom: 16px
     }
 
-    .filter-chip:hover {
+    .fchip:hover {
         border-color: var(--text-muted);
         color: var(--text)
     }
 
-    .filter-chip.active {
+    .fchip.active {
         background: var(--accent);
         border-color: var(--accent);
         color: #0f1623
     }
 
-    .filter-chip i {
-        font-size: 12px
+    .fchip i {
+        margin-right: 5px;
+        font-size: 11px
     }
 
-    .sort-wrap {
-        margin-left: auto
+    /* ── CONTENT WRAPPER ── */
+    .content-wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 28px 24px 60px
     }
 
-    .sort-wrap select {
+    /* RESULTS BAR */
+    .results-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px
+    }
+
+    .results-count {
+        font-size: 14px;
+        color: var(--text-muted)
+    }
+
+    .results-count span {
+        color: var(--text);
+        font-weight: 700
+    }
+
+    .sort-select {
         background: var(--card);
         border: 1.5px solid var(--border);
         border-radius: 10px;
@@ -567,18 +362,18 @@ $now_time = date('H:i:s');
         cursor: pointer
     }
 
-    .sort-wrap select:focus {
+    .sort-select:focus {
         border-color: var(--accent)
     }
 
-    /* GRID */
+    /* ── STORES GRID ── */
     .stores-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 22px;
-        margin-bottom: 32px
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px
     }
 
+    /* STORE CARD */
     .store-card {
         background: var(--card);
         border: 1px solid var(--border);
@@ -594,20 +389,27 @@ $now_time = date('H:i:s');
     .store-card:hover {
         transform: translateY(-4px);
         border-color: rgba(240, 165, 0, .35);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, .35)
+        box-shadow: 0 12px 40px rgba(0, 0, 0, .4)
     }
 
     .card-img {
         position: relative;
-        overflow: hidden
+        overflow: hidden;
+        height: 180px;
+        background: linear-gradient(135deg, #1f2d4e, #263354);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-size: 40px
     }
 
     .card-img img {
         width: 100%;
-        max-height: 220px;
+        height: 100%;
         object-fit: cover;
-        border-radius: 0;
-        transition: .3s
+        transition: .3s;
+        display: block
     }
 
     .store-card:hover .card-img img {
@@ -616,13 +418,12 @@ $now_time = date('H:i:s');
 
     .card-status {
         position: absolute;
-        top: 12px;
-        right: 12px;
-        padding: 5px 12px;
+        top: 10px;
+        right: 10px;
+        padding: 4px 10px;
         border-radius: 20px;
         font-size: 11px;
-        font-weight: 700;
-        letter-spacing: .5px
+        font-weight: 700
     }
 
     .status-buka {
@@ -639,62 +440,59 @@ $now_time = date('H:i:s');
 
     .halal-badge {
         position: absolute;
-        bottom: 12px;
-        left: 12px;
+        bottom: 10px;
+        left: 10px;
         background: rgba(34, 197, 94, .15);
         border: 1px solid rgba(34, 197, 94, .35);
         color: var(--green);
         font-size: 10px;
         font-weight: 700;
-        padding: 4px 10px;
+        padding: 3px 8px;
         border-radius: 20px;
         display: flex;
         align-items: center;
-        gap: 5px
+        gap: 4px
     }
 
     .card-body {
-        padding: 16px
+        padding: 14px
     }
 
-    .card-body .store-name {
-        font-size: 16px;
+    .store-name {
+        font-size: 15px;
         font-weight: 700;
         margin-bottom: 4px;
         display: flex;
         align-items: center;
-        justify-content: space-between
+        justify-content: space-between;
+        gap: 8px
+    }
+
+    .store-name-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis
     }
 
     .rating {
         display: flex;
         align-items: center;
-        gap: 4px;
-        font-size: 13px;
+        gap: 3px;
+        font-size: 12px;
         font-weight: 700;
-        color: var(--accent)
+        color: var(--accent);
+        flex-shrink: 0
     }
 
     .rating i {
-        font-size: 11px
-    }
-
-    .review-count {
-        font-size: 12px;
-        color: var(--text-muted);
-        font-weight: 500;
-        margin-bottom: 8px
-    }
-
-    .review-count i {
-        margin-right: 3px
+        font-size: 10px
     }
 
     .card-address {
         font-size: 12px;
         color: var(--text-muted);
         display: flex;
-        gap: 6px;
+        gap: 5px;
         align-items: flex-start;
         margin-bottom: 4px
     }
@@ -702,110 +500,69 @@ $now_time = date('H:i:s');
     .card-address i {
         margin-top: 2px;
         flex-shrink: 0;
-        color: var(--accent)
+        color: var(--accent2);
+        font-size: 11px
+    }
+
+    .card-address span {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden
     }
 
     .card-hours {
         font-size: 12px;
         color: var(--text-muted);
         display: flex;
-        gap: 6px;
+        gap: 5px;
         align-items: center;
-        margin-bottom: 12px
+        margin-bottom: 10px
     }
 
     .card-hours i {
-        color: var(--blue)
+        color: var(--blue);
+        font-size: 11px
     }
 
-    .mitra-list {
+    .mitra-row {
         display: flex;
-        gap: 6px;
+        gap: 5px;
         flex-wrap: wrap
     }
 
     .mitra-badge {
-        background: rgba(59, 130, 246, .12);
-        border: 1px solid rgba(59, 130, 246, .25);
+        background: rgba(59, 130, 246, .1);
+        border: 1px solid rgba(59, 130, 246, .22);
         color: var(--blue);
         font-size: 11px;
         font-weight: 600;
-        padding: 4px 10px;
+        padding: 3px 8px;
         border-radius: 6px;
         display: flex;
         align-items: center;
-        gap: 5px
+        gap: 4px
     }
 
     .mitra-badge img {
-        width: 14px;
-        height: 14px;
-        object-fit: contain;
-        border-radius: 2px
+        width: 12px;
+        height: 12px;
+        object-fit: contain
     }
 
-    .no-img {
-        width: 100%;
-        height: 180px;
-        background: linear-gradient(135deg, #1f2d4e, #263354);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
-        font-size: 36px
-    }
-
-    /* PAGINATION */
-    .pagination {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px
-    }
-
-    .pagination a,
-    .pagination span {
-        width: 38px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        border: 1.5px solid var(--border);
-        color: var(--text-muted);
-        transition: .15s
-    }
-
-    .pagination a:hover {
-        border-color: var(--accent);
-        color: var(--accent)
-    }
-
-    .pagination span.active {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #0f1623
-    }
-
-    .pagination .disabled {
-        opacity: .3;
-        pointer-events: none
-    }
-
-    /* EMPTY STATE */
+    /* EMPTY */
     .empty-state {
         text-align: center;
         padding: 80px 20px;
-        color: var(--text-muted)
+        color: var(--text-muted);
+        grid-column: 1/-1
     }
 
     .empty-state i {
         font-size: 48px;
         margin-bottom: 16px;
-        opacity: .4
+        opacity: .3;
+        display: block
     }
 
     .empty-state h3 {
@@ -815,11 +572,7 @@ $now_time = date('H:i:s');
         color: var(--text)
     }
 
-    .empty-state p {
-        font-size: 14px
-    }
-
-    /* ── FILTER MODAL ── */
+    /* ── FILTER PANEL ── */
     .overlay {
         position: fixed;
         inset: 0;
@@ -842,7 +595,7 @@ $now_time = date('H:i:s');
         width: 420px;
         max-width: 100vw;
         height: 100vh;
-        background: var(--sidebar);
+        background: #111d30;
         border-left: 1px solid var(--border);
         z-index: 201;
         overflow-y: auto;
@@ -859,37 +612,23 @@ $now_time = date('H:i:s');
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 20px 24px;
+        padding: 18px 22px;
         border-bottom: 1px solid var(--border);
         position: sticky;
         top: 0;
-        background: var(--sidebar);
+        background: #111d30;
         z-index: 1
     }
 
     .filter-header h3 {
-        font-size: 17px;
+        font-size: 16px;
         font-weight: 800
     }
 
-    .filter-header .close-btn {
-        width: 34px;
-        height: 34px;
-        border-radius: 8px;
-        background: var(--bg);
-        border: 1px solid var(--border);
-        cursor: pointer;
+    .filter-header-right {
         display: flex;
         align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
-        font-size: 16px;
-        transition: .15s
-    }
-
-    .filter-header .close-btn:hover {
-        color: var(--text);
-        border-color: var(--text-muted)
+        gap: 12px
     }
 
     .filter-reset {
@@ -897,27 +636,48 @@ $now_time = date('H:i:s');
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
-        text-decoration: none;
+        background: none;
+        border: none;
+        font-family: inherit;
         display: flex;
         align-items: center;
         gap: 5px
     }
 
+    .close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-size: 15px
+    }
+
+    .close-btn:hover {
+        color: var(--text)
+    }
+
     .filter-body {
-        padding: 20px 24px;
+        padding: 18px 22px;
         flex: 1
     }
 
     .filter-section {
-        margin-bottom: 24px
+        margin-bottom: 22px
     }
 
     .filter-section h4 {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 800;
-        letter-spacing: .5px;
+        letter-spacing: .8px;
+        text-transform: uppercase;
         margin-bottom: 12px;
-        color: var(--text)
+        color: var(--text-muted)
     }
 
     .chip-group {
@@ -966,29 +726,26 @@ $now_time = date('H:i:s');
         color: var(--text-muted)
     }
 
-    .checkbox-item input[type=checkbox] {
+    .checkbox-item input {
         accent-color: var(--accent);
         width: 16px;
         height: 16px;
-        cursor: pointer
+        cursor: pointer;
+        flex-shrink: 0
     }
 
     .checkbox-item:hover {
         color: var(--text)
     }
 
-    .checkbox-item label {
-        cursor: pointer
-    }
-
     .filter-footer {
-        padding: 20px 24px;
+        padding: 16px 22px;
         border-top: 1px solid var(--border);
         display: flex;
         gap: 12px;
         position: sticky;
         bottom: 0;
-        background: var(--sidebar)
+        background: #111d30
     }
 
     .btn-apply {
@@ -1024,21 +781,35 @@ $now_time = date('H:i:s');
     }
 
     .btn-cancel:hover {
-        color: var(--text);
-        border-color: var(--text-muted)
+        color: var(--text)
     }
 
-    @media(max-width:768px) {
-        .sidebar {
-            transform: translateX(-100%)
+    /* hidden card */
+    .store-card.hidden {
+        display: none
+    }
+
+    @media(max-width:640px) {
+        .topbar {
+            padding: 0 14px;
+            gap: 8px
         }
 
-        .main {
-            margin-left: 0
+        .logo-text small,
+        .topbar-right .btn-filter span {
+            display: none
         }
 
-        .stores-grid {
-            grid-template-columns: 1fr
+        .hero {
+            padding: 28px 16px 24px
+        }
+
+        .content-wrap {
+            padding: 20px 14px 60px
+        }
+
+        .filter-chips-bar {
+            padding: 12px 14px 0
         }
 
         .filter-panel {
@@ -1050,221 +821,147 @@ $now_time = date('H:i:s');
 
 <body>
 
-    <!-- ── SIDEBAR ── -->
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <div class="icon">🍜</div>
-            <span>STREET FOOD<small>Management</small></span>
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <a href="index.php" class="logo">
+            <div class="logo-icon">🍜</div>
+            <div class="logo-text">STREET FOOD<small>Gegerkalong</small></div>
+        </a>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Cari toko atau menu...">
         </div>
-        <nav class="sidebar-nav">
-            <a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="index.php" class="active"><i class="fas fa-store"></i> Toko</a>
-            <a href="menu.php"><i class="fas fa-utensils"></i> Menu</a>
-            <a href="mitra.php"><i class="fas fa-handshake"></i> Mitra</a>
-            <a href="metode_pembayaran.php"><i class="fas fa-credit-card"></i> Metode Pembayaran</a>
-            <a href="kategori_rasa.php"><i class="fas fa-tags"></i> Kategori Rasa</a>
-            <a href="bahan_baku.php"><i class="fas fa-box"></i> Bahan Baku</a>
-            <a href="laporan.php"><i class="fas fa-chart-bar"></i> Laporan &amp; Statistik</a>
-            <a href="info_analisis.php"><i class="fas fa-info-circle"></i> Info &amp; Analisis</a>
-            <a href="pengaturan.php"><i class="fas fa-cog"></i> Pengaturan</a>
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </nav>
-        <div class="sidebar-bottom">
-            <div class="user-card">
-                <div class="user-avatar">A</div>
-                <div class="user-info">
-                    <div class="name">Admin</div>
-                    <div class="role">Administrator</div>
-                </div>
-            </div>
+        <div class="topbar-right">
+            <button class="btn-filter" id="btnFilter" onclick="openFilter()">
+                <i class="fas fa-sliders-h"></i>
+                <span>Filter</span>
+                <div class="filter-dot" id="filterDot"></div>
+            </button>
         </div>
-    </aside>
+    </header>
 
-    <!-- ── MAIN ── -->
-    <div class="main">
-
-        <!-- TOPBAR -->
-        <header class="topbar">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Cari nama menu atau nama toko..."
-                    value="<?= htmlspecialchars($search) ?>">
-            </div>
-            <div class="topbar-right">
-                <button class="btn-filter" id="btnOpenFilter" onclick="openFilter()">
-                    <i class="fas fa-sliders-h"></i> Filter
-                    <?php if ($halal_filter || $jam_filter || !empty($mitra_filter) || !empty($bayar_filter) || !empty($rasa_filter) || $harga_min || $harga_max): ?>
-                    <span
-                        style="background:var(--accent);color:#0f1623;border-radius:50%;width:18px;height:18px;font-size:10px;display:inline-flex;align-items:center;justify-content:center;font-weight:800">✓</span>
-                    <?php endif; ?>
-                </button>
-                <div class="notif-btn"><i class="fas fa-bell"></i><span class="badge"></span></div>
-                <div class="topbar-user">
-                    <div class="avatar">A</div>
-                    <div class="info">
-                        <div class="name">Admin</div>
-                        <div class="role">Administrator</div>
-                    </div>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-            </div>
-        </header>
-
-        <!-- CONTENT -->
-        <main class="content">
-            <div class="page-header">
-                <h1>Daftar Toko Street Food</h1>
-                <p>Temukan berbagai pilihan street food favoritmu</p>
-            </div>
-
-            <!-- FILTER BAR -->
-            <form id="mainForm" method="GET" action="">
-                <input type="hidden" name="search" id="searchHidden" value="<?= htmlspecialchars($search) ?>">
-                <input type="hidden" name="harga_min" id="harga_min_hidden" value="<?= $harga_min ?>">
-                <input type="hidden" name="harga_max" id="harga_max_hidden" value="<?= $harga_max ?>">
-                <input type="hidden" name="jam" id="jam_hidden" value="<?= htmlspecialchars($jam_filter) ?>">
-                <input type="hidden" name="halal" id="halal_hidden" value="<?= htmlspecialchars($halal_filter) ?>">
-                <?php foreach ($mitra_filter as $m): ?><input type="hidden" name="mitra[]" class="mitra_hidden"
-                    value="<?= (int)$m ?>"><?php endforeach; ?>
-                <?php foreach ($bayar_filter as $b): ?><input type="hidden" name="bayar[]" class="bayar_hidden"
-                    value="<?= (int)$b ?>"><?php endforeach; ?>
-                <?php foreach ($rasa_filter as $r): ?><input type="hidden" name="rasa[]" class="rasa_hidden"
-                    value="<?= htmlspecialchars($r) ?>"><?php endforeach; ?>
-                <input type="hidden" name="sort" id="sort_hidden" value="<?= htmlspecialchars($sort) ?>">
-
-                <div class="filter-bar">
-                    <a href="?"
-                        class="filter-chip <?= (!$terbuka && !$halal_filter && empty($mitra_filter) && empty($bayar_filter) && empty($rasa_filter) && !$harga_min && !$harga_max && !$jam_filter) ? 'active' : '' ?>">Semua</a>
-                    <a href="<?= build_url(['terbuka' => $terbuka ? '' : '1', 'page' => 1]) ?>"
-                        class="filter-chip <?= $terbuka ? 'active' : '' ?>"><i class="fas fa-clock"></i> Terbuka
-                        Sekarang</a>
-                    <a href="<?= build_url(['halal' => $halal_filter === 'tersertifikasi' ? '' : 'tersertifikasi', 'page' => 1]) ?>"
-                        class="filter-chip <?= $halal_filter === 'tersertifikasi' ? 'active' : '' ?>"><i
-                            class="fas fa-leaf"></i> Halal</a>
-                    <div class="sort-wrap">
-                        <select
-                            onchange="document.getElementById('sort_hidden').value=this.value;document.getElementById('mainForm').submit()">
-                            <option value="" <?= !$sort?'selected':'' ?>>Urutkan</option>
-                            <option value="rating_desc" <?= $sort==='rating_desc'?'selected':'' ?>>Rating Tertinggi
-                            </option>
-                            <option value="rating_asc" <?= $sort==='rating_asc'?'selected':'' ?>>Rating Terendah
-                            </option>
-                            <option value="nama_az" <?= $sort==='nama_az'?'selected':'' ?>>Nama A-Z</option>
-                            <option value="nama_za" <?= $sort==='nama_za'?'selected':'' ?>>Nama Z-A</option>
-                        </select>
-                    </div>
-                </div>
-            </form>
-
-            <!-- GRID -->
-            <?php if (empty($rows)): ?>
-            <div class="empty-state">
-                <i class="fas fa-store-slash"></i>
-                <h3>Tidak ada toko ditemukan</h3>
-                <p>Coba ubah filter atau kata kunci pencarian kamu</p>
-            </div>
-            <?php else: ?>
-            <div class="stores-grid">
-                <?php foreach ($rows as $row):
-            $jam_buka  = $row['jam_buka']  ? substr($row['jam_buka'], 0, 5)  : null;
-            $jam_tutup = $row['jam_tutup'] ? substr($row['jam_tutup'], 0, 5) : null;
-            $is_buka   = ($jam_buka && $jam_tutup && $now_time >= $row['jam_buka'] && $now_time <= $row['jam_tutup']);
-            $mitras    = $mitra_map[$row['id_toko']] ?? [];
-            $rating    = $row['rating'] ? number_format($row['rating'], 1) : '–';
-        ?>
-                <a class="store-card" href="page_menu.php?id_toko=<?= $row['id_toko'] ?>">
-                    <div class="card-img">
-                        <?php if ($row['foto_outlet']): ?>
-                        <img src="../img/pict/<?= $row['foto_outlet']; ?>"
-                            alt="<?= htmlspecialchars($row['nama_toko']); ?>"
-                            style="width:100%;max-height:220px;object-fit:cover;border-radius:0;">
-                        <?php else: ?>
-                        <div class="no-img"><i class="fas fa-store"></i></div>
-                        <?php endif; ?>
-                        <span class="card-status <?= $is_buka ? 'status-buka' : 'status-tutup' ?>">
-                            <?= $is_buka ? '● Buka' : '● Tutup' ?>
-                        </span>
-                        <?php if ($row['status_halal'] === 'tersertifikasi'): ?>
-                        <span class="halal-badge"><i class="fas fa-leaf"></i> Halal</span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="card-body">
-                        <div class="store-name">
-                            <span><?= htmlspecialchars($row['nama_toko']) ?></span>
-                            <?php if ($row['rating']): ?>
-                            <span class="rating"><i class="fas fa-star"></i> <?= $rating ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <?php if ($row['lokasi']): ?>
-                        <div class="card-address">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span><?= htmlspecialchars(substr($row['lokasi'], 0, 70)) ?><?= strlen($row['lokasi']) > 70 ? '...' : '' ?></span>
-                        </div>
-                        <?php endif; ?>
-                        <?php if ($jam_buka): ?>
-                        <div class="card-hours">
-                            <i class="fas fa-clock"></i>
-                            <span><?= $jam_buka ?> – <?= $jam_tutup ?></span>
-                        </div>
-                        <?php endif; ?>
-                        <?php if ($mitras): ?>
-                        <div class="mitra-list">
-                            <?php foreach ($mitras as $m): ?>
-                            <span class="mitra-badge">
-                                <?php if ($m['logo']): ?>
-                                <img src="../img/mitra/<?= $m['logo'] ?>"
-                                    alt="<?= htmlspecialchars($m['nama_mitra']) ?>">
-                                <?php endif; ?>
-                                <?= htmlspecialchars($m['nama_mitra']) ?>
-                            </span>
-                            <?php endforeach; ?>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                </a>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- PAGINATION -->
-            <?php if ($total_pages > 1): ?>
-            <div class="pagination">
-                <?php if ($page > 1): ?>
-                <a href="<?= build_url(['page' => $page - 1]) ?>"><i class="fas fa-chevron-left"></i></a>
-                <?php else: ?>
-                <span class="disabled"><i class="fas fa-chevron-left"></i></span>
-                <?php endif; ?>
-
-                <?php
-            $range = 2;
-            $start = max(1, $page - $range);
-            $end   = min($total_pages, $page + $range);
-            if ($start > 1) { echo '<a href="' . build_url(['page' => 1]) . '">1</a>'; if ($start > 2) echo '<span style="border:none;width:auto;padding:0 4px">…</span>'; }
-            for ($p = $start; $p <= $end; $p++):
-                if ($p == $page): echo "<span class='active'>$p</span>";
-                else: echo "<a href='" . build_url(['page' => $p]) . "'>$p</a>";
-                endif;
-            endfor;
-            if ($end < $total_pages) { if ($end < $total_pages - 1) echo '<span style="border:none;width:auto;padding:0 4px">…</span>'; echo '<a href="' . build_url(['page' => $total_pages]) . '">' . $total_pages . '</a>'; }
-            ?>
-
-                <?php if ($page < $total_pages): ?>
-                <a href="<?= build_url(['page' => $page + 1]) ?>"><i class="fas fa-chevron-right"></i></a>
-                <?php else: ?>
-                <span class="disabled"><i class="fas fa-chevron-right"></i></span>
-                <?php endif; ?>
-            </div>
-            <?php endif; ?>
-            <?php endif; ?>
-        </main>
+    <!-- FILTER CHIPS BAR -->
+    <div class="filter-chips-bar" id="filterChipsBar">
+        <button class="fchip active" id="chip-all" onclick="toggleChip('all')">Semua</button>
+        <button class="fchip" id="chip-buka" onclick="toggleChip('buka')"><i class="fas fa-clock"></i>Buka
+            Sekarang</button>
+        <button class="fchip" id="chip-halal" onclick="toggleChip('halal')"><i class="fas fa-leaf"></i>Halal</button>
+        <button class="fchip" id="chip-rating" onclick="toggleChip('rating')"><i class="fas fa-star"></i>Rating
+            Tinggi</button>
     </div>
 
-    <!-- ── FILTER PANEL ── -->
+    <!-- HERO -->
+    <div class="hero">
+        <h1>🍜 Street Food Gegerkalong</h1>
+        <p>Temukan berbagai pilihan kuliner street food favoritmu</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="num" id="statTotal"><?= count($rows) ?></div>
+                <div class="lbl">Total Toko</div>
+            </div>
+            <div class="hero-stat">
+                <div class="num" id="statBuka">–</div>
+                <div class="lbl">Toko Buka</div>
+            </div>
+            <div class="hero-stat">
+                <div class="num" id="statHalal">
+                    <?= count(array_filter($rows, fn($r) => $r['status_halal'] === 'tersertifikasi')) ?></div>
+                <div class="lbl">Halal Tersertifikasi</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content-wrap">
+        <div class="results-bar">
+            <div class="results-count">Menampilkan <span id="countVisible"><?= count($rows) ?></span> toko</div>
+            <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+                <option value="">Urutkan</option>
+                <option value="rating_desc">Rating Tertinggi</option>
+                <option value="rating_asc">Rating Terendah</option>
+                <option value="nama_az">Nama A–Z</option>
+                <option value="nama_za">Nama Z–A</option>
+                <option value="harga_asc">Harga Terendah</option>
+            </select>
+        </div>
+
+        <div class="stores-grid" id="storesGrid">
+            <?php foreach ($rows as $row):
+      $foto = $row['foto_outlet'] ? (strpos($row['foto_outlet'],'http')===0 ? $row['foto_outlet'] : 'img/pict/'.$row['foto_outlet']) : '';
+      $mitras = $mitra_map[$row['id_toko']] ?? [];
+      $jam_buka_str  = $row['jam_buka']  ? substr($row['jam_buka'], 0, 5)  : null;
+      $jam_tutup_str = $row['jam_tutup'] ? substr($row['jam_tutup'], 0, 5) : null;
+      $rating = $row['rating'] ? number_format($row['rating'], 1) : null;
+      $min_harga = isset($harga_map[$row['id_toko']]) ? $harga_map[$row['id_toko']] : 0;
+    ?>
+            <a class="store-card" href="page_menu.php?id_toko=<?= $row['id_toko'] ?>" data-id="<?= $row['id_toko'] ?>"
+                data-nama="<?= htmlspecialchars(strtolower($row['nama_toko'].($row['lokasi']??'')),ENT_QUOTES) ?>"
+                data-halal="<?= htmlspecialchars($row['status_halal']??'') ?>"
+                data-jam-buka="<?= htmlspecialchars($row['jam_buka']??'') ?>"
+                data-jam-tutup="<?= htmlspecialchars($row['jam_tutup']??'') ?>"
+                data-rating="<?= (float)$row['rating'] ?>" data-min-harga="<?= $min_harga ?>"
+                data-mitra-ids="<?= htmlspecialchars(implode(',', array_column($mitras,'id_mitra'))) ?>"
+                data-bayar-ids="<?= htmlspecialchars(implode(',', $bayar_map[$row['id_toko']] ? array_column($bayar_map[$row['id_toko']],'id_metode') : [])) ?>">
+                <div class="card-img">
+                    <?php if ($foto): ?>
+                    <img src="<?= htmlspecialchars($foto) ?>" alt="<?= htmlspecialchars($row['nama_toko']) ?>"
+                        loading="lazy" onerror="this.style.display='none'">
+                    <?php else: ?>
+                    <i class="fas fa-store"></i>
+                    <?php endif; ?>
+                    <!-- Status jam diisi JS secara realtime -->
+                    <span class="card-status" data-jam-buka="<?= htmlspecialchars($row['jam_buka']??'') ?>"
+                        data-jam-tutup="<?= htmlspecialchars($row['jam_tutup']??'') ?>"></span>
+                    <?php if ($row['status_halal'] === 'tersertifikasi'): ?>
+                    <span class="halal-badge"><i class="fas fa-leaf"></i> Halal</span>
+                    <?php endif; ?>
+                </div>
+                <div class="card-body">
+                    <div class="store-name">
+                        <span class="store-name-text"><?= htmlspecialchars($row['nama_toko']) ?></span>
+                        <?php if ($rating): ?>
+                        <span class="rating"><i class="fas fa-star"></i> <?= $rating ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <?php if ($row['lokasi']): ?>
+                    <div class="card-address"><i
+                            class="fas fa-map-marker-alt"></i><span><?= htmlspecialchars($row['lokasi']) ?></span></div>
+                    <?php endif; ?>
+                    <?php if ($jam_buka_str): ?>
+                    <div class="card-hours"><i class="fas fa-clock"></i><span><?= $jam_buka_str ?> –
+                            <?= $jam_tutup_str ?></span></div>
+                    <?php endif; ?>
+                    <?php if ($mitras): ?>
+                    <div class="mitra-row">
+                        <?php foreach ($mitras as $m):
+            $mlogo = $m['logo'] ? (strpos($m['logo'],'http')===0 ? $m['logo'] : 'img/logo/'.$m['logo']) : '';
+          ?>
+                        <span class="mitra-badge">
+                            <?php if ($mlogo): ?><img src="<?= htmlspecialchars($mlogo) ?>" alt=""><?php endif; ?>
+                            <?= htmlspecialchars($m['nama_mitra']) ?>
+                        </span>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </a>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="empty-state hidden" id="emptyState">
+            <i class="fas fa-store-slash"></i>
+            <h3>Tidak ada toko ditemukan</h3>
+            <p>Coba ubah filter atau kata kunci pencarian</p>
+        </div>
+    </div>
+
+    <!-- FILTER PANEL -->
     <div class="overlay" id="overlay" onclick="closeFilter()"></div>
     <div class="filter-panel" id="filterPanel">
         <div class="filter-header">
-            <h3>Filter Pencarian</h3>
-            <div style="display:flex;align-items:center;gap:12px">
-                <a href="?" class="filter-reset"><i class="fas fa-rotate-left"></i> Reset Semua</a>
+            <h3><i class="fas fa-sliders-h" style="margin-right:8px;color:var(--accent)"></i>Filter</h3>
+            <div class="filter-header-right">
+                <button class="filter-reset" onclick="resetFilter()"><i class="fas fa-rotate-left"></i> Reset</button>
                 <button class="close-btn" onclick="closeFilter()"><i class="fas fa-times"></i></button>
             </div>
         </div>
@@ -1272,116 +969,320 @@ $now_time = date('H:i:s');
 
             <!-- HARGA -->
             <div class="filter-section">
-                <h4>Harga per Porsi</h4>
-                <div class="chip-group">
-                    <button type="button" class="chip-opt <?= (!$harga_min && !$harga_max)?'active':'' ?>"
-                        onclick="setHarga(0,0)">Semua</button>
-                    <button type="button" class="chip-opt <?= ($harga_min==0&&$harga_max==5)?'active':'' ?>"
-                        onclick="setHarga(0,5)">&lt; Rp 5.000</button>
-                    <button type="button" class="chip-opt <?= ($harga_min==5&&$harga_max==10)?'active':'' ?>"
-                        onclick="setHarga(5,10)">Rp 5.000 – Rp 10.000</button>
-                    <button type="button" class="chip-opt <?= ($harga_min==10&&$harga_max==15)?'active':'' ?>"
-                        onclick="setHarga(10,15)">Rp 10.000 – Rp 15.000</button>
-                    <button type="button" class="chip-opt <?= ($harga_min==15&&$harga_max==20)?'active':'' ?>"
-                        onclick="setHarga(15,20)">Rp 15.000 – Rp 20.000</button>
-                    <button type="button" class="chip-opt <?= ($harga_min==20&&$harga_max==0)?'active':'' ?>"
-                        onclick="setHarga(20,0)">&gt; Rp 20.000</button>
+                <h4>Harga Menu (mulai dari)</h4>
+                <div class="chip-group" id="hargaChips">
+                    <button class="chip-opt active" data-harga="0" onclick="setHarga(this,0)">Semua</button>
+                    <button class="chip-opt" data-harga="1" onclick="setHarga(this,1)">&lt; Rp 5.000</button>
+                    <button class="chip-opt" data-harga="5000" onclick="setHarga(this,5000)">Rp 5.000–10.000</button>
+                    <button class="chip-opt" data-harga="10000" onclick="setHarga(this,10000)">Rp 10.000–15.000</button>
+                    <button class="chip-opt" data-harga="15000" onclick="setHarga(this,15000)">Rp 15.000–20.000</button>
+                    <button class="chip-opt" data-harga="20000" onclick="setHarga(this,20000)">&gt; Rp 20.000</button>
                 </div>
             </div>
 
             <!-- JAM OPERASIONAL -->
             <div class="filter-section">
                 <h4>Jam Operasional</h4>
-                <div class="chip-group">
-                    <button type="button" class="chip-opt <?= !$jam_filter?'active':'' ?>"
-                        onclick="setJam('')">Semua</button>
-                    <button type="button" class="chip-opt <?= $terbuka?'active':'' ?>" onclick="setTerbuka()">Buka
-                        Sekarang</button>
-                    <button type="button" class="chip-opt <?= $jam_filter==='07-10'?'active':'' ?>"
-                        onclick="setJam('07-10')">07:00 – 10:00</button>
-                    <button type="button" class="chip-opt <?= $jam_filter==='10-14'?'active':'' ?>"
-                        onclick="setJam('10-14')">10:00 – 14:00</button>
-                    <button type="button" class="chip-opt <?= $jam_filter==='14-17'?'active':'' ?>"
-                        onclick="setJam('14-17')">14:00 – 17:00</button>
-                    <button type="button" class="chip-opt <?= $jam_filter==='17-21'?'active':'' ?>"
-                        onclick="setJam('17-21')">17:00 – 21:00</button>
-                    <button type="button" class="chip-opt <?= $jam_filter==='21-24'?'active':'' ?>"
-                        onclick="setJam('21-24')">21:00 – 24:00</button>
+                <div class="chip-group" id="jamChips">
+                    <button class="chip-opt active" data-jam="" onclick="setJam(this,'')">Semua</button>
+                    <button class="chip-opt" data-jam="now" onclick="setJam(this,'now')">Buka Sekarang</button>
+                    <button class="chip-opt" data-jam="07-10" onclick="setJam(this,'07-10')">07:00–10:00</button>
+                    <button class="chip-opt" data-jam="10-14" onclick="setJam(this,'10-14')">10:00–14:00</button>
+                    <button class="chip-opt" data-jam="14-17" onclick="setJam(this,'14-17')">14:00–17:00</button>
+                    <button class="chip-opt" data-jam="17-21" onclick="setJam(this,'17-21')">17:00–21:00</button>
+                    <button class="chip-opt" data-jam="21-24" onclick="setJam(this,'21-24')">21:00–24:00</button>
                 </div>
             </div>
 
             <!-- STATUS HALAL -->
             <div class="filter-section">
                 <h4>Status Halal</h4>
-                <div class="chip-group">
-                    <button type="button" class="chip-opt <?= !$halal_filter?'active':'' ?>"
-                        onclick="setHalal('')">Semua</button>
-                    <button type="button" class="chip-opt <?= $halal_filter==='tersertifikasi'?'active':'' ?>"
-                        onclick="setHalal('tersertifikasi')">Tersertifikasi</button>
-                    <button type="button" class="chip-opt <?= $halal_filter==='belum tersertifikasi'?'active':'' ?>"
-                        onclick="setHalal('belum tersertifikasi')">Belum Tersertifikasi</button>
-                    <button type="button" class="chip-opt <?= $halal_filter==='non halal'?'active':'' ?>"
-                        onclick="setHalal('non halal')">Non Halal</button>
+                <div class="chip-group" id="halalChips">
+                    <button class="chip-opt active" data-halal="" onclick="setHalal(this,'')">Semua</button>
+                    <button class="chip-opt" data-halal="tersertifikasi"
+                        onclick="setHalal(this,'tersertifikasi')">Tersertifikasi</button>
+                    <button class="chip-opt" data-halal="belum tersertifikasi"
+                        onclick="setHalal(this,'belum tersertifikasi')">Belum Sertifikasi</button>
+                    <button class="chip-opt" data-halal="non halal" onclick="setHalal(this,'non halal')">Non
+                        Halal</button>
                 </div>
             </div>
 
             <!-- MITRA -->
             <div class="filter-section">
-                <h4>Mitra</h4>
+                <h4>Platform Mitra</h4>
                 <div class="checkbox-group">
                     <?php $all_mitra->data_seek(0); while ($m = $all_mitra->fetch_assoc()): ?>
                     <label class="checkbox-item">
-                        <input type="checkbox" class="cb-mitra" value="<?= $m['id_mitra'] ?>"
-                            <?= in_array($m['id_mitra'], $mitra_filter) ? 'checked' : '' ?>>
-                        <label><?= htmlspecialchars($m['nama_mitra']) ?></label>
+                        <input type="checkbox" class="cb-mitra" value="<?= $m['id_mitra'] ?>">
+                        <?= htmlspecialchars($m['nama_mitra']) ?>
                     </label>
                     <?php endwhile; ?>
                 </div>
             </div>
 
-            <!-- METODE PEMBAYARAN -->
+            <!-- METODE BAYAR -->
             <div class="filter-section">
                 <h4>Metode Pembayaran</h4>
-                <div class="chip-group">
+                <div class="chip-group" id="bayarChips">
                     <?php $all_bayar->data_seek(0); while ($b = $all_bayar->fetch_assoc()): ?>
-                    <button type="button"
-                        class="chip-opt cb-bayar <?= in_array($b['id_metode'], $bayar_filter)?'active':'' ?>"
-                        data-val="<?= $b['id_metode'] ?>"><?= htmlspecialchars($b['metode_pembayaran']) ?></button>
+                    <button class="chip-opt cb-bayar" data-val="<?= $b['id_metode'] ?>"
+                        onclick="toggleBayar(this)"><?= htmlspecialchars($b['metode_pembayaran']) ?></button>
                     <?php endwhile; ?>
-                </div>
-            </div>
-
-            <!-- KATEGORI RASA -->
-            <div class="filter-section">
-                <h4>Kategori Rasa</h4>
-                <div class="chip-group">
-                    <?php foreach (['pedas','asin','manis','berkuah','asam'] as $r): ?>
-                    <button type="button" class="chip-opt cb-rasa <?= in_array($r,$rasa_filter)?'active':'' ?>"
-                        data-val="<?= $r ?>"><?= ucfirst($r) ?></button>
-                    <?php endforeach; ?>
                 </div>
             </div>
 
         </div>
         <div class="filter-footer">
             <button class="btn-cancel" onclick="closeFilter()">Batal</button>
-            <button class="btn-apply" onclick="applyFilter()">Terapkan Filter</button>
+            <button class="btn-apply" onclick="applyFilters();closeFilter()">Terapkan</button>
         </div>
     </div>
 
     <script>
-    // State
-    let filterState = {
-        harga_min: <?= $harga_min ?>,
-        harga_max: <?= $harga_max ?>,
-        jam: '<?= addslashes($jam_filter) ?>',
-        terbuka: '<?= $terbuka ?>',
-        halal: '<?= addslashes($halal_filter) ?>',
-        mitra: <?= json_encode(array_map('intval', $mitra_filter)) ?>,
-        bayar: <?= json_encode(array_map('intval', $bayar_filter)) ?>,
-        rasa: <?= json_encode($rasa_filter) ?>,
+    // ── FILTER STATE ──────────────────────────────────────────────
+    const state = {
+        search: '',
+        harga: 0, // 0=semua, 1=<5000, 5000=5k-10k, 10000=10k-15k, 15000=15k-20k, 20000=>20k
+        jam: '',
+        halal: '',
+        mitra: [],
+        bayar: [],
+        quickBuka: false,
+        quickHalal: false,
+        quickRating: false,
+        sort: '',
     };
 
+    // All cards NodeList
+    const allCards = () => document.querySelectorAll('.store-card');
+
+    // ── REALTIME JAM BUKA/TUTUP ───────────────────────────────────
+    function timeToMin(str) {
+        if (!str) return null;
+        const [h, m] = str.split(':').map(Number);
+        return h * 60 + m;
+    }
+
+    function nowMin() {
+        const now = new Date();
+        return now.getHours() * 60 + now.getMinutes();
+    }
+
+    function isTokoOpen(bukaSec, tutupSec) {
+        if (!bukaSec || !tutupSec) return null; // unknown
+        const bMins = timeToMin(bukaSec.substring(0, 5));
+        const tMins = timeToMin(tutupSec.substring(0, 5));
+        const now = nowMin();
+        if (tMins <= bMins) {
+            // overnight: e.g. 22:00-02:00 or 00:00-23:59 (treat 00:00-23:59 as always open)
+            return now >= bMins || now <= tMins;
+        }
+        return now >= bMins && now <= tMins;
+    }
+
+    function updateAllStatus() {
+        let bukaCount = 0;
+        document.querySelectorAll('.card-status').forEach(el => {
+            const buka = el.dataset.jamBuka;
+            const tutup = el.dataset.jamTutup;
+            const open = isTokoOpen(buka, tutup);
+            if (open === null) {
+                el.textContent = '';
+                el.className = 'card-status';
+            } else if (open) {
+                el.textContent = '● Buka';
+                el.className = 'card-status status-buka';
+                bukaCount++;
+            } else {
+                el.textContent = '● Tutup';
+                el.className = 'card-status status-tutup';
+            }
+        });
+        const el = document.getElementById('statBuka');
+        if (el) el.textContent = bukaCount;
+    }
+
+    // Update every 30s
+    updateAllStatus();
+    setInterval(updateAllStatus, 30000);
+
+    // ── FILTER HELPERS ────────────────────────────────────────────
+    function setHarga(btn, val) {
+        document.querySelectorAll('#hargaChips .chip-opt').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.harga = val;
+    }
+
+    function setJam(btn, val) {
+        document.querySelectorAll('#jamChips .chip-opt').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.jam = val;
+    }
+
+    function setHalal(btn, val) {
+        document.querySelectorAll('#halalChips .chip-opt').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.halal = val;
+    }
+
+    function toggleBayar(btn) {
+        btn.classList.toggle('active');
+    }
+
+    // ── QUICK CHIPS BAR ───────────────────────────────────────────
+    function toggleChip(id) {
+        if (id === 'all') {
+            state.quickBuka = false;
+            state.quickHalal = false;
+            state.quickRating = false;
+            document.getElementById('chip-all').classList.add('active');
+            document.getElementById('chip-buka').classList.remove('active');
+            document.getElementById('chip-halal').classList.remove('active');
+            document.getElementById('chip-rating').classList.remove('active');
+        } else if (id === 'buka') {
+            state.quickBuka = !state.quickBuka;
+            document.getElementById('chip-buka').classList.toggle('active', state.quickBuka);
+            document.getElementById('chip-all').classList.toggle('active', !state.quickBuka && !state.quickHalal && !
+                state.quickRating);
+        } else if (id === 'halal') {
+            state.quickHalal = !state.quickHalal;
+            document.getElementById('chip-halal').classList.toggle('active', state.quickHalal);
+            document.getElementById('chip-all').classList.toggle('active', !state.quickBuka && !state.quickHalal && !
+                state.quickRating);
+        } else if (id === 'rating') {
+            state.quickRating = !state.quickRating;
+            document.getElementById('chip-rating').classList.toggle('active', state.quickRating);
+            document.getElementById('chip-all').classList.toggle('active', !state.quickBuka && !state.quickHalal && !
+                state.quickRating);
+        }
+        applyFilters();
+    }
+
+    // ── MAIN FILTER + SORT ────────────────────────────────────────
+    function applyFilters() {
+        state.search = document.getElementById('searchInput').value.toLowerCase();
+        state.sort = document.getElementById('sortSelect').value;
+
+        // collect bayar
+        state.bayar = [...document.querySelectorAll('.cb-bayar.active')].map(b => b.dataset.val);
+        // collect mitra
+        state.mitra = [...document.querySelectorAll('.cb-mitra:checked')].map(b => b.value);
+
+        const cards = [...allCards()];
+        let visible = [];
+
+        cards.forEach(card => {
+            let show = true;
+            const nama = card.dataset.nama || '';
+            const halal = card.dataset.halal || '';
+            const jamBuka = card.dataset.jamBuka || '';
+            const jamTutup = card.dataset.jamTutup || '';
+            const rating = parseFloat(card.dataset.rating) || 0;
+            const minHarga = parseInt(card.dataset.minHarga) || 0;
+            const mitraIds = card.dataset.mitraIds ? card.dataset.mitraIds.split(',') : [];
+            const bayarIds = card.dataset.bayarIds ? card.dataset.bayarIds.split(',') : [];
+
+            // Search
+            if (state.search && !nama.includes(state.search)) show = false;
+
+            // Quick: buka sekarang
+            if (show && state.quickBuka) {
+                if (!isTokoOpen(jamBuka, jamTutup)) show = false;
+            }
+            // Quick: halal
+            if (show && state.quickHalal && halal !== 'tersertifikasi') show = false;
+            // Quick: rating
+            if (show && state.quickRating && rating < 4) show = false;
+
+            // Panel jam filter
+            if (show && state.jam) {
+                if (state.jam === 'now') {
+                    if (!isTokoOpen(jamBuka, jamTutup)) show = false;
+                } else {
+                    const ranges = {
+                        '07-10': [7 * 60, 10 * 60],
+                        '10-14': [10 * 60, 14 * 60],
+                        '14-17': [14 * 60, 17 * 60],
+                        '17-21': [17 * 60, 21 * 60],
+                        '21-24': [21 * 60, 24 * 60]
+                    };
+                    const r = ranges[state.jam];
+                    if (r) {
+                        const bMin = timeToMin(jamBuka.substring(0, 5));
+                        const tMin = timeToMin(jamTutup.substring(0, 5));
+                        // toko must overlap with the range
+                        if (bMin === null || tMin === null || tMin < r[0] || bMin > r[1]) show = false;
+                    }
+                }
+            }
+
+            // Panel halal
+            if (show && state.halal && halal !== state.halal) show = false;
+
+            // Panel harga
+            if (show && state.harga > 0) {
+                if (state.harga === 1) {
+                    if (minHarga >= 5000) show = false;
+                } else if (state.harga === 5000) {
+                    if (minHarga < 5000 || minHarga >= 10000) show = false;
+                } else if (state.harga === 10000) {
+                    if (minHarga < 10000 || minHarga >= 15000) show = false;
+                } else if (state.harga === 15000) {
+                    if (minHarga < 15000 || minHarga >= 20000) show = false;
+                } else if (state.harga === 20000) {
+                    if (minHarga < 20000) show = false;
+                }
+            }
+
+            // Mitra
+            if (show && state.mitra.length > 0) {
+                if (!state.mitra.some(id => mitraIds.includes(id))) show = false;
+            }
+
+            // Bayar
+            if (show && state.bayar.length > 0) {
+                if (!state.bayar.some(id => bayarIds.includes(id))) show = false;
+            }
+
+            if (show) visible.push(card);
+            else card.classList.add('hidden');
+        });
+
+        // Sort visible
+        if (state.sort) {
+            const grid = document.getElementById('storesGrid');
+            visible.sort((a, b) => {
+                if (state.sort === 'rating_desc') return (parseFloat(b.dataset.rating) || 0) - (parseFloat(a
+                    .dataset.rating) || 0);
+                if (state.sort === 'rating_asc') return (parseFloat(a.dataset.rating) || 0) - (parseFloat(b
+                    .dataset.rating) || 0);
+                if (state.sort === 'nama_az') return a.dataset.nama.localeCompare(b.dataset.nama);
+                if (state.sort === 'nama_za') return b.dataset.nama.localeCompare(a.dataset.nama);
+                if (state.sort === 'harga_asc') return (parseInt(a.dataset.minHarga) || 0) - (parseInt(b.dataset
+                    .minHarga) || 0);
+                return 0;
+            });
+            visible.forEach(c => {
+                c.classList.remove('hidden');
+                grid.appendChild(c);
+            });
+        } else {
+            visible.forEach(c => c.classList.remove('hidden'));
+        }
+
+        // Update count
+        document.getElementById('countVisible').textContent = visible.length;
+        const empty = document.getElementById('emptyState');
+        empty.classList.toggle('hidden', visible.length > 0);
+
+        // Filter dot
+        const hasFilter = state.harga || state.jam || state.halal || state.mitra.length || state.bayar.length;
+        document.getElementById('filterDot').classList.toggle('show', !!hasFilter);
+        document.getElementById('btnFilter').classList.toggle('active', !!hasFilter);
+    }
+
+    // ── FILTER OPEN/CLOSE ─────────────────────────────────────────
     function openFilter() {
         document.getElementById('overlay').classList.add('show');
         document.getElementById('filterPanel').classList.add('show');
@@ -1392,124 +1293,29 @@ $now_time = date('H:i:s');
         document.getElementById('filterPanel').classList.remove('show');
     }
 
-    function setHarga(min, max) {
-        filterState.harga_min = min;
-        filterState.harga_max = max;
-        refreshChips();
+    function resetFilter() {
+        state.harga = 0;
+        state.jam = '';
+        state.halal = '';
+        state.mitra = [];
+        state.bayar = [];
+        document.querySelectorAll('#hargaChips .chip-opt').forEach((b, i) => b.classList.toggle('active', i === 0));
+        document.querySelectorAll('#jamChips .chip-opt').forEach((b, i) => b.classList.toggle('active', i === 0));
+        document.querySelectorAll('#halalChips .chip-opt').forEach((b, i) => b.classList.toggle('active', i === 0));
+        document.querySelectorAll('.cb-mitra').forEach(b => b.checked = false);
+        document.querySelectorAll('.cb-bayar').forEach(b => b.classList.remove('active'));
+        applyFilters();
     }
 
-    function setJam(v) {
-        filterState.jam = v;
-        filterState.terbuka = '';
-        refreshChips();
-    }
-
-    function setTerbuka() {
-        filterState.terbuka = filterState.terbuka ? '' : '1';
-        filterState.jam = '';
-        refreshChips();
-    }
-
-    function setHalal(v) {
-        filterState.halal = v;
-        refreshChips();
-    }
-
-    function refreshChips() {
-        // harga
-        document.querySelectorAll('.filter-section:nth-child(1) .chip-opt').forEach(btn => btn.classList.remove(
-            'active'));
-        // jam
-        document.querySelectorAll('.filter-section:nth-child(2) .chip-opt').forEach(btn => btn.classList.remove(
-            'active'));
-        // halal
-        document.querySelectorAll('.filter-section:nth-child(3) .chip-opt').forEach(btn => btn.classList.remove(
-            'active'));
-    }
-
-    // Toggle bayar chips
-    document.querySelectorAll('.cb-bayar').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const v = parseInt(this.dataset.val);
-            const idx = filterState.bayar.indexOf(v);
-            if (idx > -1) filterState.bayar.splice(idx, 1);
-            else filterState.bayar.push(v);
-            this.classList.toggle('active');
-        });
-    });
-    // Toggle rasa chips
-    document.querySelectorAll('.cb-rasa').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const v = this.dataset.val;
-            const idx = filterState.rasa.indexOf(v);
-            if (idx > -1) filterState.rasa.splice(idx, 1);
-            else filterState.rasa.push(v);
-            this.classList.toggle('active');
-        });
-    });
-
-    function applyFilter() {
-        const form = document.getElementById('mainForm');
-        document.getElementById('harga_min_hidden').value = filterState.harga_min;
-        document.getElementById('harga_max_hidden').value = filterState.harga_max;
-        document.getElementById('jam_hidden').value = filterState.jam;
-        document.getElementById('halal_hidden').value = filterState.halal;
-        document.getElementById('searchHidden').value = document.getElementById('searchInput').value;
-
-        // Remove old mitra/bayar/rasa inputs
-        document.querySelectorAll('.mitra_hidden,.bayar_hidden,.rasa_hidden').forEach(e => e.remove());
-
-        // Mitra from checkboxes
-        document.querySelectorAll('.cb-mitra:checked').forEach(cb => {
-            const inp = document.createElement('input');
-            inp.type = 'hidden';
-            inp.name = 'mitra[]';
-            inp.className = 'mitra_hidden';
-            inp.value = cb.value;
-            form.appendChild(inp);
-        });
-        // Bayar
-        filterState.bayar.forEach(v => {
-            const inp = document.createElement('input');
-            inp.type = 'hidden';
-            inp.name = 'bayar[]';
-            inp.className = 'bayar_hidden';
-            inp.value = v;
-            form.appendChild(inp);
-        });
-        // Rasa
-        filterState.rasa.forEach(v => {
-            const inp = document.createElement('input');
-            inp.type = 'hidden';
-            inp.name = 'rasa[]';
-            inp.className = 'rasa_hidden';
-            inp.value = v;
-            form.appendChild(inp);
-        });
-        // Terbuka
-        let terbuka_inp = form.querySelector('[name="terbuka"]');
-        if (filterState.terbuka) {
-            if (!terbuka_inp) {
-                terbuka_inp = document.createElement('input');
-                terbuka_inp.type = 'hidden';
-                terbuka_inp.name = 'terbuka';
-                form.appendChild(terbuka_inp);
-            }
-            terbuka_inp.value = '1';
-        } else if (terbuka_inp) terbuka_inp.remove();
-
-        form.submit();
-    }
-
-    // Search with debounce
+    // ── SEARCH DEBOUNCE ───────────────────────────────────────────
     let searchTimer;
-    document.getElementById('searchInput').addEventListener('input', function() {
+    document.getElementById('searchInput').addEventListener('input', () => {
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => {
-            document.getElementById('searchHidden').value = this.value;
-            document.getElementById('mainForm').submit();
-        }, 500);
+        searchTimer = setTimeout(applyFilters, 300);
     });
+
+    // Init
+    applyFilters();
     </script>
 </body>
 

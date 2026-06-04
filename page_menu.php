@@ -28,10 +28,10 @@ $r = $koneksi->query("SELECT b.* FROM metode_toko mt JOIN bayar b ON b.id_metode
 while ($row = $r->fetch_assoc()) $bayars[] = $row;
 
 // Fetch menu with filter
-$search_menu   = isset($_GET['search_menu']) ? trim($_GET['search_menu']) : '';
-$filter_rasa   = isset($_GET['rasa'])        ? $_GET['rasa']             : '';
-$filter_kat    = isset($_GET['kategori'])    ? (int)$_GET['kategori']    : 0;
-$sort_menu     = isset($_GET['sort'])        ? $_GET['sort']             : '';
+$search_menu = isset($_GET['search_menu']) ? trim($_GET['search_menu']) : '';
+$filter_rasa = isset($_GET['rasa'])        ? $_GET['rasa']             : '';
+$filter_kat  = isset($_GET['kategori'])    ? (int)$_GET['kategori']    : 0;
+$sort_menu   = isset($_GET['sort'])        ? $_GET['sort']             : '';
 
 $where_m = ["m.id_toko = $id_toko"];
 $params_m = []; $types_m = '';
@@ -54,7 +54,7 @@ $order_m = match($sort_menu) {
     'harga_asc'  => 'ORDER BY m.harga ASC',
     'harga_desc' => 'ORDER BY m.harga DESC',
     'nama_az'    => 'ORDER BY m.nama_menu ASC',
-    default      => 'ORDER BY m.id_menu ASC',
+    default      => 'ORDER BY m.id_kategori ASC, m.id_menu ASC',
 };
 
 $where_sql_m = 'WHERE ' . implode(' AND ', $where_m);
@@ -73,12 +73,21 @@ foreach ($menus as $menu) {
 
 // Fetch all kategori for filter
 $all_kat = $koneksi->query("SELECT DISTINCT k.id_kategori, k.kategori_makanan FROM menu m JOIN kategori k ON k.id_kategori = m.id_kategori WHERE m.id_toko = $id_toko ORDER BY k.id_kategori");
+$kat_list = [];
+while ($k = $all_kat->fetch_assoc()) $kat_list[] = $k;
 
 // Reviews
 $reviews = [];
 $r = $koneksi->query("SELECT * FROM review WHERE id_toko = $id_toko ORDER BY tanggal_review DESC LIMIT 5");
 if ($r) while ($row = $r->fetch_assoc()) $reviews[] = $row;
 $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
+
+// Helper: fix foto URL (full URL or just filename)
+function fotoUrl($val, $folder) {
+    if (!$val) return '';
+    if (strpos($val, 'http') === 0) return $val;
+    return $folder . $val;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -87,7 +96,6 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($toko['nama_toko']) ?> – Menu</title>
-    <link rel="prekoneksiect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -160,7 +168,6 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
     .sidebar-logo span {
         font-weight: 800;
         font-size: 16px;
-        letter-spacing: .5px;
         color: #fff
     }
 
@@ -207,10 +214,6 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         width: 18px;
         text-align: center;
         font-size: 15px
-    }
-
-    .sidebar-nav a.active i {
-        color: var(--accent)
     }
 
     .sidebar-bottom {
@@ -270,7 +273,7 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         z-index: 90
     }
 
-    .topbar .back-btn {
+    .back-btn {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -285,7 +288,7 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         background: var(--bg)
     }
 
-    .topbar .back-btn:hover {
+    .back-btn:hover {
         color: var(--text);
         border-color: var(--text-muted)
     }
@@ -398,40 +401,44 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
 
     /* STORE HERO */
     .store-hero {
-        background: var(--card);
-        border-bottom: 1px solid var(--border);
-        padding: 28px 32px;
-        display: flex;
-        gap: 28px;
-        align-items: flex-start
+        position: relative;
+        overflow: hidden
     }
 
-    .store-hero-img {
-        width: 200px;
-        height: 150px;
-        border-radius: var(--radius);
-        overflow: hidden;
-        flex-shrink: 0;
-        background: linear-gradient(135deg, #1f2d4e, #263354);
+    .hero-banner {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        display: block
+    }
+
+    .hero-banner-placeholder {
+        width: 100%;
+        height: 220px;
+        background: linear-gradient(135deg, #1a2540, #263354);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--text-muted);
-        font-size: 40px
+        font-size: 64px;
+        color: var(--border)
     }
 
-    .store-hero-img img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, transparent 30%, rgba(15, 22, 35, .95) 100%)
     }
 
-    .store-hero-info {
-        flex: 1
+    .hero-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px 32px
     }
 
-    .store-hero-info h1 {
-        font-size: 22px;
+    .hero-name {
+        font-size: 24px;
         font-weight: 800;
         margin-bottom: 8px;
         display: flex;
@@ -448,15 +455,15 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
     }
 
     .status-buka {
-        background: rgba(34, 197, 94, .15);
+        background: rgba(34, 197, 94, .2);
         color: var(--green);
-        border: 1px solid rgba(34, 197, 94, .35)
+        border: 1px solid rgba(34, 197, 94, .4)
     }
 
     .status-tutup {
-        background: rgba(239, 68, 68, .15);
+        background: rgba(239, 68, 68, .2);
         color: var(--red);
-        border: 1px solid rgba(239, 68, 68, .35)
+        border: 1px solid rgba(239, 68, 68, .4)
     }
 
     .halal-tag {
@@ -464,16 +471,16 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         border-radius: 20px;
         font-size: 12px;
         font-weight: 700;
-        background: rgba(34, 197, 94, .1);
+        background: rgba(34, 197, 94, .15);
         color: var(--green);
         border: 1px solid rgba(34, 197, 94, .3)
     }
 
-    .store-meta {
+    .hero-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 16px;
-        margin-bottom: 14px
+        gap: 14px;
+        margin-bottom: 12px
     }
 
     .meta-item {
@@ -481,12 +488,7 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         align-items: center;
         gap: 6px;
         font-size: 13px;
-        color: var(--text-muted)
-    }
-
-    .meta-item i {
-        width: 14px;
-        text-align: center
+        color: rgba(232, 237, 248, .8)
     }
 
     .meta-item.rating-item {
@@ -512,7 +514,7 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
     }
 
     .mitra-badge {
-        background: rgba(59, 130, 246, .1);
+        background: rgba(59, 130, 246, .12);
         border: 1px solid rgba(59, 130, 246, .25);
         color: var(--blue)
     }
@@ -525,16 +527,57 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
     }
 
     .bayar-badge {
-        background: rgba(240, 165, 0, .08);
+        background: rgba(240, 165, 0, .1);
         border: 1px solid rgba(240, 165, 0, .2);
         color: var(--accent)
     }
 
-    /* MENU SECTION */
-    .menu-section {
-        padding: 24px 32px
+    /* STICKY KAT NAV (GoFood style) */
+    .kat-nav {
+        position: sticky;
+        top: 64px;
+        z-index: 80;
+        background: var(--sidebar);
+        border-bottom: 1px solid var(--border);
+        padding: 0 32px;
+        display: flex;
+        gap: 0;
+        overflow-x: auto;
+        scrollbar-width: none
     }
 
+    .kat-nav::-webkit-scrollbar {
+        display: none
+    }
+
+    .kat-nav-item {
+        padding: 14px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        white-space: nowrap;
+        border-bottom: 2px solid transparent;
+        transition: .15s;
+        text-decoration: none;
+        display: block
+    }
+
+    .kat-nav-item:hover {
+        color: var(--text)
+    }
+
+    .kat-nav-item.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent)
+    }
+
+    /* MENU SECTION */
+    .menu-section {
+        padding: 24px 32px 120px
+    }
+
+    /* Filter bar */
     .menu-filter-bar {
         display: flex;
         align-items: center;
@@ -554,7 +597,8 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         color: var(--text-muted);
         text-decoration: none;
         transition: .15s;
-        display: inline-block
+        display: inline-block;
+        font-family: inherit
     }
 
     .chip:hover {
@@ -604,7 +648,8 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
 
     /* KATEGORI + MENU */
     .kategori-section {
-        margin-bottom: 32px
+        margin-bottom: 32px;
+        scroll-margin-top: 120px
     }
 
     .kategori-title {
@@ -627,32 +672,37 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         display: inline-block
     }
 
+    /* MENU ITEM (GoFood list style) */
     .menu-list {
         display: flex;
         flex-direction: column;
-        gap: 12px
+        gap: 0
     }
 
     .menu-item {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 16px;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 0;
         display: flex;
         gap: 16px;
         align-items: flex-start;
-        transition: .18s
+        transition: .15s;
+        position: relative
+    }
+
+    .menu-item:last-child {
+        border-bottom: none
     }
 
     .menu-item:hover {
-        border-color: rgba(240, 165, 0, .3);
-        background: var(--card-hover)
+        background: rgba(255, 255, 255, .02)
     }
 
     .menu-item-img {
-        width: 120px;
-        min-width: 120px;
-        height: 90px;
+        width: 100px;
+        min-width: 100px;
+        height: 80px;
         border-radius: 10px;
         overflow: hidden;
         background: linear-gradient(135deg, #1f2d4e, #263354);
@@ -660,14 +710,15 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         align-items: center;
         justify-content: center;
         color: var(--text-muted);
-        font-size: 24px
+        font-size: 22px;
+        flex-shrink: 0
     }
 
     .menu-item-img img {
-        width: 120px;
-        height: 90px;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
-        border-radius: 10px
+        display: block
     }
 
     .menu-item-body {
@@ -678,14 +729,15 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
     .menu-item-body h4 {
         font-size: 15px;
         font-weight: 700;
-        margin-bottom: 4px
+        margin-bottom: 4px;
+        line-height: 1.3
     }
 
     .menu-item-body .desc {
         font-size: 12px;
         color: var(--text-muted);
         line-height: 1.5;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -701,7 +753,7 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
     }
 
     .menu-price {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 800;
         color: var(--accent)
     }
@@ -744,6 +796,300 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         background: rgba(6, 182, 212, .1);
         border-color: rgba(6, 182, 212, .3);
         color: #06b6d4
+    }
+
+    /* ADD TO CART BUTTON (GoFood style) */
+    .qty-control {
+        display: flex;
+        align-items: center;
+        gap: 0
+    }
+
+    .btn-qty {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: .15s
+    }
+
+    .btn-qty-minus {
+        background: rgba(240, 165, 0, .15);
+        color: var(--accent)
+    }
+
+    .btn-qty-minus:hover {
+        background: rgba(240, 165, 0, .3)
+    }
+
+    .btn-qty-plus {
+        background: var(--accent);
+        color: #0f1623
+    }
+
+    .btn-qty-plus:hover {
+        background: #e09800
+    }
+
+    .btn-add {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--accent);
+        color: #0f1623;
+        border: none;
+        border-radius: 20px;
+        padding: 7px 14px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .15s;
+        font-family: inherit
+    }
+
+    .btn-add:hover {
+        background: #e09800
+    }
+
+    .btn-add i {
+        font-size: 12px
+    }
+
+    .qty-num {
+        min-width: 28px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text)
+    }
+
+    /* FLOATING CART (GoFood style) */
+    .cart-float {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: linear-gradient(135deg, var(--accent), #e09800);
+        color: #0f1623;
+        border-radius: 16px;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        cursor: pointer;
+        z-index: 200;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+        transition: .35s cubic-bezier(.34, 1.56, .64, 1);
+        min-width: 320px;
+        max-width: 480px;
+        width: calc(100% - 320px)
+    }
+
+    .cart-float.visible {
+        transform: translateX(-50%) translateY(0)
+    }
+
+    .cart-float-left {
+        display: flex;
+        align-items: center;
+        gap: 10px
+    }
+
+    .cart-count-badge {
+        background: rgba(0, 0, 0, .2);
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 800
+    }
+
+    .cart-float-label {
+        font-size: 14px;
+        font-weight: 700
+    }
+
+    .cart-float-label small {
+        display: block;
+        font-size: 11px;
+        font-weight: 500;
+        opacity: .75
+    }
+
+    .cart-float-total {
+        margin-left: auto;
+        font-size: 16px;
+        font-weight: 800
+    }
+
+    /* CART DRAWER */
+    .cart-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .7);
+        z-index: 300;
+        opacity: 0;
+        pointer-events: none;
+        transition: .25s
+    }
+
+    .cart-overlay.show {
+        opacity: 1;
+        pointer-events: all
+    }
+
+    .cart-drawer {
+        position: fixed;
+        bottom: -100%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 640px;
+        background: var(--sidebar);
+        border-radius: 20px 20px 0 0;
+        z-index: 301;
+        transition: .3s cubic-bezier(.4, 0, .2, 1);
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column
+    }
+
+    .cart-drawer.show {
+        bottom: 0
+    }
+
+    .cart-drawer-handle {
+        width: 40px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        margin: 12px auto 0
+    }
+
+    .cart-drawer-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between
+    }
+
+    .cart-drawer-header h3 {
+        font-size: 17px;
+        font-weight: 800
+    }
+
+    .cart-close {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 18px;
+        cursor: pointer;
+        padding: 4px
+    }
+
+    .cart-items {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 24px
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border)
+    }
+
+    .cart-item:last-child {
+        border-bottom: none
+    }
+
+    .cart-item-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--card);
+        flex-shrink: 0
+    }
+
+    .cart-item-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover
+    }
+
+    .cart-item-info {
+        flex: 1;
+        min-width: 0
+    }
+
+    .cart-item-info h5 {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis
+    }
+
+    .cart-item-info .price {
+        font-size: 13px;
+        color: var(--accent);
+        font-weight: 700
+    }
+
+    .cart-item-qty {
+        display: flex;
+        align-items: center;
+        gap: 6px
+    }
+
+    .cart-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--border)
+    }
+
+    .cart-summary {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        font-size: 14px
+    }
+
+    .cart-summary .total {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--accent)
+    }
+
+    .btn-checkout {
+        width: 100%;
+        background: var(--accent);
+        color: #0f1623;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 15px;
+        font-weight: 800;
+        cursor: pointer;
+        font-family: inherit;
+        transition: .15s
+    }
+
+    .btn-checkout:hover {
+        background: #e09800
     }
 
     /* REVIEWS */
@@ -829,6 +1175,7 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         font-size: 14px
     }
 
+    /* EMPTY */
     .empty-menu {
         text-align: center;
         padding: 60px 20px;
@@ -838,7 +1185,8 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
     .empty-menu i {
         font-size: 40px;
         margin-bottom: 12px;
-        opacity: .4
+        opacity: .4;
+        display: block
     }
 
     .empty-menu h3 {
@@ -857,28 +1205,23 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
             margin-left: 0
         }
 
-        .store-hero {
-            flex-direction: column
+        .menu-section,
+        .reviews-section {
+            padding-left: 16px;
+            padding-right: 16px
         }
 
-        .store-hero-img {
-            width: 100%;
-            height: 180px
+        .kat-nav {
+            padding: 0 16px
         }
 
-        .menu-item {
-            flex-direction: column
+        .hero-info {
+            padding: 16px
         }
 
-        .menu-item-img {
-            width: 100%;
-            min-width: 100%;
-            height: 160px
-        }
-
-        .menu-item-img img {
-            width: 100%;
-            height: 160px
+        .cart-float {
+            width: calc(100% - 32px);
+            min-width: 0
         }
     }
     </style>
@@ -939,19 +1282,18 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         </header>
 
         <div class="content">
-            <!-- STORE HERO -->
+            <!-- HERO BANNER (GoFood style) -->
             <div class="store-hero">
-                <div class="store-hero-img">
-                    <?php if ($toko['foto_outlet']): ?>
-                    <img src="../img/pict/<?= $toko['foto_outlet']; ?>"
-                        alt="<?= htmlspecialchars($toko['nama_toko']); ?>"
-                        style="width:100%;max-height:220px;object-fit:cover;border-radius:<?= var_export(16, true) ?>px">
-                    <?php else: ?>
-                    <i class="fas fa-store"></i>
-                    <?php endif; ?>
-                </div>
-                <div class="store-hero-info">
-                    <h1>
+                <?php $heroFoto = fotoUrl($toko['foto_outlet'], 'img/pict/'); ?>
+                <?php if ($heroFoto): ?>
+                <img src="<?= htmlspecialchars($heroFoto) ?>" class="hero-banner"
+                    alt="<?= htmlspecialchars($toko['nama_toko']) ?>">
+                <?php else: ?>
+                <div class="hero-banner-placeholder">🍜</div>
+                <?php endif; ?>
+                <div class="hero-overlay"></div>
+                <div class="hero-info">
+                    <div class="hero-name">
                         <?= htmlspecialchars($toko['nama_toko']) ?>
                         <span class="status-pill <?= $is_buka ? 'status-buka' : 'status-tutup' ?>">
                             <?= $is_buka ? '● Buka' : '● Tutup' ?>
@@ -959,8 +1301,8 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                         <?php if ($toko['status_halal'] === 'tersertifikasi'): ?>
                         <span class="halal-tag"><i class="fas fa-leaf"></i> Halal</span>
                         <?php endif; ?>
-                    </h1>
-                    <div class="store-meta">
+                    </div>
+                    <div class="hero-meta">
                         <?php if ($toko['rating']): ?>
                         <div class="meta-item rating-item"><i class="fas fa-star"></i> <?= $rating_text ?></div>
                         <?php endif; ?>
@@ -980,7 +1322,8 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                     <div class="hero-badges">
                         <?php foreach ($mitras as $m): ?>
                         <span class="mitra-badge">
-                            <?php if ($m['logo']): ?><img src="../img/mitra/<?= $m['logo'] ?>" alt=""><?php endif; ?>
+                            <?php $mLogo = fotoUrl($m['logo'], 'img/logo/'); if ($mLogo): ?><img
+                                src="<?= htmlspecialchars($mLogo) ?>" alt=""><?php endif; ?>
                             <?= htmlspecialchars($m['nama_mitra']) ?>
                         </span>
                         <?php endforeach; ?>
@@ -992,7 +1335,19 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                 </div>
             </div>
 
-            <!-- MENU FILTER BAR -->
+            <!-- STICKY KATEGORI NAV (GoFood style) -->
+            <?php if (!$filter_rasa && !$search_menu): ?>
+            <nav class="kat-nav" id="katNav">
+                <a class="kat-nav-item <?= !$filter_kat ? 'active' : '' ?>" href="?id_toko=<?= $id_toko ?>">Semua</a>
+                <?php foreach ($kat_list as $k): ?>
+                <a class="kat-nav-item <?= $filter_kat == $k['id_kategori'] ? 'active' : '' ?>"
+                    href="#kat-<?= $k['id_kategori'] ?>" data-kat="<?= $k['id_kategori'] ?>"
+                    onclick="scrollToKat(<?= $k['id_kategori'] ?>); return false;"><?= htmlspecialchars($k['kategori_makanan']) ?></a>
+                <?php endforeach; ?>
+            </nav>
+            <?php endif; ?>
+
+            <!-- MENU SECTION -->
             <div class="menu-section">
                 <form id="menuForm" method="GET" action="">
                     <input type="hidden" name="id_toko" value="<?= $id_toko ?>">
@@ -1003,17 +1358,11 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                     <input type="hidden" name="sort" id="sort_hidden" value="<?= htmlspecialchars($sort_menu) ?>">
 
                     <div class="menu-filter-bar">
-                        <!-- Kategori chips -->
-                        <button type="button" class="chip <?= !$filter_kat?'active':'' ?>"
-                            onclick="setKat(0)">Semua</button>
-                        <?php $all_kat->data_seek(0); while ($k = $all_kat->fetch_assoc()): ?>
-                        <button type="button" class="chip <?= $filter_kat==$k['id_kategori']?'active':'' ?>"
-                            onclick="setKat(<?= $k['id_kategori'] ?>)"><?= htmlspecialchars($k['kategori_makanan']) ?></button>
-                        <?php endwhile; ?>
-
                         <!-- Rasa chips -->
+                        <a href="?id_toko=<?= $id_toko ?>" class="rasa-chip <?= !$filter_rasa ? 'active' : '' ?>">Semua
+                            Rasa</a>
                         <?php foreach (['pedas','manis','asin','berkuah','asam'] as $r): ?>
-                        <a href="?id_toko=<?= $id_toko ?>&rasa=<?= $filter_rasa===$r?'':$r ?>&kategori=<?= $filter_kat ?>&sort=<?= $sort_menu ?>&search_menu=<?= urlencode($search_menu) ?>"
+                        <a href="?id_toko=<?= $id_toko ?>&rasa=<?= $filter_rasa===$r?'':$r ?>&sort=<?= $sort_menu ?>&search_menu=<?= urlencode($search_menu) ?>"
                             class="rasa-chip <?= $filter_rasa===$r?'active':'' ?>"><?= ucfirst($r) ?></a>
                         <?php endforeach; ?>
 
@@ -1030,7 +1379,6 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                     </div>
                 </form>
 
-
                 <!-- MENU LIST -->
                 <?php if (empty($menus)): ?>
                 <div class="empty-menu">
@@ -1038,19 +1386,20 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                     <h3>Menu tidak ditemukan</h3>
                     <p>Coba ubah filter atau kata kunci</p>
                 </div>
-                <?php elseif ($filter_kat || $filter_rasa || $search_menu || $sort_menu): ?>
+                <?php elseif ($filter_rasa || $search_menu || $sort_menu): ?>
                 <!-- Flat list when filtered -->
                 <div class="menu-list">
-                    <?php foreach ($menus as $menu): ?>
-                    <?php include_once 'koneksi.php';?>
-                    <div class="menu-item">
+                    <?php foreach ($menus as $menu):
+          $fotoMenu = fotoUrl($menu['foto_menu'], 'img/makanan/'); ?>
+                    <div class="menu-item" data-id="<?= $menu['id_menu'] ?>"
+                        data-nama="<?= htmlspecialchars($menu['nama_menu'],ENT_QUOTES) ?>"
+                        data-harga="<?= $menu['harga'] ?>" data-foto="<?= htmlspecialchars($fotoMenu,ENT_QUOTES) ?>">
                         <div class="menu-item-img">
-                            <?php if ($menu['foto_menu']): ?>
-                            <img src="../img/makanan/<?= $menu['foto_menu']; ?>" width="120"
-                                style="border-radius:10px;">
-                            <?php else: ?>
-                            <i class="fas fa-utensils"></i>
-                            <?php endif; ?>
+                            <?php if ($fotoMenu): ?>
+                            <img src="<?= htmlspecialchars($fotoMenu) ?>"
+                                alt="<?= htmlspecialchars($menu['nama_menu']) ?>" loading="lazy"
+                                onerror="this.parentElement.innerHTML='<i class=\'fas fa-utensils\'></i>'">
+                            <?php else: ?><i class="fas fa-utensils"></i><?php endif; ?>
                         </div>
                         <div class="menu-item-body">
                             <h4><?= htmlspecialchars($menu['nama_menu']) ?></h4>
@@ -1059,10 +1408,16 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                             <?php endif; ?>
                             <div class="menu-item-footer">
                                 <span class="menu-price">Rp <?= number_format($menu['harga'], 0, ',', '.') ?></span>
-                                <?php if ($menu['rasa']): ?>
-                                <?php $rasa_class = 'rasa-' . $menu['rasa']; ?>
-                                <span class="rasa-tag <?= $rasa_class ?>"><?= ucfirst($menu['rasa']) ?></span>
-                                <?php endif; ?>
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <?php if ($menu['rasa']): ?>
+                                    <span
+                                        class="rasa-tag rasa-<?= $menu['rasa'] ?>"><?= ucfirst($menu['rasa']) ?></span>
+                                    <?php endif; ?>
+                                    <div class="qty-control" data-id="<?= $menu['id_menu'] ?>">
+                                        <button class="btn-add" onclick="addToCart(<?= $menu['id_menu'] ?>)"><i
+                                                class="fas fa-plus"></i> Tambah</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1070,21 +1425,30 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                 </div>
                 <?php else: ?>
                 <!-- Grouped by kategori -->
-                <?php foreach ($grouped as $kat_name => $kat_menus): ?>
-                <div class="kategori-section">
-                    <div class="kategori-title"><?= htmlspecialchars($kat_name) ?> <span
-                            style="font-size:12px;font-weight:500;color:var(--text-muted)">(<?= count($kat_menus) ?>
-                            item)</span></div>
+                <?php foreach ($grouped as $kat_name => $kat_menus):
+        // find kat id
+        $kat_id = 0;
+        foreach ($kat_list as $kl) { if ($kl['kategori_makanan'] === $kat_name) { $kat_id = $kl['id_kategori']; break; } }
+      ?>
+                <div class="kategori-section" id="kat-<?= $kat_id ?>" data-kat-id="<?= $kat_id ?>">
+                    <div class="kategori-title">
+                        <?= htmlspecialchars($kat_name) ?>
+                        <span style="font-size:12px;font-weight:500;color:var(--text-muted)">(<?= count($kat_menus) ?>
+                            item)</span>
+                    </div>
                     <div class="menu-list">
-                        <?php foreach ($kat_menus as $menu): ?>
-                        <div class="menu-item">
+                        <?php foreach ($kat_menus as $menu):
+            $fotoMenu = fotoUrl($menu['foto_menu'], 'img/makanan/'); ?>
+                        <div class="menu-item" data-id="<?= $menu['id_menu'] ?>"
+                            data-nama="<?= htmlspecialchars($menu['nama_menu'],ENT_QUOTES) ?>"
+                            data-harga="<?= $menu['harga'] ?>"
+                            data-foto="<?= htmlspecialchars($fotoMenu,ENT_QUOTES) ?>">
                             <div class="menu-item-img">
-                                <?php if ($menu['foto_menu']): ?>
-                                <img src="../img/makanan/<?= $menu['foto_menu']; ?>" width="120"
-                                    style="border-radius:10px;">
-                                <?php else: ?>
-                                <i class="fas fa-utensils"></i>
-                                <?php endif; ?>
+                                <?php if ($fotoMenu): ?>
+                                <img src="<?= htmlspecialchars($fotoMenu) ?>"
+                                    alt="<?= htmlspecialchars($menu['nama_menu']) ?>" loading="lazy"
+                                    onerror="this.parentElement.innerHTML='<i class=\'fas fa-utensils\'></i>'">
+                                <?php else: ?><i class="fas fa-utensils"></i><?php endif; ?>
                             </div>
                             <div class="menu-item-body">
                                 <h4><?= htmlspecialchars($menu['nama_menu']) ?></h4>
@@ -1093,10 +1457,16 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                                 <?php endif; ?>
                                 <div class="menu-item-footer">
                                     <span class="menu-price">Rp <?= number_format($menu['harga'], 0, ',', '.') ?></span>
-                                    <?php if ($menu['rasa']): ?>
-                                    <?php $rasa_class = 'rasa-' . $menu['rasa']; ?>
-                                    <span class="rasa-tag <?= $rasa_class ?>"><?= ucfirst($menu['rasa']) ?></span>
-                                    <?php endif; ?>
+                                    <div style="display:flex;align-items:center;gap:10px">
+                                        <?php if ($menu['rasa']): ?>
+                                        <span
+                                            class="rasa-tag rasa-<?= $menu['rasa'] ?>"><?= ucfirst($menu['rasa']) ?></span>
+                                        <?php endif; ?>
+                                        <div class="qty-control" id="qty-<?= $menu['id_menu'] ?>">
+                                            <button class="btn-add" onclick="addToCart(<?= $menu['id_menu'] ?>)"><i
+                                                    class="fas fa-plus"></i> Tambah</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1121,7 +1491,7 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
                         <div>
                             <div class="review-name"><?= htmlspecialchars($rv['nama_pengulas']) ?></div>
                             <div class="review-stars">
-                                <?= str_repeat('★', $rv['rating']) ?><?= str_repeat('☆', 5 - $rv['rating']) ?></div>
+                                <?= str_repeat('★',$rv['rating']) ?><?= str_repeat('☆',5-$rv['rating']) ?></div>
                         </div>
                         <div class="review-date"><?= date('d M Y', strtotime($rv['tanggal_review'])) ?></div>
                     </div>
@@ -1133,12 +1503,197 @@ $rating_text = $toko['rating'] ? number_format($toko['rating'], 1) : '–';
         </div>
     </div>
 
+    <!-- FLOATING CART -->
+    <div class="cart-float" id="cartFloat" onclick="openCart()">
+        <div class="cart-float-left">
+            <div class="cart-count-badge" id="cartCount">0</div>
+            <div class="cart-float-label">
+                Lihat Keranjang
+                <small id="cartItems">0 item</small>
+            </div>
+        </div>
+        <div class="cart-float-total" id="cartTotal">Rp 0</div>
+    </div>
+
+    <!-- CART DRAWER -->
+    <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-drawer-handle"></div>
+        <div class="cart-drawer-header">
+            <h3>🛒 Keranjang</h3>
+            <button class="cart-close" onclick="closeCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItemsList"></div>
+        <div class="cart-footer">
+            <div class="cart-summary">
+                <span>Total Pesanan</span>
+                <span class="total" id="cartTotalDrawer">Rp 0</span>
+            </div>
+            <button class="btn-checkout" onclick="checkout()">
+                <i class="fas fa-shopping-bag"></i> Pesan Sekarang
+            </button>
+        </div>
+    </div>
+
     <script>
-    function setKat(v) {
-        document.getElementById('kat_hidden').value = v;
-        document.getElementById('menuForm').submit();
+    // ── CART STATE ──
+    let cart = {}; // { id: { nama, harga, foto, qty } }
+
+    function fmt(n) {
+        return 'Rp ' + n.toLocaleString('id-ID');
     }
 
+    function cartTotal() {
+        return Object.values(cart).reduce((s, i) => s + i.harga * i.qty, 0);
+    }
+
+    function cartCount() {
+        return Object.values(cart).reduce((s, i) => s + i.qty, 0);
+    }
+
+    function updateCartFloat() {
+        const count = cartCount();
+        const total = cartTotal();
+        document.getElementById('cartCount').textContent = count;
+        document.getElementById('cartItems').textContent = count + ' item';
+        document.getElementById('cartTotal').textContent = fmt(total);
+        document.getElementById('cartTotalDrawer').textContent = fmt(total);
+        const el = document.getElementById('cartFloat');
+        count > 0 ? el.classList.add('visible') : el.classList.remove('visible');
+    }
+
+    function renderQtyControl(id) {
+        const qtyEl = document.getElementById('qty-' + id);
+        if (!qtyEl) return;
+        const item = cart[id];
+        if (!item || item.qty === 0) {
+            qtyEl.innerHTML = '<button class="btn-add" onclick="addToCart(' + id +
+                ')"><i class="fas fa-plus"></i> Tambah</button>';
+        } else {
+            qtyEl.innerHTML =
+                '<div style="display:flex;align-items:center;gap:6px">' +
+                '<button class="btn-qty btn-qty-minus" onclick="changeQty(' + id +
+                ',-1)"><i class="fas fa-minus" style="font-size:11px"></i></button>' +
+                '<span class="qty-num">' + item.qty + '</span>' +
+                '<button class="btn-qty btn-qty-plus" onclick="changeQty(' + id +
+                ',1)"><i class="fas fa-plus" style="font-size:11px"></i></button>' +
+                '</div>';
+        }
+    }
+
+    function addToCart(id) {
+        const el = document.querySelector('.menu-item[data-id="' + id + '"]');
+        if (!el) return;
+        const nama = el.dataset.nama;
+        const harga = parseInt(el.dataset.harga);
+        const foto = el.dataset.foto;
+        if (!cart[id]) cart[id] = {
+            nama,
+            harga,
+            foto,
+            qty: 0
+        };
+        cart[id].qty++;
+        renderQtyControl(id);
+        updateCartFloat();
+        renderCartDrawer();
+        // pulse animation
+        const btn = document.getElementById('cartFloat');
+        btn.style.transform = 'translateX(-50%) translateY(0) scale(1.04)';
+        setTimeout(() => btn.style.transform = 'translateX(-50%) translateY(0) scale(1)', 180);
+    }
+
+    function changeQty(id, delta) {
+        if (!cart[id]) return;
+        cart[id].qty += delta;
+        if (cart[id].qty <= 0) delete cart[id];
+        renderQtyControl(id);
+        updateCartFloat();
+        renderCartDrawer();
+    }
+
+    function renderCartDrawer() {
+        const list = document.getElementById('cartItemsList');
+        const items = Object.entries(cart);
+        if (items.length === 0) {
+            list.innerHTML =
+                '<div style="text-align:center;padding:40px;color:var(--text-muted)"><i class="fas fa-shopping-cart" style="font-size:36px;opacity:.3;display:block;margin-bottom:12px"></i><p>Keranjang masih kosong</p></div>';
+            return;
+        }
+        list.innerHTML = items.map(([id, item]) =>
+            '<div class="cart-item">' +
+            '<div class="cart-item-img">' +
+            (item.foto ? '<img src="' + item.foto + '" alt="" onerror="this.style.display=\'none\'">' : '') +
+            '</div>' +
+            '<div class="cart-item-info">' +
+            '<h5>' + item.nama + '</h5>' +
+            '<div class="price">' + fmt(item.harga) + '</div>' +
+            '</div>' +
+            '<div class="cart-item-qty">' +
+            '<button class="btn-qty btn-qty-minus" onclick="changeQty(' + id +
+            ',-1)"><i class="fas fa-minus" style="font-size:11px"></i></button>' +
+            '<span class="qty-num">' + item.qty + '</span>' +
+            '<button class="btn-qty btn-qty-plus" onclick="changeQty(' + id +
+            ',1)"><i class="fas fa-plus" style="font-size:11px"></i></button>' +
+            '</div>' +
+            '</div>'
+        ).join('');
+    }
+
+    function openCart() {
+        renderCartDrawer();
+        document.getElementById('cartOverlay').classList.add('show');
+        document.getElementById('cartDrawer').classList.add('show');
+    }
+
+    function closeCart() {
+        document.getElementById('cartOverlay').classList.remove('show');
+        document.getElementById('cartDrawer').classList.remove('show');
+    }
+
+    function checkout() {
+        if (cartCount() === 0) return;
+        const items = Object.values(cart).map(i => i.qty + 'x ' + i.nama).join('\n');
+        alert('Pesanan:\n' + items + '\n\nTotal: ' + fmt(cartTotal()));
+    }
+
+    // ── STICKY KAT NAV ──
+    function scrollToKat(id) {
+        const el = document.getElementById('kat-' + id);
+        if (el) el.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+        document.querySelectorAll('.kat-nav-item').forEach(a => a.classList.remove('active'));
+        const navItem = document.querySelector('.kat-nav-item[data-kat="' + id + '"]');
+        if (navItem) navItem.classList.add('active');
+    }
+
+    // Intersection Observer for kat nav highlight
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const katId = entry.target.dataset.katId;
+                document.querySelectorAll('.kat-nav-item').forEach(a => a.classList.remove('active'));
+                const navItem = document.querySelector('.kat-nav-item[data-kat="' + katId + '"]');
+                if (navItem) {
+                    navItem.classList.add('active');
+                    navItem.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'center'
+                    });
+                }
+            }
+        });
+    }, {
+        rootMargin: '-64px 0px -60% 0px',
+        threshold: 0
+    });
+
+    document.querySelectorAll('.kategori-section').forEach(el => observer.observe(el));
+
+    // Search debounce
     let menuTimer;
     document.getElementById('searchMenuInput').addEventListener('input', function() {
         clearTimeout(menuTimer);
