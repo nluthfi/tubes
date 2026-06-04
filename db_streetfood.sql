@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 29 Bulan Mei 2026 pada 06.34
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.2.12
+-- Generation Time: Jun 04, 2026 at 06:15 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `bayar`
+-- Table structure for table `bayar`
 --
 
 CREATE TABLE `bayar` (
@@ -34,7 +34,7 @@ CREATE TABLE `bayar` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `bayar`
+-- Dumping data for table `bayar`
 --
 
 INSERT INTO `bayar` (`id_metode`, `metode_pembayaran`, `logo`) VALUES
@@ -48,7 +48,7 @@ INSERT INTO `bayar` (`id_metode`, `metode_pembayaran`, `logo`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kategori`
+-- Table structure for table `kategori`
 --
 
 CREATE TABLE `kategori` (
@@ -57,7 +57,7 @@ CREATE TABLE `kategori` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `kategori`
+-- Dumping data for table `kategori`
 --
 
 INSERT INTO `kategori` (`id_kategori`, `kategori_makanan`) VALUES
@@ -69,7 +69,7 @@ INSERT INTO `kategori` (`id_kategori`, `kategori_makanan`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `menu`
+-- Table structure for table `menu`
 --
 
 CREATE TABLE `menu` (
@@ -84,7 +84,7 @@ CREATE TABLE `menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `menu`
+-- Dumping data for table `menu`
 --
 
 INSERT INTO `menu` (`id_menu`, `nama_menu`, `foto_menu`, `deskripsi`, `harga`, `rasa`, `id_kategori`, `id_toko`) VALUES
@@ -105,7 +105,7 @@ INSERT INTO `menu` (`id_menu`, `nama_menu`, `foto_menu`, `deskripsi`, `harga`, `
 (16, 'Mie Jebew Komplit', '', '                Mie dengan sambal chili oil, isi pangsit 1 baso 2                ', 25000, '', 1, 2),
 (17, 'Mie Jebew Polos', '', '                Mie dengan sambal chili oil                ', 18000, 'pedas', 1, 2),
 (18, 'Es Teler Sultan', '1779971643_23faf392-f8a4-4f05-abd2-2b7bbbc08c4e_Go-Biz_20260309_002944.webp', 'Es Teler Creamy, alpukat + nangka + Jelly Blueberry - cincau + Jelly kelapa + Agar2 Strawberry + kuah Creamy Authentic AI Drinks', 23, 'manis', 3, 31),
-(19, 'Mie Ayam Chili Oil', '1779972613_03f9d087-f73b-40b7-a805-63b62ede69bb_Go-Biz_20250708_042412.webp', 'Mie Dengan Topping Ayam Chili Oil', 27, '', 1, 3),
+(19, 'Mie Ayam Chili Oil', '1779972613_03f9d087-f73b-40b7-a805-63b62ede69bb_Go-Biz_20250708_042412.webp', 'Mie Dengan Topping Ayam Chili Oil', 27000, '', 1, 3),
 (20, 'Mie Ayam Original', '1779972684_e23a2384-02f1-48b7-992a-22fd8485ea85_Go-Biz_20250708_042500.webp', 'Mie Ayam Original. Manis Gurih', 24, '', 1, 3),
 (21, 'Mie Ayam Cabe Ijo', '1779972735_e9522867-28b5-479c-909c-ed2a84e16236_Go-Biz_20250708_042434.webp', 'Mie Dengan Topping Cabe Ijo. Pedas Segar', 27, '', 1, 3),
 (22, 'Mie Ayam Lada Hitam', '1779972847_ff2c2e00-960a-48ec-a09e-0c704b8e0945_Go-Biz_20250708_042517.webp', 'Mie Ayam Bumbu Lada Hitam', 27, '', 1, 3),
@@ -995,7 +995,7 @@ INSERT INTO `menu` (`id_menu`, `nama_menu`, `foto_menu`, `deskripsi`, `harga`, `
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `metode_toko`
+-- Table structure for table `metode_toko`
 --
 
 CREATE TABLE `metode_toko` (
@@ -1003,10 +1003,72 @@ CREATE TABLE `metode_toko` (
   `id_metode` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `metode_toko`
+--
+
+INSERT INTO `metode_toko` (`id_toko`, `id_metode`) VALUES
+(2, 5),
+(2, 6),
+(3, 5),
+(3, 6),
+(4, 5),
+(4, 6),
+(5, 5),
+(5, 6),
+(6, 5),
+(6, 6),
+(7, 5),
+(7, 6),
+(9, 5),
+(9, 6),
+(10, 5),
+(10, 6),
+(12, 5),
+(12, 6),
+(13, 5),
+(13, 6),
+(14, 5),
+(14, 6),
+(15, 5),
+(15, 6),
+(16, 5),
+(16, 6),
+(17, 5),
+(17, 6),
+(18, 5),
+(18, 6),
+(19, 5),
+(19, 6),
+(20, 5),
+(20, 6),
+(21, 5),
+(21, 6),
+(22, 5),
+(22, 6),
+(23, 5),
+(23, 6),
+(24, 5),
+(24, 6),
+(25, 5),
+(25, 6),
+(26, 5),
+(26, 6),
+(27, 5),
+(27, 6),
+(28, 5),
+(28, 6),
+(29, 5),
+(29, 6),
+(30, 5),
+(30, 6),
+(31, 5),
+(31, 6);
+
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `mitra`
+-- Table structure for table `mitra`
 --
 
 CREATE TABLE `mitra` (
@@ -1016,7 +1078,7 @@ CREATE TABLE `mitra` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `mitra`
+-- Dumping data for table `mitra`
 --
 
 INSERT INTO `mitra` (`id_mitra`, `nama_mitra`, `logo`) VALUES
@@ -1027,7 +1089,7 @@ INSERT INTO `mitra` (`id_mitra`, `nama_mitra`, `logo`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `review`
+-- Table structure for table `review`
 --
 
 CREATE TABLE `review` (
@@ -1040,7 +1102,7 @@ CREATE TABLE `review` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Trigger `review`
+-- Triggers `review`
 --
 DELIMITER $$
 CREATE TRIGGER `trg_update_rating` AFTER INSERT ON `review` FOR EACH ROW BEGIN
@@ -1060,7 +1122,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `role`
+-- Table structure for table `role`
 --
 
 CREATE TABLE `role` (
@@ -1071,7 +1133,7 @@ CREATE TABLE `role` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `toko`
+-- Table structure for table `toko`
 --
 
 CREATE TABLE `toko` (
@@ -1087,45 +1149,45 @@ CREATE TABLE `toko` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `toko`
+-- Dumping data for table `toko`
 --
 
 INSERT INTO `toko` (`id_toko`, `nama_toko`, `foto_outlet`, `lokasi`, `jam_buka`, `jam_tutup`, `status_halal`, `no_telepon`, `rating`) VALUES
-(2, 'MIE BASO RESTORJA DO\'EL', '', 'Jalan Geger Kalong Girang No.65 Isola, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '08:30:00', '21:30:00', 'tersertifikasi', '', 0),
-(3, 'Mie Ayam Pedas Sugih', '', 'Jl. Gegerkalong Girang No.31, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '10:30:00', '20:30:00', 'tersertifikasi', '', 0),
-(4, 'AYAM JUBER - JUARA BERTAHAN - GERLONG', '', 'Jl. Gegerkalong Girang No.17, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:30:00', '22:00:00', 'tersertifikasi', '', 0),
-(5, 'Warkop Sukarasa Gerlong', '', 'Jalan Cibeunying Kolot No.87, Sadang, Serang, Kota Bandung, Jawa Barat 40133', NULL, NULL, 'belum tersertifikasi', '', 0),
-(6, 'Pawon teteh gegerkalong', '', 'Jl. Gegerkalong Tengah, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '09:00:00', '21:30:00', 'belum tersertifikasi', '', 0),
-(7, 'Hayang Thai Tea Koramil', '', '4HPV+663, Jl. Guru Gantangan, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '11:00:00', '21:00:00', 'tersertifikasi', '', 0),
+(2, 'MIE BASO RESTORJA DOEL', '', 'Jalan Geger Kalong Girang No.65 Isola, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '08:30:00', '21:30:00', 'tersertifikasi', '085798126997', 0),
+(3, 'Mie Ayam Pedas Sugih', '3.jpg', 'Jl. Gegerkalong Girang No.31, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '10:30:00', '20:30:00', 'tersertifikasi', '087863243631', 0),
+(4, 'AYAM JUBER - JUARA BERTAHAN - GERLONG', 'Screenshot 2026-06-04 170307.png', 'Jl. Gegerkalong Girang No.17, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:30:00', '22:00:00', 'tersertifikasi', '088218821898', 0),
+(5, 'Warkop Sukarasa Gerlong', '', 'Jalan Cibeunying Kolot No.87, Sadang, Serang, Kota Bandung, Jawa Barat 40133', '00:00:00', '23:59:00', 'belum tersertifikasi', '0', 0),
+(6, 'Pawon teteh gegerkalong', 'Screenshot 2026-06-04 191324.png', 'Jl. Gegerkalong Tengah, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '09:00:00', '21:30:00', 'belum tersertifikasi', '088802120590', 0),
+(7, 'Hayang Thai Tea Koramil', 'Screenshot 2026-06-04 191550.png', '4HPV+663, Jl. Guru Gantangan, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '11:00:00', '21:00:00', 'tersertifikasi', '0', 0),
 (8, 'AndisPIZZA', '', '4HPR+7Q Gegerkalong, Kota Bandung, Jawa Barat', NULL, NULL, 'tersertifikasi', '', 0),
-(9, 'Kababoss Geger Kalong', '', '4HPR+9F8, Jl. Gegerkalong Girang, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '09:00:00', '22:00:00', 'tersertifikasi', '', 0),
-(10, 'AYAMIN', '', 'Jl. Gegerkalong Girang No.20C, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '10:00:00', '23:59:00', 'tersertifikasi', '', 0),
+(9, 'Kababoss Geger Kalong', 'Screenshot 2026-06-04 192024.png', '4HPR+9F8, Jl. Gegerkalong Girang, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '09:00:00', '22:00:00', 'tersertifikasi', '08132184045', 0),
+(10, 'AYAMIN', 'Screenshot 2026-06-04 192246.png', 'Jl. Gegerkalong Girang No.20C, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '10:00:00', '23:59:00', 'tersertifikasi', '085119602445', 0),
 (11, 'HAPPY nasi telor', '', '4HPV+4GJ, Jl. Gegerkalong Girang, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '05:25:00', '13:00:00', 'tersertifikasi', '', 0),
-(12, 'Waroeng BANG BOIM', '', 'Jl. Gegerkalong Girang No.36, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '17:00:00', '22:00:00', 'tersertifikasi', '', 0),
-(13, 'Ayam Tulang Lunak Pawon Sesambelan', '', 'Jl. Gegerkalong Girang Samping Koramil No.4, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '08:00:00', '15:00:00', 'tersertifikasi', '', 0),
-(14, 'Pisang Keju & Pisang Goreng Tanduk Isola', '', '4HPV+47Q, Jl. Gegerkalong Girang, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:00:00', '21:30:00', 'tersertifikasi', '', 0),
-(15, 'GG Juicy \'n Fruity', '', 'Jl. Gegerkalong Girang No.23, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '10:00:00', '19:00:00', 'tersertifikasi', '', 0),
-(16, 'Molen Aneka Rasa', '', 'Jl. Gegerkalong Girang No.101a, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:00:00', '17:00:00', 'tersertifikasi', '', 0),
-(17, 'Megumi daifuku mochi', '', 'Jl. Gegerkalong Girang No.99, bandung, Kec. Sukasari, Kabupaten Bandung Barat, Jawa Barat 40153', '11:15:00', '22:00:00', 'tersertifikasi', '', 0),
-(18, 'Alfathir frozen food', '', 'Jl. Gegerkalong Girang No.119, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '14:00:00', '23:00:00', 'tersertifikasi', '', 0),
-(19, 'Ayam Geprek Bejeuk Gerlong', '', 'Jl. Gegerkalong Girang No.123, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '11:00:00', '22:00:00', 'tersertifikasi', '', 0),
-(20, 'Warung Nasi Padang 88 Uni Angel', '', '4HPR+7VC, Jl. Gegerkalong Girang, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '00:00:00', '23:59:00', 'tersertifikasi', '', 0),
-(21, 'Republic Kebab Premium', '', 'Jl. Gegerkalong Girang, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '00:00:00', '23:59:00', 'tersertifikasi', '', 0),
-(22, 'Chocolate Changer Gegerkalong', '', 'Jl. Gegerkalong Girang No.53 A, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '09:30:00', '20:45:00', 'tersertifikasi', '', 0),
-(23, 'Ayam Geprek Bebas, Gegerkalong', '', 'Jl. Gegerkalong Girang No.33, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '08:45:00', '21:45:00', 'tersertifikasi', '', 0),
-(24, 'Jus Egan 71', '', 'Jl. Gegerkalong Girang No.71, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:00:00', '17:30:00', 'tersertifikasi', '', 0),
-(25, 'Rumah makan padang Rajo Bungsu', '', 'Jl. Gegerkalong Girang No.75, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '10:00:00', '22:00:00', 'tersertifikasi', '', 0),
-(26, 'Kantin 77', '', 'Jl. Gegerkalong Girang No.77, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:00:00', '21:00:00', 'tersertifikasi', '', 0),
-(27, 'GEBROS Gegerkalong', '', 'Jl. Gegerkalong Girang No.44, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '10:00:00', '20:00:00', 'tersertifikasi', '', 0),
-(28, 'ARA FRIED CHIKEN PLACE', '', 'Jl. Gegerkalong Girang No.44, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '09:30:00', '21:00:00', 'tersertifikasi', '', 0),
-(29, 'Gerlong Dimsum', '', 'Jl. Gegerkalong Girang No.48 rt01, RW.06, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '11:00:00', '20:30:00', 'tersertifikasi', '', 0),
-(30, 'RM Padang Maju Jaya', '', 'Jl. Gegerkalong Girang No.72, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '09:00:00', '21:45:00', 'tersertifikasi', '', 0),
-(31, 'A.I. Drinks', '', 'Jl. Gegerkalong Girang No.95, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '13:00:00', '21:00:00', 'tersertifikasi', '', 0);
+(12, 'Waroeng BANG BOIM', '', 'Jl. Gegerkalong Girang No.36, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '17:00:00', '22:00:00', 'belum tersertifikasi', '085279888873', 0),
+(13, 'Ayam Tulang Lunak Pawon Sesambelan', 'Screenshot 2026-06-04 193032.png', 'Jl. Gegerkalong Girang Samping Koramil No.4, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '08:00:00', '15:00:00', 'tersertifikasi', '081320743432', 0),
+(14, 'Pisang Keju & Pisang Goreng Tanduk Isola', 'Screenshot 2026-06-04 193201.png', '4HPV+47Q, Jl. Gegerkalong Girang, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:00:00', '21:30:00', 'tersertifikasi', '0', 0),
+(15, 'GG Juicy n Fruity', 'Screenshot 2026-06-04 193354.png', 'Jl. Gegerkalong Girang No.23, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '10:00:00', '19:00:00', 'tersertifikasi', '081262345632', 0),
+(16, 'Molen Aneka Rasa', 'Screenshot 2026-06-04 193603.png', 'Jl. Gegerkalong Girang No.101a, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:00:00', '17:00:00', 'tersertifikasi', '0', 0),
+(17, 'Megumi daifuku mochi', 'Screenshot 2026-06-04 193731.png', 'Jl. Gegerkalong Girang No.99, bandung, Kec. Sukasari, Kabupaten Bandung Barat, Jawa Barat 40153', '11:15:00', '22:00:00', 'belum tersertifikasi', '082214040149', 0),
+(18, 'Alfathir frozen food', 'Screenshot 2026-06-04 193943.png', 'Jl. Gegerkalong Girang No.119, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '14:00:00', '23:00:00', 'belum tersertifikasi', '081381833889', 0),
+(19, 'Ayam Geprek Bejeuk Gerlong', 'Screenshot 2026-06-04 194153.png', 'Jl. Gegerkalong Girang No.123, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '11:00:00', '22:00:00', 'tersertifikasi', '085864488128', 0),
+(20, 'Warung Nasi Padang 88 Uni Angel', 'Screenshot 2026-06-04 194338.png', '4HPR+7VC, Jl. Gegerkalong Girang, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '00:00:00', '23:59:00', 'tersertifikasi', '0', 0),
+(21, 'Republic Kebab Premium', '', 'Jl. Gegerkalong Girang, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '00:00:00', '23:59:00', 'tersertifikasi', '82116885535', 0),
+(22, 'Chocolate Changer Gegerkalong', 'Screenshot 2026-06-04 194626.png', 'Jl. Gegerkalong Girang No.53 A, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '09:30:00', '20:45:00', 'tersertifikasi', '81363736938', 0),
+(23, 'Ayam Geprek Bebas, Gegerkalong', 'Screenshot 2026-06-04 194744.png', 'Jl. Gegerkalong Girang No.33, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '08:45:00', '21:45:00', 'tersertifikasi', '08112212214', 0),
+(24, 'Jus Egan 71', 'Screenshot 2026-06-04 194855.png', 'Jl. Gegerkalong Girang No.71, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:00:00', '17:30:00', 'tersertifikasi', '083820195554', 0),
+(25, 'Rumah makan padang Rajo Bungsu', 'Screenshot 2026-06-04 195116.png', 'Jl. Gegerkalong Girang No.75, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '10:00:00', '22:00:00', 'tersertifikasi', '087825594559', 0),
+(26, 'Kantin 77', '', 'Jl. Gegerkalong Girang No.77, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '07:00:00', '21:00:00', 'tersertifikasi', '085603182812', 0),
+(27, 'GEBROS Gegerkalong', 'Screenshot 2026-06-04 195303.png', 'Jl. Gegerkalong Girang No.44, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '10:00:00', '20:00:00', 'tersertifikasi', '081977653286', 0),
+(28, 'ARA FRIED CHIKEN PLACE', 'Screenshot 2026-06-04 195602.png', 'Jl. Gegerkalong Girang No.44, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40153', '09:30:00', '21:00:00', 'tersertifikasi', '0895605869506', 0),
+(29, 'Gerlong Dimsum', '', 'Jl. Gegerkalong Girang No.48 rt01, RW.06, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '11:00:00', '20:30:00', 'tersertifikasi', '085318173638', 0),
+(30, 'RM Padang Maju Jaya', 'Screenshot 2026-06-04 195813.png', 'Jl. Gegerkalong Girang No.72, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '09:00:00', '21:45:00', 'tersertifikasi', '8156149584', 0),
+(31, 'A.I. Drinks', 'Screenshot 2026-06-04 195903.png', 'Jl. Gegerkalong Girang No.95, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40154', '13:00:00', '21:00:00', 'belum tersertifikasi', '0882000177266', 0);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `toko_mitra`
+-- Table structure for table `toko_mitra`
 --
 
 CREATE TABLE `toko_mitra` (
@@ -1133,10 +1195,55 @@ CREATE TABLE `toko_mitra` (
   `id_mitra` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `toko_mitra`
+--
+
+INSERT INTO `toko_mitra` (`id_toko`, `id_mitra`) VALUES
+(2, 1),
+(2, 2),
+(2, 3),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(9, 1),
+(10, 1),
+(12, 1),
+(13, 1),
+(14, 1),
+(14, 2),
+(14, 3),
+(15, 1),
+(16, 1),
+(16, 2),
+(17, 1),
+(17, 2),
+(17, 3),
+(18, 1),
+(18, 2),
+(18, 3),
+(19, 1),
+(20, 1),
+(21, 1),
+(22, 1),
+(23, 1),
+(24, 1),
+(25, 1),
+(26, 1),
+(27, 1),
+(28, 1),
+(29, 1),
+(30, 1),
+(31, 1),
+(31, 2),
+(31, 3);
+
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -1151,19 +1258,19 @@ CREATE TABLE `users` (
 --
 
 --
--- Indeks untuk tabel `bayar`
+-- Indexes for table `bayar`
 --
 ALTER TABLE `bayar`
   ADD PRIMARY KEY (`id_metode`);
 
 --
--- Indeks untuk tabel `kategori`
+-- Indexes for table `kategori`
 --
 ALTER TABLE `kategori`
   ADD PRIMARY KEY (`id_kategori`);
 
 --
--- Indeks untuk tabel `menu`
+-- Indexes for table `menu`
 --
 ALTER TABLE `menu`
   ADD PRIMARY KEY (`id_menu`),
@@ -1171,136 +1278,136 @@ ALTER TABLE `menu`
   ADD KEY `id_toko` (`id_toko`);
 
 --
--- Indeks untuk tabel `metode_toko`
+-- Indexes for table `metode_toko`
 --
 ALTER TABLE `metode_toko`
   ADD PRIMARY KEY (`id_toko`,`id_metode`),
   ADD KEY `id_metode` (`id_metode`);
 
 --
--- Indeks untuk tabel `mitra`
+-- Indexes for table `mitra`
 --
 ALTER TABLE `mitra`
   ADD PRIMARY KEY (`id_mitra`);
 
 --
--- Indeks untuk tabel `review`
+-- Indexes for table `review`
 --
 ALTER TABLE `review`
   ADD PRIMARY KEY (`id_review`),
   ADD KEY `id_toko` (`id_toko`);
 
 --
--- Indeks untuk tabel `role`
+-- Indexes for table `role`
 --
 ALTER TABLE `role`
   ADD PRIMARY KEY (`id_role`);
 
 --
--- Indeks untuk tabel `toko`
+-- Indexes for table `toko`
 --
 ALTER TABLE `toko`
   ADD PRIMARY KEY (`id_toko`);
 
 --
--- Indeks untuk tabel `toko_mitra`
+-- Indexes for table `toko_mitra`
 --
 ALTER TABLE `toko_mitra`
   ADD PRIMARY KEY (`id_toko`,`id_mitra`),
   ADD KEY `id_mitra` (`id_mitra`);
 
 --
--- Indeks untuk tabel `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id_user`),
   ADD KEY `id_role` (`id_role`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `bayar`
+-- AUTO_INCREMENT for table `bayar`
 --
 ALTER TABLE `bayar`
   MODIFY `id_metode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT untuk tabel `kategori`
+-- AUTO_INCREMENT for table `kategori`
 --
 ALTER TABLE `kategori`
   MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT untuk tabel `menu`
+-- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
   MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=901;
 
 --
--- AUTO_INCREMENT untuk tabel `mitra`
+-- AUTO_INCREMENT for table `mitra`
 --
 ALTER TABLE `mitra`
   MODIFY `id_mitra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `review`
+-- AUTO_INCREMENT for table `review`
 --
 ALTER TABLE `review`
   MODIFY `id_review` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `role`
+-- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
   MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `toko`
+-- AUTO_INCREMENT for table `toko`
 --
 ALTER TABLE `toko`
   MODIFY `id_toko` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
--- AUTO_INCREMENT untuk tabel `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `menu`
+-- Constraints for table `menu`
 --
 ALTER TABLE `menu`
   ADD CONSTRAINT `menu_ibfk_1` FOREIGN KEY (`id_kategori`) REFERENCES `kategori` (`id_kategori`),
   ADD CONSTRAINT `menu_ibfk_2` FOREIGN KEY (`id_toko`) REFERENCES `toko` (`id_toko`);
 
 --
--- Ketidakleluasaan untuk tabel `metode_toko`
+-- Constraints for table `metode_toko`
 --
 ALTER TABLE `metode_toko`
   ADD CONSTRAINT `metode_toko_ibfk_1` FOREIGN KEY (`id_toko`) REFERENCES `toko` (`id_toko`),
   ADD CONSTRAINT `metode_toko_ibfk_2` FOREIGN KEY (`id_metode`) REFERENCES `bayar` (`id_metode`);
 
 --
--- Ketidakleluasaan untuk tabel `review`
+-- Constraints for table `review`
 --
 ALTER TABLE `review`
   ADD CONSTRAINT `review_ibfk_1` FOREIGN KEY (`id_toko`) REFERENCES `toko` (`id_toko`);
 
 --
--- Ketidakleluasaan untuk tabel `toko_mitra`
+-- Constraints for table `toko_mitra`
 --
 ALTER TABLE `toko_mitra`
   ADD CONSTRAINT `toko_mitra_ibfk_1` FOREIGN KEY (`id_toko`) REFERENCES `toko` (`id_toko`),
   ADD CONSTRAINT `toko_mitra_ibfk_2` FOREIGN KEY (`id_mitra`) REFERENCES `mitra` (`id_mitra`);
 
 --
--- Ketidakleluasaan untuk tabel `users`
+-- Constraints for table `users`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`id_role`) REFERENCES `role` (`id_role`);
