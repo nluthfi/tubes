@@ -25,6 +25,10 @@ if ($all_toko_ids) {
     $r_harga = $koneksi->query("SELECT id_toko, MIN(harga) as min_harga FROM menu WHERE id_toko IN ($ids_str) GROUP BY id_toko");
     $harga_map = [];
     while ($rh = $r_harga->fetch_assoc()) $harga_map[$rh['id_toko']] = $rh['min_harga'];
+    // Fetch distinct rasa per toko
+    $r_rasa = $koneksi->query("SELECT DISTINCT id_toko, rasa FROM menu WHERE id_toko IN ($ids_str) AND rasa IS NOT NULL AND rasa != ''");
+    $rasa_map = [];
+    while ($rr = $r_rasa->fetch_assoc()) $rasa_map[$rr['id_toko']][] = $rr['rasa'];
 }
 
 // Dropdown data for filter
@@ -848,6 +852,12 @@ foreach ($rows as $row) {
         <button class="fchip" id="chip-halal" onclick="toggleChip('halal')"><i class="fas fa-leaf"></i>Halal</button>
         <button class="fchip" id="chip-rating" onclick="toggleChip('rating')"><i class="fas fa-star"></i>Rating
             Tinggi</button>
+        <div style="width:1px;background:var(--border);margin:6px 4px 16px;flex-shrink:0"></div>
+        <button class="fchip" id="chip-rasa-pedas" onclick="toggleRasaChip('pedas')">🌶️ Pedas</button>
+        <button class="fchip" id="chip-rasa-manis" onclick="toggleRasaChip('manis')">🍬 Manis</button>
+        <button class="fchip" id="chip-rasa-asin" onclick="toggleRasaChip('asin')">🧂 Asin</button>
+        <button class="fchip" id="chip-rasa-berkuah" onclick="toggleRasaChip('berkuah')">🍲 Berkuah</button>
+        <button class="fchip" id="chip-rasa-asam" onclick="toggleRasaChip('asam')">🍋 Asam</button>
     </div>
 
     <!-- HERO -->
@@ -901,7 +911,8 @@ foreach ($rows as $row) {
                 data-jam-tutup="<?= htmlspecialchars($row['jam_tutup']??'') ?>"
                 data-rating="<?= (float)$row['rating'] ?>" data-min-harga="<?= $min_harga ?>"
                 data-mitra-ids="<?= htmlspecialchars(implode(',', array_column($mitras,'id_mitra'))) ?>"
-                data-bayar-ids="<?= htmlspecialchars(implode(',', $bayar_map[$row['id_toko']] ? array_column($bayar_map[$row['id_toko']],'id_metode') : [])) ?>">
+                data-bayar-ids="<?= htmlspecialchars(implode(',', $bayar_map[$row['id_toko']] ? array_column($bayar_map[$row['id_toko']],'id_metode') : [])) ?>"
+                data-rasa="<?= htmlspecialchars(implode(',', $rasa_map[$row['id_toko']] ?? [])) ?>">
                 <div class="card-img">
                     <?php if ($foto): ?>
                     <img src="<?= htmlspecialchars($foto) ?>" alt="<?= htmlspecialchars($row['nama_toko']) ?>"
@@ -1008,6 +1019,19 @@ foreach ($rows as $row) {
                 </div>
             </div>
 
+            <!-- KATEGORI RASA -->
+            <div class="filter-section">
+                <h4>Kategori Rasa</h4>
+                <div class="chip-group" id="rasaChips">
+                    <button class="chip-opt cb-rasa" data-val="pedas" onclick="toggleRasaPanel(this)">🌶️ Pedas</button>
+                    <button class="chip-opt cb-rasa" data-val="manis" onclick="toggleRasaPanel(this)">🍬 Manis</button>
+                    <button class="chip-opt cb-rasa" data-val="asin" onclick="toggleRasaPanel(this)">🧂 Asin</button>
+                    <button class="chip-opt cb-rasa" data-val="berkuah" onclick="toggleRasaPanel(this)">🍲
+                        Berkuah</button>
+                    <button class="chip-opt cb-rasa" data-val="asam" onclick="toggleRasaPanel(this)">🍋 Asam</button>
+                </div>
+            </div>
+
             <!-- MITRA -->
             <div class="filter-section">
                 <h4>Platform Mitra</h4>
@@ -1043,11 +1067,12 @@ foreach ($rows as $row) {
     // ── FILTER STATE ──────────────────────────────────────────────
     const state = {
         search: '',
-        harga: 0, // 0=semua, 1=<5000, 5000=5k-10k, 10000=10k-15k, 15000=15k-20k, 20000=>20k
+        harga: 0,
         jam: '',
         halal: '',
         mitra: [],
         bayar: [],
+        rasa: [],
         quickBuka: false,
         quickHalal: false,
         quickRating: false,
@@ -1130,6 +1155,38 @@ foreach ($rows as $row) {
         btn.classList.toggle('active');
     }
 
+    function toggleRasaPanel(btn) {
+        btn.classList.toggle('active');
+        syncRasaChipsBar();
+    }
+
+    function toggleRasaChip(val) {
+        // toggle quick chip
+        const chipEl = document.getElementById('chip-rasa-' + val);
+        if (chipEl) chipEl.classList.toggle('active');
+        // sync panel
+        const panelBtn = document.querySelector('.cb-rasa[data-val="' + val + '"]');
+        if (panelBtn) panelBtn.classList.toggle('active', chipEl ? chipEl.classList.contains('active') : false);
+        updateAllChip();
+        applyFilters();
+    }
+
+    function syncRasaChipsBar() {
+        ['pedas', 'manis', 'asin', 'berkuah', 'asam'].forEach(r => {
+            const panelActive = document.querySelector('.cb-rasa[data-val="' + r + '"]')?.classList.contains(
+                'active');
+            const chipEl = document.getElementById('chip-rasa-' + r);
+            if (chipEl) chipEl.classList.toggle('active', !!panelActive);
+        });
+        updateAllChip();
+    }
+
+    function updateAllChip() {
+        const anyRasa = [...document.querySelectorAll('.cb-rasa.active')].length > 0;
+        const anyQuick = state.quickBuka || state.quickHalal || state.quickRating;
+        document.getElementById('chip-all').classList.toggle('active', !anyQuick && !anyRasa);
+    }
+
     // ── QUICK CHIPS BAR ───────────────────────────────────────────
     function toggleChip(id) {
         if (id === 'all') {
@@ -1140,21 +1197,24 @@ foreach ($rows as $row) {
             document.getElementById('chip-buka').classList.remove('active');
             document.getElementById('chip-halal').classList.remove('active');
             document.getElementById('chip-rating').classList.remove('active');
+            // clear rasa
+            document.querySelectorAll('.cb-rasa').forEach(b => b.classList.remove('active'));
+            ['pedas', 'manis', 'asin', 'berkuah', 'asam'].forEach(r => {
+                const el = document.getElementById('chip-rasa-' + r);
+                if (el) el.classList.remove('active');
+            });
         } else if (id === 'buka') {
             state.quickBuka = !state.quickBuka;
             document.getElementById('chip-buka').classList.toggle('active', state.quickBuka);
-            document.getElementById('chip-all').classList.toggle('active', !state.quickBuka && !state.quickHalal && !
-                state.quickRating);
+            updateAllChip();
         } else if (id === 'halal') {
             state.quickHalal = !state.quickHalal;
             document.getElementById('chip-halal').classList.toggle('active', state.quickHalal);
-            document.getElementById('chip-all').classList.toggle('active', !state.quickBuka && !state.quickHalal && !
-                state.quickRating);
+            updateAllChip();
         } else if (id === 'rating') {
             state.quickRating = !state.quickRating;
             document.getElementById('chip-rating').classList.toggle('active', state.quickRating);
-            document.getElementById('chip-all').classList.toggle('active', !state.quickBuka && !state.quickHalal && !
-                state.quickRating);
+            updateAllChip();
         }
         applyFilters();
     }
@@ -1168,6 +1228,8 @@ foreach ($rows as $row) {
         state.bayar = [...document.querySelectorAll('.cb-bayar.active')].map(b => b.dataset.val);
         // collect mitra
         state.mitra = [...document.querySelectorAll('.cb-mitra:checked')].map(b => b.value);
+        // collect rasa
+        state.rasa = [...document.querySelectorAll('.cb-rasa.active')].map(b => b.dataset.val);
 
         const cards = [...allCards()];
         let visible = [];
@@ -1182,6 +1244,7 @@ foreach ($rows as $row) {
             const minHarga = parseInt(card.dataset.minHarga) || 0;
             const mitraIds = card.dataset.mitraIds ? card.dataset.mitraIds.split(',') : [];
             const bayarIds = card.dataset.bayarIds ? card.dataset.bayarIds.split(',') : [];
+            const rasaList = card.dataset.rasa ? card.dataset.rasa.split(',') : [];
 
             // Search
             if (state.search && !nama.includes(state.search)) show = false;
@@ -1245,6 +1308,11 @@ foreach ($rows as $row) {
                 if (!state.bayar.some(id => bayarIds.includes(id))) show = false;
             }
 
+            // Rasa (toko harus punya minimal satu menu dengan rasa yg dipilih)
+            if (show && state.rasa.length > 0) {
+                if (!state.rasa.some(r => rasaList.includes(r))) show = false;
+            }
+
             if (show) visible.push(card);
             else card.classList.add('hidden');
         });
@@ -1277,7 +1345,8 @@ foreach ($rows as $row) {
         empty.classList.toggle('hidden', visible.length > 0);
 
         // Filter dot
-        const hasFilter = state.harga || state.jam || state.halal || state.mitra.length || state.bayar.length;
+        const hasFilter = state.harga || state.jam || state.halal || state.mitra.length || state.bayar.length || state
+            .rasa.length;
         document.getElementById('filterDot').classList.toggle('show', !!hasFilter);
         document.getElementById('btnFilter').classList.toggle('active', !!hasFilter);
     }
