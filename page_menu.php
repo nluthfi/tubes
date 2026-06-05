@@ -78,23 +78,26 @@ $order_m = match($sort_menu) {
 };
 
 $where_sql_m = 'WHERE ' . implode(' AND ', $where_m);
+
+// ambil data menu dengan join kategori
 $menu_sql = 
     "SELECT m.*, k.kategori_makanan 
     FROM menu m 
     LEFT JOIN kategori k ON k.id_kategori = m.id_kategori $where_sql_m $order_m";
+
 $stmt_m = $koneksi->prepare($menu_sql);
 if ($params_m) $stmt_m->bind_param($types_m, ...$params_m);
 $stmt_m->execute();
 $menus = $stmt_m->get_result()->fetch_all(MYSQLI_ASSOC);
 
-
+// kelompokin menu berdasarkan kategori
 $grouped = [];
 foreach ($menus as $menu) {
     $kat = $menu['kategori_makanan'] ?: 'Lainnya';
     $grouped[$kat][] = $menu;
 }
 
-// ambil semua kategori
+// ambil semua data kategori
 $all_kat = $koneksi->query(
     "SELECT DISTINCT k.id_kategori, k.kategori_makanan FROM menu m 
      JOIN kategori k ON k.id_kategori = m.id_kategori 
@@ -399,7 +402,6 @@ function fotoUrl($val, $folder) {
     </div>
 
     <script>
-    
     // simpan data menu yang dipilih
     let cart = {}; // { id: { nama, harga, foto, qty } }
 
@@ -568,7 +570,7 @@ function fotoUrl($val, $folder) {
 
     document.querySelectorAll('.kategori-section').forEach(el => observer.observe(el));
 
-    
+
     let menuTimer;
     document.getElementById('searchMenuInput').addEventListener('input', function() {
         clearTimeout(menuTimer);
