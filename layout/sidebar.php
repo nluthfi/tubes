@@ -67,7 +67,7 @@
 
         </div>
 
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="/tubes/layout/logout.php">
                 <span class="icon">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 </span>

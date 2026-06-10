@@ -11,6 +11,20 @@ $menu = mysqli_fetch_assoc(mysqli_query($koneksi, "
 
 $kategori = mysqli_query($koneksi, "SELECT * FROM kategori");
 $toko = mysqli_query($koneksi, "SELECT * FROM toko");
+
+$all_rasa = mysqli_query($koneksi, "SELECT * FROM rasa");
+
+$rasa_menu = [];
+$q = mysqli_query($koneksi, "
+    SELECT id_rasa
+    FROM menu_rasa
+    WHERE id_menu = '$id'
+");
+
+while($r = mysqli_fetch_assoc($q)){
+    $rasa_menu[] = $r['id_rasa'];
+}
+
 ?>
 
 <main class="main-content">
@@ -92,12 +106,23 @@ $toko = mysqli_query($koneksi, "SELECT * FROM toko");
             <div class="mb-3">
                 <label class="form-label">Rasa</label>
 
-                <input 
-                    type="text"
-                    name="rasa"
-                    value="<?= $menu['rasa']; ?>"
-                    class="form-control"
-                >
+                <?php while($r = mysqli_fetch_assoc($all_rasa)){ ?>
+
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="rasa[]"
+                            value="<?= $r['id_rasa']; ?>"
+                            <?= in_array($r['id_rasa'], $rasa_menu) ? 'checked' : ''; ?>
+                        >
+
+                        <label class="form-check-label">
+                            <?= $r['nama_rasa']; ?>
+                        </label>
+                    </div>
+
+                <?php } ?>
             </div>
 
             <!-- KATEGORI -->

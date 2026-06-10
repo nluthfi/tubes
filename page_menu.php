@@ -58,16 +58,30 @@ $params_m = []; $types_m = '';
 // Filter menu berdasarkan search, rasa, dan kategori
 if ($search_menu !== '') {
     $where_m[] = '(m.nama_menu LIKE ? OR m.deskripsi LIKE ?)';
-    $params_m[] = "%$search_menu%"; $params_m[] = "%$search_menu%";
+    $params_m[] = "%$search_menu%";
+    $params_m[] = "%$search_menu%";
     $types_m .= 'ss';
 }
+
 if ($filter_rasa !== '') {
-    $where_m[] = 'm.rasa = ?';
-    $params_m[] = $filter_rasa; $types_m .= 's';
+    $where_m[] = "
+        EXISTS (
+            SELECT 1
+            FROM menu_rasa mr2
+            JOIN rasa r2 ON r2.id_rasa = mr2.id_rasa
+            WHERE mr2.id_menu = m.id_menu
+            AND r2.nama_rasa = ?
+        )
+    ";
+
+    $params_m[] = $filter_rasa;
+    $types_m .= 's';
 }
+
 if ($filter_kat > 0) {
     $where_m[] = 'm.id_kategori = ?';
-    $params_m[] = $filter_kat; $types_m .= 'i';
+    $params_m[] = $filter_kat;
+    $types_m .= 'i';
 }
 
 $order_m = match($sort_menu) {
@@ -80,10 +94,13 @@ $order_m = match($sort_menu) {
 $where_sql_m = 'WHERE ' . implode(' AND ', $where_m);
 
 // ambil data menu dengan join kategori
-$menu_sql = 
-    "SELECT m.*, k.kategori_makanan 
-    FROM menu m 
-    LEFT JOIN kategori k ON k.id_kategori = m.id_kategori $where_sql_m $order_m";
+$menu_sql = " SELECT m.*, k.kategori_makanan,
+    GROUP_CONCAT(r.nama_rasa SEPARATOR ', ') AS rasa
+    FROM menu m
+    LEFT JOIN kategori k ON k.id_kategori = m.id_kategori
+    LEFT JOIN menu_rasa mr ON mr.id_menu = m.id_menu
+    LEFT JOIN rasa r ON r.id_rasa = mr.id_rasa $where_sql_m
+    GROUP BY m.id_menu $order_m";
 
 $stmt_m = $koneksi->prepare($menu_sql);
 if ($params_m) $stmt_m->bind_param($types_m, ...$params_m);
@@ -192,8 +209,7 @@ function fotoUrl($val, $folder) {
                 <div class="hero-badges">
                     <?php foreach ($mitras as $m): ?>
                     <span class="mitra-badge">
-                        <?php $mLogo = fotoUrl($m['logo'], 'img/logo/'); if ($mLogo): ?><img
-                            src="<?= htmlspecialchars($mLogo) ?>" alt=""><?php endif; ?>
+                        <i class="fas fa-motorcycle" style="font-size:11px"></i>
                         <?= htmlspecialchars($m['nama_mitra']) ?>
                     </span>
                     <?php endforeach; ?>
@@ -278,8 +294,10 @@ function fotoUrl($val, $folder) {
                         <div class="menu-item-footer">
                             <span class="menu-price">Rp <?= number_format($menu['harga'], 0, ',', '.') ?></span>
                             <div style="display:flex;align-items:center;gap:10px">
-                                <?php if ($menu['rasa']): ?>
-                                <span class="rasa-tag rasa-<?= $menu['rasa'] ?>"><?= ucfirst($menu['rasa']) ?></span>
+                                <?php if (!empty($menu['rasa'])): ?>
+                                    <span class="rasa-tag">
+                                        <?= htmlspecialchars($menu['rasa']) ?>
+                                    </span>
                                 <?php endif; ?>
                                 <div class="qty-control" data-id="<?= $menu['id_menu'] ?>">
                                     <button class="btn-add" onclick="addToCart(<?= $menu['id_menu'] ?>)"><i
@@ -325,9 +343,10 @@ function fotoUrl($val, $folder) {
                             <div class="menu-item-footer">
                                 <span class="menu-price">Rp <?= number_format($menu['harga'], 0, ',', '.') ?></span>
                                 <div style="display:flex;align-items:center;gap:10px">
-                                    <?php if ($menu['rasa']): ?>
-                                    <span
-                                        class="rasa-tag rasa-<?= $menu['rasa'] ?>"><?= ucfirst($menu['rasa']) ?></span>
+                                    <?php if (!empty($menu['rasa'])): ?>
+                                        <span class="rasa-tag">
+                                            <?= htmlspecialchars($menu['rasa']) ?>
+                                        </span>
                                     <?php endif; ?>
                                     <div class="qty-control" id="qty-<?= $menu['id_menu'] ?>">
                                         <button class="btn-add" onclick="addToCart(<?= $menu['id_menu'] ?>)"><i

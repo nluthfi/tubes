@@ -36,7 +36,6 @@ include '../koneksi.php';
                         <tr>
                             <th>No</th>
                             <th>Nama Menu</th>
-                            <th>Foto</th>
                             <th>Toko</th>
                             <th>Detail</th>
                             <th>Aksi</th>
@@ -119,23 +118,26 @@ include '../koneksi.php';
 
 <?php
 $query2 = mysqli_query($koneksi, "
-    SELECT 
+    SELECT
         m.id_menu,
         m.nama_menu,
         m.foto_menu,
         m.deskripsi,
         m.harga,
-        m.rasa,
+        GROUP_CONCAT(r.nama_rasa SEPARATOR ', ') AS rasa,
         k.kategori_makanan,
         t.nama_toko
 
     FROM menu m
-
-    LEFT JOIN kategori k 
-    ON m.id_kategori = k.id_kategori
-
-    LEFT JOIN toko t 
-    ON m.id_toko = t.id_toko
+    LEFT JOIN kategori k
+        ON m.id_kategori = k.id_kategori
+    LEFT JOIN toko t
+        ON m.id_toko = t.id_toko
+    LEFT JOIN menu_rasa mr
+        ON mr.id_menu = m.id_menu
+    LEFT JOIN rasa r
+        ON r.id_rasa = mr.id_rasa
+    GROUP BY m.id_menu
 ");
 
 while($row = mysqli_fetch_assoc($query2)){

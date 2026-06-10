@@ -36,7 +36,6 @@ if($fotoBaru != ""){
         foto_menu='$namaFileBaru',
         deskripsi='$deskripsi',
         harga='$harga',
-        rasa='$rasa',
         id_kategori='$kategori',
         id_toko='$toko'
         WHERE id_menu='$id'
@@ -49,13 +48,28 @@ if($fotoBaru != ""){
         nama_menu='$nama',
         deskripsi='$deskripsi',
         harga='$harga',
-        rasa='$rasa',
         id_kategori='$kategori',
         id_toko='$toko'
         WHERE id_menu='$id'
     ");
 
 }
+
+    // hapus relasi rasa lama
+    mysqli_query($koneksi, "
+        DELETE FROM menu_rasa
+        WHERE id_menu='$id'
+    ");
+
+    // simpan rasa baru
+    foreach($rasa as $id_rasa){
+
+        mysqli_query($koneksi, "
+            INSERT INTO menu_rasa(id_menu,id_rasa)
+            VALUES('$id','$id_rasa')
+        ");
+
+    }
 
 echo "<script>
 alert('Menu berhasil diupdate!');

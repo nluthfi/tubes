@@ -1689,6 +1689,77 @@ body {
     color: var(--text);
 }
 
+.sort-wrap{
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+
+    background:#1f2d4e;
+    color:#fff;
+
+    border:1.5px solid #f0a500;
+    border-radius:25px;
+
+    padding:8px 30px 8px 30px;
+
+    font-size:12px;
+    font-weight:400;
+
+    min-width:180px;
+    cursor:pointer;
+
+    transition:.2s ease;
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23f0a500' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5 8 12l6.5-6.5' stroke='%23f0a500' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    background-size:14px;
+}
+
+.sort-wrap:hover{
+    border-color:#ffbe33;
+    background:#24345c;
+}
+
+.sort-wrap:focus{
+    outline:none;
+    border-color:#ffbe33;
+    box-shadow:0 0 0 4px rgba(240,165,0,.15);
+}
+
+.sort-wrap option{
+    background:#1a2540;
+    color:#fff;
+}
+
+.btn-login{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    background:#f0a500;
+    color:#222222e4;
+
+    text-decoration:none;
+
+    padding:12px 20px;
+    border-radius:25px;
+
+    font-weight:550;
+
+    transition:.2s ease;
+    box-shadow:0 6px 16px rgba(240,165,0,.25);
+}
+
+.btn-login:hover{
+    background:#cc9113;
+    transform:translateY(-2px);
+}
+
+.btn-login i{
+    font-size:16px;
+}
+
 @media (max-width: 640px) {
     .topbar {
         padding: 0 14px;

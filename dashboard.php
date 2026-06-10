@@ -1,4 +1,11 @@
 <?php 
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: login/login.php");
+    exit;
+}
+
 include 'layout/header.php';
 include 'layout/sidebar.php';
 include 'koneksi.php';

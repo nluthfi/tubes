@@ -1,0 +1,132 @@
+/* Custom Palette Variables */
+:root {
+    --bg-main: #0b0f19;         /* Warna latar belakang ultra dark */
+    --bg-card: rgba(30, 41, 59, 0.75); /* Slate 800 semi-transparan untuk efek glassmorphism */
+    --bg-input: #0f172a;        /* Hitam legam untuk input field */
+    --color-accent: #eab308;    /* Kuning emas khas tombol filter/kategori */
+    --border-color: rgba(255, 255, 255, 0.08);
+}
+
+body {
+    background-color: var(--bg-main);
+    min-height: 100vh;
+}
+
+/* Container Utama dengan Ambient Light */
+.login-container {
+    min-height: 100vh;
+    padding: 24px;
+    background: radial-gradient(circle at 80% 20%, rgba(234, 179, 8, 0.08), transparent 45%),
+                radial-gradient(circle at 20% 80%, rgba(30, 41, 59, 0.4), var(--bg-main));
+}
+
+/* Card Login Berdesain Premium & Modern */
+.login-box.card {
+    width: 100%;
+    max-width: 440px;
+    background-color: var(--bg-card);
+    backdrop-filter: blur(12px); /* Membuat efek blur kaca di belakang card */
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px; /* Sudut melengkung halus modern */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Logo Aplikasi */
+.login-logo {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.8px;
+}
+.login-logo span {
+    color: var(--color-accent);
+}
+
+.subtitle {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    letter-spacing: 0.2px;
+}
+
+/* Desain Kustom Input Group (Lebih Rapi & Menyatu) */
+.input-group-kustom {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    color: #64748b;
+    font-size: 1.1rem;
+    z-index: 10;
+    pointer-events: none;
+    transition: color 0.2s ease;
+}
+
+.form-control-kustom {
+    width: 100%;
+    padding: 13px 16px 13px 46px; /* Jarak kiri dilebarkan untuk ikon */
+    background-color: var(--bg-input);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efek Interaksi saat Input Aktif */
+.form-control-kustom:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.12);
+}
+
+.input-group-kustom:focus-within .input-icon {
+    color: var(--color-accent); /* Ikon ikut berubah kuning saat input aktif */
+}
+
+/* Pewarnaan Teks Tambahan */
+.text-light-gray { color: #cbd5e1; }
+.text-secondary-gray { color: #94a3b8; }
+.text-accent { color: var(--color-accent); transition: opacity 0.2s; }
+.text-accent:hover { opacity: 0.85; }
+.cursor-pointer { cursor: pointer; }
+
+/* Tombol Solid Berwarna Kuning Mengikuti Tema Gambar */
+.btn-accent-kustom {
+    background-color: var(--color-accent);
+    color: #0b0f19;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+.btn-accent-kustom:hover {
+    background-color: #f1c40f;
+    transform: translateY(-1px); /* Efek sedikit terangkat saat di-hover */
+    box-shadow: 0 4px 12px rgba(234, 179, 8, 0.2);
+}
+.btn-accent-kustom:active {
+    transform: translateY(0);
+}
+
+/* Merapikan Desain Checkbox Bawaan Browser */
+.kustom-checkbox {
+    border: 1px solid #475569;
+    background-color: var(--bg-input);
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+.kustom-checkbox:checked {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+.kustom-checkbox:focus {
+    box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.1);
+    border-color: var(--color-accent);
+}

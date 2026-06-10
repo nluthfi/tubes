@@ -53,16 +53,18 @@ if ($all_toko_ids) {
     }
     
     // ambil rasa per toko
-    $r_rasa = $koneksi->query(
-        "SELECT DISTINCT id_toko, rasa 
-         FROM menu 
-         WHERE id_toko IN ($ids_str) 
-         AND rasa IS NOT NULL AND rasa != ''"
-    );
+    $r_rasa = $koneksi->query("SELECT DISTINCT
+        m.id_toko,
+        r.nama_rasa
+        FROM menu m
+        JOIN menu_rasa mr ON m.id_menu = mr.id_menu
+        JOIN rasa r ON mr.id_rasa = r.id_rasa
+        WHERE m.id_toko IN ($ids_str)
+    ");
 
     $rasa_map = [];
     while ($rr = $r_rasa->fetch_assoc()) {
-        $rasa_map[$rr['id_toko']][] = $rr['rasa'];
+        $rasa_map[$rr['id_toko']][] = $rr['nama_rasa'];
     }
 }
 
@@ -121,11 +123,18 @@ foreach ($rows as $row) {
             <i class="fas fa-search"></i>
             <input type="text" id="searchInput" placeholder="Cari toko atau menu...">
         </div>
-        <div class="topbar-right">
+        <div class="topbar">
             <button class="btn-filter" id="btnFilter" onclick="openFilter()">
                 <i class="fas fa-sliders-h"></i>
                 <span>Filter</span>
                 <div class="filter-dot" id="filterDot"></div>
+            </button>
+        </div>
+        <div class="topbar-right">
+            <button class="btn-login"
+                onclick="window.location.href='login/login.php'">
+                <i class="fa-solid fa-circle-user"></i>
+                <span>Login</span>
             </button>
         </div>
     </header>
